@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateFamilyActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FEFEFE"
+        android:backgroundTint="#EAF3F8"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        tools:context=".MainActivity"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-45dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp" >
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/openletter" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FEFEFE"
+                android:backgroundTint="#FFFFFF"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:elevation="20dp"
+                tools:context=".MainActivity"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="-45dp">
+
+                    <EditText
+                        android:id="@+id/editFamilyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/login_border"
+                        android:hint="가족 이름"
+                        android:inputType="textEmailAddress"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginBottom="20dp"/>
+
+                    <EditText
+                        android:id="@+id/editFamilyPW"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/login_border"
+                        android:hint="비밀번호"
+                        android:inputType="textEmailAddress"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginBottom="20dp"/>
+
+                    <EditText
+                        android:id="@+id/editNickname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/login_border"
+                        android:hint="호칭"
+                        android:inputType="textEmailAddress"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/createFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:paddingLeft="100dp"
+                android:paddingRight="100dp"
+                android:background="@drawable/family_button"
+                android:text="생성"
+                android:textSize="50px"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
