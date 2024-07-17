@@ -7,6 +7,14 @@ android {
     namespace = "com.explorit.dodamdodam"
     compileSdk = 34
 
+    dataBinding {
+        enable = true
+    }
+
+    viewBinding {
+        enable = true
+    }
+
     defaultConfig {
         applicationId = "com.explorit.dodamdodam"
         minSdk = 34
