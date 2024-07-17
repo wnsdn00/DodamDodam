@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "531374904571",
+    "project_id": "dodamdodam-b1e37",
+    "storage_bucket": "dodamdodam-b1e37.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531374904571:android:37f389849904378c29cc5e",
+        "android_client_info": {
+          "package_name": "com.explorit.dodamdodam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB79vhYLNXx0FasWp6X4_Zd-Y1Y8DKZKwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
