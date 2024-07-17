@@ -21,6 +21,10 @@ android {
         enable = true
     }
 
+    buildFeatures{
+        dataBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.explorit.dodamdodam"
         minSdk = 34
@@ -48,10 +52,9 @@ android {
         jvmTarget = "1.8"
     }
 
-}
-
 dependencies {
-
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-analytics")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
