@@ -1,12 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.explorit.dodamdodam"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+        dataBinding = true
+    }
+    
     dataBinding {
         enable = true
     }
@@ -42,13 +48,6 @@ android {
         jvmTarget = "1.8"
     }
 
-    dataBinding {
-        enable = true
-    }
-
-    viewBinding {
-        enable = true
-    }
 }
 
 dependencies {
@@ -59,6 +58,8 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation (libs.circleimageview)
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-analytics")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
