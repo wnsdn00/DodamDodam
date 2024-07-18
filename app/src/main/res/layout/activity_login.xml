@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,7 +52,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginBottom="0dp"
-            tools:context=".LoginActivity" >
+            tools:context=".LoginActivity">
 
             <Button
                 android:id="@+id/findID"
@@ -106,9 +105,8 @@
                 android:text="회원가입"
                 android:textSize="10dp"
                 tools:ignore="TextSizeCheck"
-                android:onClick="onRegisterButtonClick" />
+                android:onClick="onRegisterButtonClick"/>
         </LinearLayout>
-
 
         <Button
             android:id="@+id/buttonKaKao"
@@ -134,11 +132,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/black_border"
             android:backgroundTint="#63C0F4"
-            android:text="로그인"
-            android:onClick="onLoginButtonClick" />
-
-
+            android:text="로그인" />
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,30 +6,31 @@
     android:layout_height="match_parent"
     android:background="#F8F8F8"
     android:backgroundTint="#FDFDFD"
-    tools:context=".LoginActivity">
+    tools:context=".FindId2Activity">
 
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
+        android:onClick="onRegisterButtonClick"
+        app:srcCompat="@drawable/ic_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:id="@+id/linearLayoutTop"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:backgroundTint="#FEFEFE"
-        android:orientation="vertical"
-        android:paddingLeft="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        android:background="#FEFEFE"
+        android:gravity="center"
         android:paddingRight="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="30dp"
-            android:backgroundTint="#F9F9F9"
-            app:srcCompat="@drawable/ic_back" />
-    </LinearLayout>
+        android:paddingLeft="16dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     <LinearLayout
         android:id="@+id/linearLayoutCenter"
@@ -74,6 +75,6 @@
             android:paddingBottom="10dp" />
 
     </LinearLayout>
-
+</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
