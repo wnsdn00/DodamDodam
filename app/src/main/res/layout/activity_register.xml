@@ -158,7 +158,6 @@
                 android:textSize="55px"/>
         </LinearLayout>
 
-        //회원가입 버튼
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
