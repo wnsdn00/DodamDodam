@@ -1,5 +1,6 @@
 package com.explorit.dodamdodam
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -17,5 +18,11 @@ class RegisterActivity : AppCompatActivity() {
 
             finish()
         }
+    }
+
+    // 회원가입 버튼 클릭 시 호출될 메서드
+    fun onRegisterButtonClick(view: View) {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
     }
 }
