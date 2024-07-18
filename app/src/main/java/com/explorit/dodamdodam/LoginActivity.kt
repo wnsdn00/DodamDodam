@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
                         } else {
                             // 로그인 실패
                             Log.w("LoginActivity", "signInWithEmail:failure", task.exception)
-                            Toast.makeText(baseContext, "Authentication failed.",
+                            Toast.makeText(baseContext, "로그인 실패",
                                 Toast.LENGTH_SHORT).show()
                         }
                     }
