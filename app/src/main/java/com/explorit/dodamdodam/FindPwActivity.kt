@@ -7,20 +7,20 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
-class FindIdActivity : AppCompatActivity() {
+class FindPwActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.find_id)
+        setContentView(R.layout.find_pw)
 
         val backButton = findViewById<ImageButton>(R.id.back)
         backButton.setOnClickListener {
             finish()
         }
 
-        val registerIdCheckButton = findViewById<Button>(R.id.registerIdCheck)
-        registerIdCheckButton.setOnClickListener {
-            onIdCheckButtonClick(it)
+        val registerPwCheckButton = findViewById<Button>(R.id.registerPwCheck)
+        registerPwCheckButton.setOnClickListener {
+            onPwCheckButtonClick(it)
         }
     }
 
@@ -30,15 +30,15 @@ class FindIdActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // 아이디 확인 버튼 클릭 시 호출될 메서드
-    fun onIdCheckButtonClick(view: View) {
-        val intent = Intent(this, FindId2Activity::class.java)
+    // 비밀번호 확인 버튼 클릭 시 호출될 메서드
+    fun onPwCheckButtonClick(view: View) {
+        val intent = Intent(this, FindPw2Activity::class.java)
         startActivity(intent)
     }
 
-    // 비밀번호 찾기 버튼 클릭 시 호출될 메서드
-    fun onFindPwButtonClick(view: View) {
-        val intent = Intent(this, FindPwActivity::class.java)
+    // 아이디 찾기 버튼 클릭 시 호출될 메서드
+    fun onFindIdButtonClick(view: View) {
+        val intent = Intent(this, FindIdActivity::class.java)
         startActivity(intent)
     }
 

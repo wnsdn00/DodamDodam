@@ -26,6 +26,11 @@ class LoginActivity : AppCompatActivity() {
             onFindIdButtonClick(it)
         }
 
+        val findPwButton = findViewById<Button>(R.id.findPW)
+        findPwButton.setOnClickListener {
+            onFindPwButtonClick(it)
+        }
+
         // Firebase 인증 초기화
         auth = FirebaseAuth.getInstance()
 
@@ -76,6 +81,12 @@ class LoginActivity : AppCompatActivity() {
     // 아이디 찾기 버튼 클릭 시 호출될 메서드
     fun onFindIdButtonClick(view: View) {
         val intent = Intent(this, FindIdActivity::class.java)
+        startActivity(intent)
+    }
+
+    // 비밀번호 찾기 버튼 클릭 시 호출될 메서드
+    fun onFindPwButtonClick(view: View) {
+        val intent = Intent(this, FindPwActivity::class.java)
         startActivity(intent)
     }
 

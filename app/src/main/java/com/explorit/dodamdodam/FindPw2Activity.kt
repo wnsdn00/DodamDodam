@@ -6,11 +6,11 @@ import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
-class FindId2Activity : AppCompatActivity() {
+class FindPw2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.find_id2)
+        setContentView(R.layout.find_pw2)
 
         val backButton = findViewById<ImageButton>(R.id.back)
         backButton.setOnClickListener {
