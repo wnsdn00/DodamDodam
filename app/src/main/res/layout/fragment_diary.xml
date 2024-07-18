@@ -47,6 +47,7 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:id="@+id/linearLayoutCenter"
         android:layout_width="wrap_content"

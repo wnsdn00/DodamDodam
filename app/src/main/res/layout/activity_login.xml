@@ -22,7 +22,7 @@
             android:id="@+id/imageView"
             android:layout_width="181dp"
             android:layout_height="144dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="60dp"
             app:srcCompat="@drawable/logo" />
 
         <EditText
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="0dp"
             tools:context=".LoginActivity" >
 
             <Button
@@ -105,7 +105,8 @@
                 android:paddingBottom="4dp"
                 android:text="회원가입"
                 android:textSize="10dp"
-                tools:ignore="TextSizeCheck" />
+                tools:ignore="TextSizeCheck"
+                android:onClick="onRegisterButtonClick" />
         </LinearLayout>
 
 
@@ -113,7 +114,7 @@
             android:id="@+id/buttonKaKao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/black_border"
             android:backgroundTint="#F4DD63"
             android:text="KaKao" />
@@ -122,7 +123,7 @@
             android:id="@+id/buttonGoogle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/black_border"
             android:backgroundTint="#0D000000"
             android:text="Google" />
