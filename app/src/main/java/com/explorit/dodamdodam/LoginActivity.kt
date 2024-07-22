@@ -74,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
 
     // 로그인 버튼 클릭 시 호출될 메서드
     fun onLoginButtonClick(view: View) {
-        val intent = Intent(this, MainPageActivity::class.java)
+        val intent = Intent(this, FamilyActivity::class.java)
         startActivity(intent)
     }
 
