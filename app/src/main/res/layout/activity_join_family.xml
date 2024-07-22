@@ -84,7 +84,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/createFamily"
+                android:id="@+id/btnJoinFamilyFinish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center"
