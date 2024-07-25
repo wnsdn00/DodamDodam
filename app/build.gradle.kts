@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+    id("kotlin-android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -11,18 +13,7 @@ android {
     buildFeatures {
         buildConfig = true
         dataBinding = true
-    }
-
-    dataBinding {
-        enable = true
-    }
-
-    viewBinding {
-        enable = true
-    }
-
-    buildFeatures {
-        dataBinding = true
+        viewBinding = true
     }
 
     defaultConfig {
@@ -54,10 +45,28 @@ android {
 }
 
 dependencies {
+    // Kotlin 표준 라이브러리
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0")
+
+    // KotlinX 라이브러리
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0")
+
+    // Firebase 라이브러리
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
+
+    // Glide 라이브러리
+    implementation("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+
+    //  라이브러리
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+    // AndroidX 라이브러리
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
