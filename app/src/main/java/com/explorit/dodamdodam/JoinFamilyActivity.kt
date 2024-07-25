@@ -72,15 +72,16 @@ class JoinFamilyActivity : AppCompatActivity() {
         }
     }
 
-    private fun addMemberToFamily(userId: String, familyId: String?, nickName:String) {
-        if(familyId != null) {
+    private fun addMemberToFamily(userId: String, familyCode: String?, nickName:String) {
+        if(familyCode != null) {
             val member = Member(userId, nickName)
-            val familyRef = database.child("families").child(familyId).child("members")
+            val familyRef = database.child("families").child(familyCode).child("members")
             familyRef.child(userId).setValue(member).addOnCompleteListener() { task ->
                 if(task.isSuccessful) {
+                    database.child("users").child(userId).child("familyCode").setValue(familyCode)
                     val intent = Intent(this, MainPageActivity::class.java)
                     startActivity(intent)
-                } else{
+                } else {
                     Toast.makeText(this, "가족 참여에 실패 했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }

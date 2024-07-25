@@ -58,6 +58,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
+    
 
     // Glide 라이브러리
     implementation("com.github.bumptech.glide:compiler:4.12.0")
@@ -65,6 +66,8 @@ dependencies {
 
     //  라이브러리
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.fragment:fragment-ktx:1.8.1")
+
 
     // AndroidX 라이브러리
     implementation(libs.androidx.core.ktx)
