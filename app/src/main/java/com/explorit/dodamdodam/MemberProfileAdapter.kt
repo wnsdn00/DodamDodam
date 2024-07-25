@@ -1,0 +1,42 @@
+package com.explorit.dodamdodam
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import de.hdodenhof.circleimageview.CircleImageView
+
+class MemberProfileAdapter(private val memberList: List<Member>) :
+    RecyclerView.Adapter<MemberProfileAdapter.MemberViewHolder>() {
+
+        inner class MemberViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
+            private val profileImageView: CircleImageView = itemView.findViewById(R.id.profileImageView)
+
+            fun bind(member: Member) {
+                nameTextView.text = member.nickName
+                loadImage(profileImageView, member.profileUrl)
+            }
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_member, parent, false)
+        return MemberViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
+        holder.bind(memberList[position])
+    }
+
+    override fun getItemCount(): Int = memberList.size
+
+    }
+
+fun loadImage(imageView: ImageView, url: String) {
+    Glide.with(imageView.context)
+        .load(url)
+        .into(imageView)
+}

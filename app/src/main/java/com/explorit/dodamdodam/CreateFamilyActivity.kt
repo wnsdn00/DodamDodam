@@ -56,8 +56,10 @@ class CreateFamilyActivity : AppCompatActivity() {
                     // 가족 생성 성공
                     database.child("families").child(familyCode).child("members").child(userId).setValue(member).addOnCompleteListener { memberTask ->
                         if (memberTask.isSuccessful){
+                            database.child("users").child(userId).child("familyCode").setValue(familyCode)
+
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = android.content.ClipData.newPlainText("Family Code", familyCode)
+                            val clip = ClipData.newPlainText("Family Code", familyCode)
                             clipboard.setPrimaryClip(clip)
                             Toast.makeText(this, "가족 코드: $familyCode 가 클립보드에 저장되었습니다.", Toast.LENGTH_LONG).show()
 
@@ -73,11 +75,6 @@ class CreateFamilyActivity : AppCompatActivity() {
         }
     }
 
-    private fun copyToClipboard(text: String) {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("inviteCode", text)
-        clipboard.setPrimaryClip(clip)
-    }
 
 }
 
@@ -91,5 +88,6 @@ data class Family(
 
 data class Member(
     val userId: String,
-    val nickName: String
+    val nickName: String,
+    val profileUrl: String = "@drawable/ic_profile"
 )

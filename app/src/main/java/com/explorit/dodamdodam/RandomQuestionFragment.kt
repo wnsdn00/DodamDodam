@@ -1,16 +1,26 @@
 package com.explorit.dodamdodam
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
-var memberList = arrayListOf<FamilyMemberList>()
+
 /**
  * A simple [Fragment] subclass.
  * Use the [RandomQuestionFragment.newInstance] factory method to
@@ -21,6 +31,11 @@ class RandomQuestionFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var memberProfileAdapter: MemberProfileAdapter
+    private lateinit var database: DatabaseReference
+    private var memberList = mutableListOf<Member>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -29,13 +44,75 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_random_question, container, false)
+        val view = inflater.inflate(R.layout.fragment_random_question, container, false)
+
+        recyclerView = view.findViewById(R.id.profileRecyclerView)
+        recyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        memberProfileAdapter = MemberProfileAdapter(memberList)
+        recyclerView.adapter = memberProfileAdapter
+
+        database = FirebaseDatabase.getInstance().reference
+
+
+        fetchUserFamilyCode()
+
+        return view
+
     }
+
+
+
+    private fun fetchUserFamilyCode() {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        if (familyCode != null) {
+                            fetchMembers(familyCode)
+                        } else {
+                            Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
+    }
+
+
+    private fun fetchMembers(familyCode: String) {
+        database.child("families").child(familyCode).child("members")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    memberList.clear()
+                    for (data in snapshot.children) {
+                        val member = data.getValue(Member::class.java)
+                        if (member != null) {
+                            memberList.add(member)
+                        }
+                    }
+                    memberProfileAdapter.notifyDataSetChanged()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+    }
+
 
     companion object {
         /**

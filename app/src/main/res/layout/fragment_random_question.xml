@@ -6,69 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".RandomQuestionFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FEFEFE"
-        android:backgroundTint="#EAF3F8"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="50dp"
-        android:paddingBottom="50dp"
-        tools:context=".MainActivity"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="-45dp">
-
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profileRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:orientation="horizontal">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:background="#FEFEFE"
+            tools:ignore="MissingConstraints">
+        </androidx.recyclerview.widget.RecyclerView>
 
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile1"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/ic_profile"
-                app:civ_border_color="@color/black"
-                app:civ_border_width="2dp" />
-
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile2"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/ic_profile"
-                app:civ_border_color="@color/black"
-                app:civ_border_width="2dp" />
-
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile3"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/ic_profile"
-                app:civ_border_color="@color/black"
-                app:civ_border_width="2dp" />
-
-            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/profile4"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="20dp"
-                android:src="@drawable/ic_profile"
-                app:civ_border_color="@color/black"
-                app:civ_border_width="2dp"
-                tools:ignore="MissingClass" />
-        </LinearLayout>
-
-        <ListView
-            android:id="@+id/answerList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </ListView>
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

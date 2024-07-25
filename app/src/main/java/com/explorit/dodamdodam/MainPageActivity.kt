@@ -20,7 +20,9 @@ class MainPageActivity : AppCompatActivity() {
         binding = ActivityMainPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setFragment(TAG_HOME, HomeFragment())
+        if (savedInstanceState == null) {
+            setFragment(TAG_HOME, HomeFragment())
+        }
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when(item.itemId) {
@@ -37,51 +39,29 @@ class MainPageActivity : AppCompatActivity() {
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
 
-        if(manager.findFragmentByTag(tag) == null){
-            fragTransaction.add(R.id.mainFrameLayout,fragment, tag)
+        val currentFragment = manager.findFragmentByTag(tag)
+
+        if(currentFragment == null){
+            fragTransaction.add(R.id.mainFrameLayout, fragment, tag)
         }
 
-        val question = manager.findFragmentByTag(TAG_QUESTION)
-        val calendar = manager.findFragmentByTag(TAG_CALENDAR)
-        val diary = manager.findFragmentByTag(TAG_DIARY)
-        val myPage = manager.findFragmentByTag(TAG_MY_PAGE)
+        val fragments = listOf (
+            manager.findFragmentByTag(TAG_QUESTION),
+            manager.findFragmentByTag(TAG_CALENDAR),
+            manager.findFragmentByTag(TAG_DIARY),
+            manager.findFragmentByTag(TAG_MY_PAGE),
+        )
 
-        if (diary != null){
-            fragTransaction.hide(diary)
-        }
-
-        if (question != null){
-            fragTransaction.hide(question)
-        }
-
-        if (calendar != null) {
-            fragTransaction.hide(calendar)
-        }
-        if (myPage != null) {
-            fragTransaction.hide(myPage)
-        }
-
-        if (tag == TAG_DIARY) {
-            if (diary!=null){
-                fragTransaction.show(diary)
-            }
-        }
-        else if (tag == TAG_QUESTION) {
-            if (question != null) {
-                fragTransaction.show(question)
+        for (frag in fragments) {
+            if (frag != null) {
+                fragTransaction.hide(frag)
             }
         }
 
-        else if (tag == TAG_CALENDAR) {
-            if (calendar != null) {
-                fragTransaction.show(calendar)
-            }
-        }
-
-        else if (tag == TAG_MY_PAGE){
-            if (myPage != null){
-                fragTransaction.show(myPage)
-            }
+        if (currentFragment != null) {
+            fragTransaction.show(currentFragment)
+        } else {
+            fragTransaction.show(fragment)
         }
 
         fragTransaction.commitAllowingStateLoss()
