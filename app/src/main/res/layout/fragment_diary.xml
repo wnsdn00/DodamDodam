@@ -19,10 +19,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/back"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:background="#EAF3F8"
             android:layout_marginBottom="30dp"
             app:srcCompat="@drawable/ic_back" />
 
@@ -30,6 +31,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/add_post"
+            android:src="@drawable/ic_add"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#EAF3F8"
+            android:layout_marginBottom="30dp" />
 
         <ImageView
             android:id="@+id/search"
@@ -44,78 +53,14 @@
             android:layout_height="50dp"
             android:layout_marginBottom="30dp"
             app:srcCompat="@drawable/gallery" />
-
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/linearLayoutCenter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#EAF3F8"
-        android:gravity="center_vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
-        app:layout_constraintVertical_bias="0.0">
-
-        <ImageView
-            android:id="@+id/user_profile_image"
-            android:layout_width="35dp"
-            android:layout_height="30dp"
-            android:layout_margin="7.5dp"
-            app:srcCompat="@drawable/ic_profile" />
-
-        <TextView
-            android:id="@+id/user_profile_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#EAF3F8"
-            android:text="조윤식 똥꼬"
-            android:textStyle="bold"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/contentLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linearLayoutCenter"
-        app:layout_constraintBottom_toTopOf="@id/linearLayoutBottom">
-
-        <ImageView
-            android:id="@+id/imageView_content"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/image1" />
-
-        <TextView
-            android:id="@+id/textView_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="조윤식 엉덩이 속을 탐방해봤어요!"
-            android:textSize="18sp"
-            android:textColor="@android:color/black" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayoutBottom"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="21dp"
-        tools:layout_editor_absoluteY="580dp"
-        tools:ignore="MissingConstraints">
-
-    </LinearLayout>
-
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutTop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="#EAF3F8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
