@@ -46,8 +46,6 @@ class DiaryFragment : Fragment() {
             }
         })
 
-        loadInitialData()
-
         // Set up the click listener for the add_post button
         binding.addPost.setOnClickListener {
             // Start AddPostActivity
@@ -55,15 +53,16 @@ class DiaryFragment : Fragment() {
             startActivity(intent)
         }
 
+        loadInitialData()
         return binding.root
     }
 
     private fun loadInitialData() {
-        firestore?.collection("images")?.orderBy("timestamp", Query.Direction.DESCENDING)
+        firestore?.collection("posts")?.orderBy("timestamp", Query.Direction.DESCENDING)
             ?.limit(pageSize.toLong())
             ?.get()
             ?.addOnSuccessListener { querySnapshot ->
-                if (querySnapshot != null) {
+                if (querySnapshot != null && !querySnapshot.isEmpty) {
                     lastVisibleDocument = querySnapshot.documents[querySnapshot.size() - 1]
                     val items = querySnapshot.toObjects(ContentDTO::class.java)
                     diaryAdapter.addItems(items)
@@ -73,7 +72,7 @@ class DiaryFragment : Fragment() {
 
     private fun loadMoreData() {
         if (lastVisibleDocument != null) {
-            firestore?.collection("images")?.orderBy("timestamp", Query.Direction.DESCENDING)
+            firestore?.collection("posts")?.orderBy("timestamp", Query.Direction.DESCENDING)
                 ?.startAfter(lastVisibleDocument!!)
                 ?.limit(pageSize.toLong())
                 ?.get()

@@ -25,7 +25,8 @@
             android:layout_height="50dp"
             android:background="#EAF3F8"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/ic_back" />
+            app:srcCompat="@drawable/ic_back"
+            android:contentDescription="@string/back_button"/>
 
         <View
             android:layout_width="0dp"
@@ -33,26 +34,30 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/add_post"
+            android:id="@+id/addPost"
             android:src="@drawable/ic_add"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="#EAF3F8"
-            android:layout_marginBottom="30dp" />
+            android:layout_marginBottom="30dp"
+            android:contentDescription="@string/add_button"
+            android:onClick="onAddPostButtonClick"/>
 
         <ImageView
             android:id="@+id/search"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/search" />
+            app:srcCompat="@drawable/search"
+            android:contentDescription="@string/search_button"/>
 
         <ImageView
             android:id="@+id/gallery"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/gallery" />
+            app:srcCompat="@drawable/gallery"
+            android:contentDescription="@string/gallery_button"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
