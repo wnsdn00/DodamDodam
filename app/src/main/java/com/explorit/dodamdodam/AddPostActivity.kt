@@ -25,35 +25,36 @@ class AddPostActivity : AppCompatActivity() {
         binding = ActivityAddPostBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize Firebase storage and Firestore
+        // Firebase 초기화
         storage = FirebaseStorage.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-        // Select photo button event
-        binding.addpostImage.setOnClickListener {
-            val photoPickerIntent = Intent(Intent.ACTION_PICK).apply {
-                type = "image/*"
-            }
-            startActivityForResult(photoPickerIntent, PICK_IMAGE_FROM_ALBUM)
-        }
-
-        // Add image upload event
+        // Photo Upload 버튼 클릭 이벤트 설정
         binding.addpostBtnUpload.setOnClickListener {
-            contentUpload()
+            openAlbum()
         }
+    }
+
+    // 앨범 열기
+    private fun openAlbum() {
+        val photoPickerIntent = Intent(Intent.ACTION_PICK).apply {
+            type = "image/*"
+        }
+        startActivityForResult(photoPickerIntent, PICK_IMAGE_FROM_ALBUM)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
-            // This is the path to the selected image
             photoUri = data?.data
             binding.addpostImage.setImageURI(photoUri)
+        } else {
+            finish()
         }
     }
 
+    // 사진 업로드 함수
     private fun contentUpload() {
-        // Make filename
         photoUri?.let { uri ->
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             val imageFileName = "IMAGE_$timestamp.png"
@@ -66,13 +67,14 @@ class AddPostActivity : AppCompatActivity() {
                 storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
                     saveFileUrlToFirestore(downloadUrl.toString())
                 }
-                Toast.makeText(this, getString(R.string.upload_success), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "업로드 성공", Toast.LENGTH_LONG).show()
             }.addOnFailureListener {
-                Toast.makeText(this, getString(R.string.upload_failed), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "업로드 실패", Toast.LENGTH_LONG).show()
             }
         }
     }
 
+    // Firestire에 URL 저장
     private fun saveFileUrlToFirestore(downloadUrl: String) {
         val postData = hashMapOf(
             "imageUrl" to downloadUrl,
