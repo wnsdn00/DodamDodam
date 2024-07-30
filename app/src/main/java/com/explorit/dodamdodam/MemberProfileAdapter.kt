@@ -18,7 +18,7 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
 
             fun bind(member: Member) {
                 nameTextView.text = member.nickName
-                loadImage(profileImageView, member.profileUrl)
+                member.profileUrl?.let { loadImage(profileImageView, it) }
             }
         }
 
@@ -38,5 +38,6 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
 fun loadImage(imageView: ImageView, url: String) {
     Glide.with(imageView.context)
         .load(url)
+        .error(R.drawable.ic_profile)
         .into(imageView)
 }
