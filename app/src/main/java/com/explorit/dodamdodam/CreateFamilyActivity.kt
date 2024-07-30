@@ -11,8 +11,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlin.random.Random
 
 class CreateFamilyActivity : AppCompatActivity() {
     private lateinit var familyNameEditText : EditText
@@ -74,8 +78,6 @@ class CreateFamilyActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
 
 data class Family(
@@ -83,11 +85,19 @@ data class Family(
     val familyName: String,
     val familyPassWord: String,
     val creatorId: String,
-    val members: MutableList<String> = mutableListOf()
+    val members: MutableList<String> = mutableListOf(),
+    val questionNoList: MutableList<Int> = mutableListOf(),
+    val todayQuestion: MutableList<String> = mutableListOf(),
+    val questionHistory: MutableList<String> = mutableListOf()
 )
 
 data class Member(
-    val userId: String,
-    val nickName: String,
-    val profileUrl: String = "@drawable/ic_profile"
+    val userId: String? = null,
+    val nickName: String? = null,
+    val profileUrl: String? = "android.resource://com.explorit.dodamdodam/drawable/ic_profile"
 )
+
+{
+    // 기본 생성자
+    constructor() : this(null, null, null)
+}
