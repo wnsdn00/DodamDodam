@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
-
+    tools:context=".PreferenceActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,8 +26,8 @@
             android:backgroundTint="#EAF3F8"
             app:srcCompat="@drawable/ic_back" />
 
-        <EditText
-            android:id="@+id/alarm"
+        <Button
+            android:id="@+id/buttonAlarm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -40,8 +39,8 @@
             android:textColorHint="#000000"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/logout"
+        <Button
+            android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -53,8 +52,8 @@
             android:textColorHint="#000000"
             android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/unregister"
+        <Button
+            android:id="@+id/buttonUnregister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -65,7 +64,6 @@
             android:paddingBottom="15dp"
             android:textColorHint="#000000"
             android:textStyle="bold" />
-
 
     </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.explorit.dodamdodam
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -11,9 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import android.text.method.LinkMovementMethod
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.explorit.dodamdodam.databinding.FragmentMyPageBinding
 
 class MyPageFragment : Fragment(R.layout.fragment_my_page) {
@@ -59,11 +60,9 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
             // startActivity(Intent(activity, AppInfoActivity::class.java))
         }
 
-        binding.btnSettings.setOnClickListener {
-            // 환경설정 버튼 클릭 이벤트 처리
-            Toast.makeText(activity, "환경설정 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            // 예: 환경설정 액티비티로 이동
-            // startActivity(Intent(activity, SettingsActivity::class.java))
+        binding.buttonPreference.setOnClickListener {
+            val intent = Intent(activity, PreferenceActivity::class.java)
+            startActivity(intent)
         }
 
         // SpannableString 설정
