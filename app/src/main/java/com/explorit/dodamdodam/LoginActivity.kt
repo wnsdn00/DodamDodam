@@ -6,8 +6,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -16,10 +18,14 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+    private lateinit var kakaoAuthViewModel: KakaoAuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // ViewModel 초기화
+        kakaoAuthViewModel = ViewModelProvider(this).get(KakaoAuthViewModel::class.java)
 
         val findIdButton = findViewById<Button>(R.id.findID)
         findIdButton.setOnClickListener {
@@ -69,6 +75,12 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
             }
+        }
+
+        // 카카오 로그인 버튼 추가
+        val buttonKaKao = findViewById<ImageButton>(R.id.buttonKaKao)
+        buttonKaKao.setOnClickListener {
+            kakaoAuthViewModel.handleKakaoLogin()
         }
     }
 

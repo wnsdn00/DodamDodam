@@ -108,14 +108,14 @@
                 android:onClick="onRegisterButtonClick"/>
         </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonKaKao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:background="@drawable/black_border"
-            android:backgroundTint="#F4DD63"
-            android:text="KaKao" />
+            android:backgroundTint="#FDE400"
+            android:src="@drawable/kakao_login" />
 
         <Button
             android:id="@+id/buttonGoogle"

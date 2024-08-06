@@ -195,14 +195,10 @@
             android:focusable="true"
             android:textColor="@color/black"
             android:padding="13dp" />
-        <TextView
-            android:id="@+id/btn_settings"
+        <Button
+            android:id="@+id/buttonPreference"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
-            android:text="•  환경설정"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/black"
-            android:padding="13dp" />
+            android:text="•  환경설정" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
