@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.getValue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -36,14 +40,19 @@ class RandomQuestionFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var profileRecyclerView: RecyclerView
     private lateinit var memberProfileAdapter: MemberProfileAdapter
     private lateinit var database: DatabaseReference
     private var memberList = mutableListOf<Member>()
+    private var answerList = mutableListOf<Answer>()
     private lateinit var todayQuestionTextView: TextView
+    private lateinit var answerEditText: EditText
+    private lateinit var submitAnswerButton: Button
+    private lateinit var answersRecyclerView: RecyclerView
+    private lateinit var answerAdapter: AnswerAdapter
     private lateinit var auth: FirebaseAuth
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
+    private lateinit var viewQuestionHistoryButton : ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,18 +70,40 @@ class RandomQuestionFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_random_question, container, false)
 
-        recyclerView = view.findViewById(R.id.profileRecyclerView)
-        recyclerView.layoutManager =
+        profileRecyclerView = view.findViewById(R.id.profileRecyclerView)
+        profileRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         memberProfileAdapter = MemberProfileAdapter(memberList)
-        recyclerView.adapter = memberProfileAdapter
+        profileRecyclerView.adapter = memberProfileAdapter
+
 
         todayQuestionTextView = view.findViewById(R.id.todayQuestionTextView)
+        answerEditText = view.findViewById(R.id.answerEditText)
+        submitAnswerButton = view.findViewById(R.id.submitAnswerButton)
+
+        answersRecyclerView = view.findViewById(R.id.answersRecyclerView)
+        answersRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        answerAdapter = AnswerAdapter(answerList)
+        answersRecyclerView.adapter = answerAdapter
+
+        viewQuestionHistoryButton = view.findViewById(R.id.viewQuestionHistoryButton)
+
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
 
         fetchUserFamilyCode()
+
+        submitAnswerButton.setOnClickListener {
+            submitAnswer()
+        }
+
+        viewQuestionHistoryButton.setOnClickListener {
+            showQuestionHistory()
+        }
+
+
 
         return view
     }
@@ -116,6 +147,7 @@ class RandomQuestionFragment : Fragment() {
                         }
                     }
                     memberProfileAdapter.notifyDataSetChanged()
+                    fetchAnswers(familyCode)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -124,6 +156,35 @@ class RandomQuestionFragment : Fragment() {
                 }
 
             })
+    }
+
+    private fun fetchAnswers(familyCode: String) {
+        database.child("families").child(familyCode).child("todayQuestion").child("answers").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val answers = mutableMapOf<String, String>()
+                for (data in snapshot.children) {
+                    val answer = data.getValue(String::class.java)
+                    if(answer != null) {
+                        answers[data.key!!] = answer
+                    }
+                }
+                updateAnswers(answers)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+            }
+        })
+
+    }
+
+    private fun updateAnswers(answers: Map<String, String>) {
+        val answerList = memberList.map { member ->
+            val answer = answers[member.userId] ?: "?"
+            Answer(member, answer)
+        }
+        answerAdapter.updateAnswers(answerList)
     }
 
     private fun checkAndFetchQuestion(famliyCode: String){
@@ -171,6 +232,7 @@ class RandomQuestionFragment : Fragment() {
                             database.child("families").child(familyCode).child("todayQuestion")
                                 .setValue(
                                     mapOf(
+                                        "questionNo" to randomQuestion.key,
                                         "question" to randomQuestion.value,
                                         "date" to today
                                     )
@@ -180,7 +242,12 @@ class RandomQuestionFragment : Fragment() {
                                 .child(randomQuestion.key.toString()).setValue(true)
 
                             database.child("families").child(familyCode).child("questionHistory")
-                                .child(today).setValue(randomQuestion.value)
+                                .child(today).setValue(
+                                    mapOf(
+                                        "question" to randomQuestion.value,
+                                        "questionNo" to randomQuestion.key
+                                    )
+                                )
                         } else {
                             resetQuestionNoList(familyCode, today)
                         }
@@ -211,6 +278,84 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    private fun submitAnswer() {
+        val currentUserUid = auth.currentUser?.uid
+        val answer = answerEditText.text.toString()
+
+        if (currentUserUid != null && answer.isNotEmpty()) {
+            val today = dateFormat.format(Date())
+            database.child("users").child(currentUserUid).child("familyCode").addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val familyCode = snapshot.getValue(String::class.java)
+                    if (familyCode != null) {
+                        database.child("families").child(familyCode).child("todayQuestion").child("answers").child(currentUserUid).setValue(answer).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                database.child("families").child(familyCode).child("questionHistory").child(today).child("answers").child(currentUserUid).setValue(answer)
+                            } else {
+                                Toast.makeText(context, "답변을 저장하는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                }
+            })
+        } else {
+            Toast.makeText(context, "답변을 입력하세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showQuestionHistory() {
+        val bottomSheetFragment = QuestionHistoryFragment()
+
+        fetchQuestionHistory { questionHistoryList ->
+            bottomSheetFragment.updateQuestionsHistory(questionHistoryList)
+            bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
+        }
+    }
+
+    private fun fetchQuestionHistory(callback: (List<QuestionHistory>) -> Unit) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                    if (familyCode != null) {
+                        database.child("families").child(familyCode).child("questionHistory").addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val questionHistoryList = mutableListOf<QuestionHistory>()
+                                for (data in snapshot.children) {
+                                    val question = data.child("question").getValue(String::class.java) ?: "NO Question"
+                                    val answers = data.child("answers").children.mapNotNull {
+                                        val key = it.key
+                                        val value = it.getValue(String::class.java) ?: "No Answer"
+                                        if (key != null) key to value else null
+                                    }.toMap()
+                                    questionHistoryList.add(QuestionHistory(question, answers))
+                                }
+                                callback(questionHistoryList)
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(context, "가족 코드를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     companion object {
         /**
@@ -232,3 +377,6 @@ class RandomQuestionFragment : Fragment() {
             }
     }
 }
+
+data class Answer(val member: Member, val answer: String)
+
