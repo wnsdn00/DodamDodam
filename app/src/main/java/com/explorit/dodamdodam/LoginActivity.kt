@@ -11,8 +11,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class LoginActivity : AppCompatActivity() {
 
@@ -65,8 +68,8 @@ class LoginActivity : AppCompatActivity() {
                             user?.let {
                                 val userId = it.uid
                                 database.child("users").child(userId).child("email").setValue(email)
+                                checkUserFamilyCode(userId)
                             }
-                            onLoginButtonClick(buttonLogin)
                         } else {
                             // 로그인 실패
                             Log.w("LoginActivity", "signInWithEmail:failure", task.exception)
@@ -84,10 +87,36 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // 로그인 버튼 클릭 시 호출될 메서드
-    fun onLoginButtonClick(view: View) {
+    private fun checkUserFamilyCode(userId: String) {
+        //Firebase에서 familyCode가 있는지 확인
+        database.child("users").child(userId).child("familyCode").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.exists() && snapshot.getValue(String::class.java) != null) {
+                    onLoginButtonClickToMainPage()
+                } else {
+                    onLoginButtonClickToFamily()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w("LoginActivity", "checkUserFamilyCode:onCancelled", error.toException())
+                Toast.makeText(this@LoginActivity, "데이터베이스 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // 로그인 버튼 클릭 시 가족 그룹이 있을때 호출될 메서드
+    fun onLoginButtonClickToMainPage() {
+        val intent = Intent(this, MainPageActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    // 로그인 버튼 클릭 시 가족 그룹이 없을때 호출될 메서드
+    fun onLoginButtonClickToFamily() {
         val intent = Intent(this, FamilyActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     // 아이디 찾기 버튼 클릭 시 호출될 메서드

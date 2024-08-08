@@ -11,22 +11,79 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="16dp">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profileRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal"
-            android:background="#FEFEFE"
-            tools:ignore="MissingConstraints">
-        </androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/todayQuestionTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Loading question..."
-            tools:ignore="MissingConstraints" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/profileRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal"
+                    android:background="#FEFEFE"
+                    tools:ignore="MissingConstraints">
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/todayQuestionTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="Loading question..."
+                    android:layout_margin="16dp"
+                    tools:ignore="MissingConstraints" />
+                <EditText
+                    android:id="@+id/answerEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="답변을 입력하세요"
+                    android:layout_margin="16dp"
+                    tools:ignore="MissingConstraints"/>
+                <Button
+                    android:id="@+id/submitAnswerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제출"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"/>
+                <ImageButton
+                    android:id="@+id/viewQuestionHistoryButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="30dp"
+                    app:srcCompat="@drawable/ic_historyquestionarrow"
+                    android:contentDescription="@string/historyquestion_button"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/answersRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:background="#FEFEFE"
+                    tools:ignore="MissingConstraints">
+                </androidx.recyclerview.widget.RecyclerView>
+
+
+                <LinearLayout
+                    android:id="@+id/historyQuestionsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:orientation="vertical"
+                    android:background="#FFFFFF"
+                    android:elevation="8dp"
+                    android:translationY="400dp"
+                    android:layout_alignParentBottom="true">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/historyQuestionsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                        </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
+
         </LinearLayout>
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

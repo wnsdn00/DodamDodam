@@ -98,6 +98,8 @@ data class Member(
 )
 
 {
+
+
     // 기본 생성자
     constructor() : this(null, null, null)
 }
