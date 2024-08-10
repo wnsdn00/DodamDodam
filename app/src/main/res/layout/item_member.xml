@@ -18,6 +18,13 @@
             app:civ_border_color="@color/black"
             app:civ_border_width="2dp"
             tools:ignore="MissingConstraints" />
+        <View
+            android:id="@+id/answerStatusView"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/circle_gray" />
 
         <TextView
             android:id="@+id/nameTextView"

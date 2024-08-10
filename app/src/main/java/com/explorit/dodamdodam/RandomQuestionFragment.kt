@@ -100,7 +100,9 @@ class RandomQuestionFragment : Fragment() {
         }
 
         viewQuestionHistoryButton.setOnClickListener {
-            showQuestionHistory()
+            // 버튼을 눌렀을 때 지난 질문들을 보여주는 함수 작성
+            val questionHistoryFragment = QuestionHistoryFragment.newInstance()
+            questionHistoryFragment.show(parentFragmentManager, questionHistoryFragment.tag)
         }
 
 
@@ -181,10 +183,15 @@ class RandomQuestionFragment : Fragment() {
 
     private fun updateAnswers(answers: Map<String, String>) {
         val answerList = memberList.map { member ->
-            val answer = answers[member.userId] ?: "?"
+            val answer = answers[member.nickName] ?: "?"
             Answer(member, answer)
         }
         answerAdapter.updateAnswers(answerList)
+
+        memberList.forEach { member ->
+            member.hasAnswered = answers.containsKey(member.nickName)
+        }
+        memberProfileAdapter.notifyDataSetChanged()
     }
 
     private fun checkAndFetchQuestion(famliyCode: String){
@@ -288,13 +295,26 @@ class RandomQuestionFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val familyCode = snapshot.getValue(String::class.java)
                     if (familyCode != null) {
-                        database.child("families").child(familyCode).child("todayQuestion").child("answers").child(currentUserUid).setValue(answer).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                database.child("families").child(familyCode).child("questionHistory").child(today).child("answers").child(currentUserUid).setValue(answer)
-                            } else {
-                                Toast.makeText(context, "답변을 저장하는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        database.child("families").child(familyCode).child("members").child(currentUserUid).child("nickName").addValueEventListener(object: ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                val nickName = snapshot.getValue(String::class.java)
+                                if (nickName != null) {
+                                    database.child("families").child(familyCode).child("todayQuestion").child("answers").child(nickName).setValue(answer).addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            database.child("families").child(familyCode).child("questionHistory").child(today).child("answers").child(nickName).setValue(answer)
+                                        } else {
+                                            Toast.makeText(context, "답변을 저장하는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(context, "닉네임을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
+                            override fun onCancelled(error: DatabaseError) {
+                                Toast.makeText(context, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                                Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                            }
+                        })
                     } else {
                         Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -309,52 +329,7 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
-    private fun showQuestionHistory() {
-        val bottomSheetFragment = QuestionHistoryFragment()
 
-        fetchQuestionHistory { questionHistoryList ->
-            bottomSheetFragment.updateQuestionsHistory(questionHistoryList)
-            bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
-        }
-    }
-
-    private fun fetchQuestionHistory(callback: (List<QuestionHistory>) -> Unit) {
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-        if (currentUserUid != null) {
-            database.child("users").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val familyCode = snapshot.child("familyCode").getValue(String::class.java)
-                    if (familyCode != null) {
-                        database.child("families").child(familyCode).child("questionHistory").addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                val questionHistoryList = mutableListOf<QuestionHistory>()
-                                for (data in snapshot.children) {
-                                    val question = data.child("question").getValue(String::class.java) ?: "NO Question"
-                                    val answers = data.child("answers").children.mapNotNull {
-                                        val key = it.key
-                                        val value = it.getValue(String::class.java) ?: "No Answer"
-                                        if (key != null) key to value else null
-                                    }.toMap()
-                                    questionHistoryList.add(QuestionHistory(question, answers))
-                                }
-                                callback(questionHistoryList)
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            })
-        } else {
-            Toast.makeText(context, "가족 코드를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
 
 
     companion object {
