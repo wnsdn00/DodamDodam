@@ -2,13 +2,21 @@ package com.explorit.dodamdodam
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +35,9 @@ class QuestionHistoryFragment : BottomSheetDialogFragment() {
 
     private lateinit var questionsHistoryRecyclerView: RecyclerView
     private lateinit var questionsHistoryAdapter: QuestionsHistoryAdapter
-    private var questionList = mutableListOf<QuestionHistory>()
+    private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private var questionHistoryList = mutableListOf<QuestionHistory>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +58,51 @@ class QuestionHistoryFragment : BottomSheetDialogFragment() {
 
         questionsHistoryRecyclerView = view.findViewById(R.id.questionHistoryRecyclerView)
         questionsHistoryRecyclerView.layoutManager = LinearLayoutManager(context)
-        questionsHistoryAdapter = QuestionsHistoryAdapter(questionList)
+
+        questionsHistoryAdapter = QuestionsHistoryAdapter(questionHistoryList)
         questionsHistoryRecyclerView.adapter = questionsHistoryAdapter
+
+        database = FirebaseDatabase.getInstance().reference
+        auth = FirebaseAuth.getInstance()
+
+        fetchQuestionHistory()
 
         return view
     }
 
-    fun updateQuestionsHistory(questions: List<QuestionHistory>) {
-        questionsHistoryAdapter.updateQuestions(questions)
+    private fun fetchQuestionHistory() {
+        val currentUserUid = auth.currentUser?.uid
+        if(currentUserUid != null) {
+            database.child("users").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                    if(familyCode != null) {
+                        database.child("families").child(familyCode).child("questionHistory").get().addOnSuccessListener { questionSnapshot ->
+                            questionHistoryList.clear()
+                            for (question in questionSnapshot.children) {
+                                val date = question.key ?: "Unknown Date"
+                                val questionText = question.child("question").getValue(String::class.java)
+                                val answers = question.child("answers").children.mapNotNull {
+                                    val nickName = it.key
+                                    val answer = it.getValue(String::class.java)
+                                    if (nickName != null && answer != null) nickName to answer else null
+                                }.toMap()
+                                questionHistoryList.add(QuestionHistory(date, questionText, answers))
+                            }
+                            questionsHistoryAdapter.notifyDataSetChanged()
+                        }.addOnFailureListener() {
+                            Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "가족 코드를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                }
+            })
+        } else {
+            Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
@@ -69,17 +116,12 @@ class QuestionHistoryFragment : BottomSheetDialogFragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            QuestionHistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = QuestionHistoryFragment()
     }
 }
 
 data class QuestionHistory(
+    val date: String,
     val question: String?,
     val answers: Map<String, String>
 )

@@ -94,7 +94,8 @@ data class Family(
 data class Member(
     val userId: String? = null,
     val nickName: String? = null,
-    val profileUrl: String? = "android.resource://com.explorit.dodamdodam/drawable/ic_profile"
+    val profileUrl: String? = "android.resource://com.explorit.dodamdodam/drawable/ic_profile",
+    var hasAnswered: Boolean = false
 )
 
 {

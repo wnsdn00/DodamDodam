@@ -14,11 +14,13 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
 
         inner class MemberViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
+            val answerStatusView: View = itemView.findViewById(R.id.answerStatusView)
             private val profileImageView: CircleImageView = itemView.findViewById(R.id.profileImageView)
 
             fun bind(member: Member) {
                 nameTextView.text = member.nickName
                 member.profileUrl?.let { loadProfileImage(profileImageView, it) }
+
             }
         }
 
@@ -28,7 +30,11 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
     }
 
     override fun onBindViewHolder(holder: MemberViewHolder, position: Int) {
+        val member = memberList[position]
         holder.bind(memberList[position])
+
+        val colorResId = if (member.hasAnswered) R.color.green else R.color.gray
+        holder.answerStatusView.setBackgroundResource(colorResId)
     }
 
     override fun getItemCount(): Int = memberList.size

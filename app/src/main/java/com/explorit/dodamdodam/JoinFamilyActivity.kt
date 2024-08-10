@@ -74,19 +74,42 @@ class JoinFamilyActivity : AppCompatActivity() {
 
     private fun addMemberToFamily(userId: String, familyCode: String?, nickName:String) {
         if(familyCode != null) {
-            val member = Member(userId, nickName)
+            // 가족 그룹 내에서 호칭이 이미 사용 중인지 확인
             val familyRef = database.child("families").child(familyCode).child("members")
-            familyRef.child(userId).setValue(member).addOnCompleteListener() { task ->
-                if(task.isSuccessful) {
-                    database.child("users").child(userId).child("familyCode").setValue(familyCode)
-                    val intent = Intent(this, MainPageActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, "가족 참여에 실패 했습니다.", Toast.LENGTH_SHORT).show()
+            familyRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    var nickNameExists = false
+
+                    // 모든 가족 구성원의 닉네임을 확인
+                    for (memberSnapshot in dataSnapshot.children) {
+                        val member = memberSnapshot.getValue(Member::class.java)
+                        if (member != null && member.nickName == nickName) {
+                            nickNameExists = true
+                            break
+                        }
+                    }
+
+                    if (nickNameExists) {
+                        Toast.makeText(this@JoinFamilyActivity, "이미 사용 중인 호칭입니다. 다른 호칭을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // 중복되지 않으면 멤버를 추가
+                        val member = Member(userId, nickName)
+                        familyRef.child(userId).setValue(member).addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                database.child("users").child(userId).child("familyCode").setValue(familyCode)
+                                val intent = Intent(this@JoinFamilyActivity, MainPageActivity::class.java)
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this@JoinFamilyActivity, "가족 참여에 실패 했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                 }
-            }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(this@JoinFamilyActivity, "참여에 실패했습니다: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
-
     }
-
 }
