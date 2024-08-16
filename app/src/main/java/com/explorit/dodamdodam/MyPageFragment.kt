@@ -14,12 +14,26 @@ import android.widget.TextView
 import android.widget.Toast
 import android.text.method.LinkMovementMethod
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.explorit.dodamdodam.databinding.FragmentMyPageBinding
 
 class MyPageFragment : Fragment(R.layout.fragment_my_page) {
     private var _binding: FragmentMyPageBinding? = null
     private val binding get() = _binding!!
+
+    companion object {
+        private const val ARG_USER_NAME = "user_name"
+        private const val ARG_USER_BIRTHDAY = "user_birthday"
+
+        fun newInstance(userName: String?, userBirthday: String?): MyPageFragment {
+            val fragment = MyPageFragment()
+            val args = Bundle().apply {
+                putString(ARG_USER_NAME, userName)
+                putString(ARG_USER_BIRTHDAY, userBirthday)
+            }
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +45,14 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // arguments에서 user_name과 user_birthday 가져오기
+        val userName = arguments?.getString("user_name") ?: "Unknown"
+        val userBirthday = arguments?.getString("user_birthday") ?: "Unknown"
+
+        // TextView에 user_name과 user_birthday 설정
+        binding.userName.text = userName
+        binding.userBirthday.text = userBirthday
 
         binding.btnStore.setOnClickListener {
             // 상점 버튼 클릭 이벤트 처리
@@ -60,6 +82,7 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
             // startActivity(Intent(activity, AppInfoActivity::class.java))
         }
 
+        // back 버튼 클릭
         binding.buttonPreference.setOnClickListener {
             val intent = Intent(activity, PreferenceActivity::class.java)
             startActivity(intent)

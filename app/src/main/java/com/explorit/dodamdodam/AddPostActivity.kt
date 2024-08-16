@@ -1,11 +1,16 @@
 package com.explorit.dodamdodam
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -15,6 +20,7 @@ import java.util.Date
 
 class AddPostActivity : AppCompatActivity() {
     private val PICK_IMAGE_FROM_ALBUM = 0
+    private val REQUEST_READ_EXTERNAL_STORAGE = 100
     private lateinit var binding: ActivityAddPostBinding
     private lateinit var storage: FirebaseStorage
     private lateinit var firestore: FirebaseFirestore
@@ -31,7 +37,40 @@ class AddPostActivity : AppCompatActivity() {
 
         // Photo Upload 버튼 클릭 이벤트 설정
         binding.addpostBtnUpload.setOnClickListener {
+            // 권한 확인 및 앨범 열기
+            checkPermissionAndOpenAlbum()
+        }
+    }
+
+    // 권한 확인 및 앨범 열기
+    private fun checkPermissionAndOpenAlbum() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // 권한 요청
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+            } else {
+                // 권한이 이미 허용된 경우 앨범 열기
+                openAlbum()
+            }
+        } else {
+            // 권한 확인이 필요하지 않은 경우 (Android 6.0 미만)
             openAlbum()
+        }
+    }
+
+    // 권한 요청 결과 처리
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        // 부모 클래스의 메서드 호출
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 허용된 경우 앨범 열기
+                openAlbum()
+            } else {
+                // 권한이 거부된 경우
+                Toast.makeText(this, "파일 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -48,6 +87,7 @@ class AddPostActivity : AppCompatActivity() {
         if (requestCode == PICK_IMAGE_FROM_ALBUM && resultCode == Activity.RESULT_OK) {
             photoUri = data?.data
             binding.addpostImage.setImageURI(photoUri)
+            contentUpload()
         } else {
             finish()
         }
@@ -74,7 +114,7 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
-    // Firestire에 URL 저장
+    // Firestore에 URL 저장
     private fun saveFileUrlToFirestore(downloadUrl: String) {
         val postData = hashMapOf(
             "imageUrl" to downloadUrl,

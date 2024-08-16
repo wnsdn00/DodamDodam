@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EAF3F8"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
@@ -17,13 +17,12 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="45dp">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="30dp"
-            android:background="#EAF3F8"
-            android:backgroundTint="#EAF3F8"
+            android:backgroundTint="#FFFFFF"
             app:srcCompat="@drawable/ic_back" />
 
         <Button
@@ -37,7 +36,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="15dp"
             android:textColorHint="#000000"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:gravity="left"/>
 
         <Button
             android:id="@+id/buttonLogout"
@@ -50,7 +51,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="15dp"
             android:textColorHint="#000000"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:gravity="left"/>
 
         <Button
             android:id="@+id/buttonUnregister"
@@ -63,7 +66,9 @@
             android:paddingTop="10dp"
             android:paddingBottom="15dp"
             android:textColorHint="#000000"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:gravity="left"/>
 
     </LinearLayout>
 
