@@ -10,6 +10,12 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -22,6 +28,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var kakaoAuthViewModel: KakaoAuthViewModel
+    private lateinit var googleSignInClient: GoogleSignInClient
+
+    private val RC_SIGN_IN = 9001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,21 +39,23 @@ class LoginActivity : AppCompatActivity() {
         // ViewModel 초기화
         kakaoAuthViewModel = ViewModelProvider(this).get(KakaoAuthViewModel::class.java)
 
-        val findIdButton = findViewById<Button>(R.id.findID)
-        findIdButton.setOnClickListener {
-            onFindIdButtonClick(it)
-        }
-
-        val findPwButton = findViewById<Button>(R.id.findPW)
-        findPwButton.setOnClickListener {
-            onFindPwButtonClick(it)
-        }
-
         // Firebase 인증 초기화
         auth = FirebaseAuth.getInstance()
 
         // Firebase 데이터베이스 참조 초기화
         database = FirebaseDatabase.getInstance().reference
+
+        // Id 찾기 버튼
+        val findIdButton = findViewById<Button>(R.id.findID)
+        findIdButton.setOnClickListener {
+            onFindIdButtonClick(it)
+        }
+
+        // 비밀번호 찾기 버튼
+        val findPwButton = findViewById<Button>(R.id.findPW)
+        findPwButton.setOnClickListener {
+            onFindPwButtonClick(it)
+        }
 
         val editTextEmail = findViewById<EditText>(R.id.editTextId)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
@@ -55,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
             val password = editTextPassword.text.toString()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "이메일과 비밀번호를 입력하시오", Toast.LENGTH_SHORT).show()
             } else {
                 // Firebase 인증을 사용한 로그인
                 auth.signInWithEmailAndPassword(email, password)
@@ -80,11 +91,66 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        // Google Sign In 옵션 설정
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        // Google 로그인 버튼 추가
+        val buttonGoogle = findViewById<ImageButton>(R.id.buttonGoogle)
+        buttonGoogle.setOnClickListener {
+            signInWithGoogle()
+        }
+
         // 카카오 로그인 버튼 추가
         val buttonKaKao = findViewById<ImageButton>(R.id.buttonKaKao)
         buttonKaKao.setOnClickListener {
             kakaoAuthViewModel.handleKakaoLogin()
         }
+    }
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account)
+            } catch (e: ApiException) {
+                Log.w("LoginActivity", "Google sign in failed", e)
+                Toast.makeText(this, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
+        Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account?.id)
+
+        val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d("LoginActivity", "signInWithCredential:success")
+                    val user = auth.currentUser
+                    user?.let {
+                        val userId = it.uid
+                        database.child("users").child(userId).child("email").setValue(it.email)
+                        checkUserFamilyCode(userId)
+                    }
+                } else {
+                    Log.w("LoginActivity", "signInWithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun checkUserFamilyCode(userId: String) {

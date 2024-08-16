@@ -60,20 +60,22 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="김준우"
+                android:text=""
                 android:layout_margin="3dp"/>
             <TextView
+                android:id="@+id/user_birthday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2000.07.06"
+                android:text=""
                 android:layout_margin="3dp"/>
             <TextView
                 android:id="@+id/family_card_modify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="준우네 가족 >"
+                android:text="**네 가족 >"
                 android:layout_margin="3dp"/>
             </LinearLayout>
 
@@ -175,30 +177,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
+        <Button
             android:id="@+id/btn_customer_service"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:text="•  고객센터"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/black"
-            android:padding="13dp" />
-        <TextView
+            android:text="    •  고객센터"
+            android:gravity=""
+            android:background="@android:color/transparent" />
+        <Button
             android:id="@+id/btn_app_info"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
-            android:text="•  앱 정보"
-            android:clickable="true"
-            android:focusable="true"
-            android:textColor="@color/black"
-            android:padding="13dp" />
+            android:text="    •  앱 정보"
+            android:gravity=""
+            android:background="@android:color/transparent"/>
         <Button
             android:id="@+id/buttonPreference"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
-            android:text="•  환경설정" />
+            android:text="    •  환경설정"
+            android:gravity=""
+            android:background="@android:color/transparent" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

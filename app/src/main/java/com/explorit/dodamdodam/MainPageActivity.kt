@@ -20,6 +20,11 @@ class MainPageActivity : AppCompatActivity() {
         binding = ActivityMainPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 사용자 정보 가져오기
+        val userName = intent.getStringExtra("user_name") ?: "Unkown"
+        val userBirthday = intent.getStringExtra("user_birthday") ?: "0000.00.00"
+
+        // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
             setFragment(TAG_HOME, HomeFragment())
         }
@@ -29,7 +34,10 @@ class MainPageActivity : AppCompatActivity() {
                 R.id.diaryFragment -> setFragment(TAG_DIARY, DiaryFragment())
                 R.id.questionFragment -> setFragment(TAG_QUESTION, RandomQuestionFragment())
                 R.id.calendarFragment -> setFragment(TAG_CALENDAR, MissionCalendarFragment())
-                R.id.myPageFragment-> setFragment(TAG_MY_PAGE, MyPageFragment())
+                R.id.myPageFragment-> {
+                    val myPageFragment = MyPageFragment.newInstance(userName, userBirthday)
+                    setFragment(TAG_MY_PAGE, myPageFragment)
+                }
             }
             true
         }
@@ -67,7 +75,4 @@ class MainPageActivity : AppCompatActivity() {
         fragTransaction.commitAllowingStateLoss()
 
     }
-
 }
-
-

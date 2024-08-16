@@ -2,7 +2,6 @@ package com.explorit.dodamdodam
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.explorit.dodamdodam.databinding.ActivityPreferenceBinding
 
@@ -30,6 +29,11 @@ class PreferenceActivity : AppCompatActivity() {
             // 회원탈퇴 버튼 클릭 시 CancelAccountActivity로 이동
             val intent = Intent(this, CancelAccountActivity::class.java)
             startActivity(intent)
+        }
+
+        // 뒤로가기 버튼 클릭 시 현재 액티비티를 종료하여 이전 페이지로 이동
+        binding.back.setOnClickListener {
+            finish()
         }
     }
 }

@@ -6,6 +6,8 @@
 
     <!-- 인터넷 사용 권한 설정-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 사용할 권환을 등록하는 설정-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -155,8 +157,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
 
         </activity>
 

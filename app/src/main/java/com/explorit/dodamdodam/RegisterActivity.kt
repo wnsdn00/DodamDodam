@@ -79,4 +79,13 @@ class RegisterActivity : AppCompatActivity() {
         startActivity(intent)
         finish()  // 현재 액티비티를 종료하여 뒤로가기 버튼으로 다시 돌아오지 않도록 한다.
     }
+
+    private fun proceedToMainPage(userName: String, userBirthday: String) {
+        val intent = Intent(this, MainPageActivity::class.java).apply {
+            putExtra("user_name", userName)
+            putExtra("user_birthday", userBirthday)
+        }
+        startActivity(intent)
+        finish()
+    }
 }
