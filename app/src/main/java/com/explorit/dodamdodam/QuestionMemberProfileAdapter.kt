@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 
-class MemberProfileAdapter(private val memberList: List<Member>) :
-    RecyclerView.Adapter<MemberProfileAdapter.MemberViewHolder>() {
+class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
+    RecyclerView.Adapter<QuestionMemberProfileAdapter.MemberViewHolder>() {
 
         inner class MemberViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
@@ -19,7 +19,7 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
 
             fun bind(member: Member) {
                 nameTextView.text = member.nickName
-                member.profileUrl?.let { loadProfileImage(profileImageView, it) }
+                member.profileUrl?.let { loadQuestionProfileImage(profileImageView, it) }
 
             }
         }
@@ -41,7 +41,7 @@ class MemberProfileAdapter(private val memberList: List<Member>) :
 
     }
 
-fun loadProfileImage(imageView: ImageView, url: String) {
+fun loadQuestionProfileImage(imageView: ImageView, url: String) {
     Glide.with(imageView.context)
         .load(url)
         .error(R.drawable.ic_profile)

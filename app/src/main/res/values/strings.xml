@@ -5,6 +5,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="back_button">Back</string>
     <string name="historyquestion_button">HistoryQuestion</string>
+    <string name="nextMonth_button">NextMonth</string>
+    <string name="prevMonth_button">PreviousMonth</string>
     <string name="upload_success">Upload Successful!</string>
     <string name="upload_failed">Upload Failed. Please try again.</string>
     <string name="add_button">Add Post</string>

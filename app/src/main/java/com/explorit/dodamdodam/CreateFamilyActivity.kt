@@ -11,12 +11,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import kotlin.random.Random
+import java.io.Serializable
 
 class CreateFamilyActivity : AppCompatActivity() {
     private lateinit var familyNameEditText : EditText
@@ -96,7 +93,7 @@ data class Member(
     val nickName: String? = null,
     val profileUrl: String? = "android.resource://com.explorit.dodamdodam/drawable/ic_profile",
     var hasAnswered: Boolean = false
-)
+) : Serializable
 
 {
 
