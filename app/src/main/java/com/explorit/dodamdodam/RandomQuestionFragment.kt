@@ -40,8 +40,8 @@ class RandomQuestionFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private lateinit var profileRecyclerView: RecyclerView
-    private lateinit var memberProfileAdapter: MemberProfileAdapter
+    private lateinit var questionProfileRecyclerView: RecyclerView
+    private lateinit var memberProfileAdapter: QuestionMemberProfileAdapter
     private lateinit var database: DatabaseReference
     private var memberList = mutableListOf<Member>()
     private var answerList = mutableListOf<Answer>()
@@ -70,12 +70,12 @@ class RandomQuestionFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_random_question, container, false)
 
-        profileRecyclerView = view.findViewById(R.id.profileRecyclerView)
-        profileRecyclerView.layoutManager =
+        questionProfileRecyclerView = view.findViewById(R.id.questionProfileRecyclerView)
+        questionProfileRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        memberProfileAdapter = MemberProfileAdapter(memberList)
-        profileRecyclerView.adapter = memberProfileAdapter
+        memberProfileAdapter = QuestionMemberProfileAdapter(memberList)
+        questionProfileRecyclerView.adapter = memberProfileAdapter
 
 
         todayQuestionTextView = view.findViewById(R.id.todayQuestionTextView)
