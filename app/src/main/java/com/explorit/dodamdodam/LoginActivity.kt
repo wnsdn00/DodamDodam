@@ -22,11 +22,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
+    private lateinit var firestore: FirebaseFirestore
     private lateinit var kakaoAuthViewModel: KakaoAuthViewModel
     private lateinit var googleSignInClient: GoogleSignInClient
 
@@ -44,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Firebase 데이터베이스 참조 초기화
         database = FirebaseDatabase.getInstance().reference
+        firestore = FirebaseFirestore.getInstance()
 
         // Id 찾기 버튼
         val findIdButton = findViewById<Button>(R.id.findID)
@@ -62,32 +65,13 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
 
         buttonLogin.setOnClickListener {
-            val email = editTextEmail.text.toString()
-            val password = editTextPassword.text.toString()
+            val username = editTextEmail.text.toString() // 아이디 입력 필드
+            val password = editTextPassword.text.toString() // 비밀번호 입력 필드
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "이메일과 비밀번호를 입력하시오", Toast.LENGTH_SHORT).show()
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "아이디와 비밀번호를 입력하시오", Toast.LENGTH_SHORT).show()
             } else {
-                // Firebase 인증을 사용한 로그인
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            // 로그인 성공
-                            Log.d("LoginActivity", "signInWithEmail:success")
-                            val user = auth.currentUser
-                            // 데이터베이스에 사용자 정보 저장
-                            user?.let {
-                                val userId = it.uid
-                                database.child("users").child(userId).child("email").setValue(email)
-                                checkUserFamilyCode(userId)
-                            }
-                        } else {
-                            // 로그인 실패
-                            Log.w("LoginActivity", "signInWithEmail:failure", task.exception)
-                            Toast.makeText(baseContext, "로그인 실패",
-                                Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                loginWithUsername(username, password)
             }
         }
 
@@ -142,9 +126,9 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "signInWithCredential:success")
                     val user = auth.currentUser
                     user?.let {
-                        val userId = it.uid
-                        database.child("users").child(userId).child("email").setValue(it.email)
-                        checkUserFamilyCode(userId)
+                        val username = it.uid
+                        database.child("users").child(username).child("email").setValue(it.email)
+                        checkUserFamilyCode(username)
                     }
                 } else {
                     Log.w("LoginActivity", "signInWithCredential:failure", task.exception)
@@ -153,9 +137,45 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun checkUserFamilyCode(userId: String) {
+    private fun loginWithUsername(username: String, password: String) {
+        firestore.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // 이메일을 가져와서 로그인 시도
+                    var email = documents.first().getString("email") ?: ""
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                // 로그인 성공
+                                Log.d("LoginActivity", "signInWithEmail:success")
+                                val user = auth.currentUser
+                                user?.let {
+                                    val username = it.uid
+                                    database.child("users").child(username).child("email").setValue(email)
+                                    checkUserFamilyCode(username)
+                                }
+                            } else {
+                                // 로그인 실패
+                                Log.w("LoginActivity", "signInWithEmail:failure", task.exception)
+                                Toast.makeText(baseContext, "아이디 또는 비밀번호가 잘못되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                } else {
+                    // 아이디가 존재하지 않음
+                    Toast.makeText(this, "존재하지 않는 아이디입니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("LoginActivity", "Error getting user email", e)
+                Toast.makeText(this, "오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun checkUserFamilyCode(username: String) {
         //Firebase에서 familyCode가 있는지 확인
-        database.child("users").child(userId).child("familyCode").addListenerForSingleValueEvent(object : ValueEventListener {
+        database.child("users").child(username).child("familyCode").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.exists() && snapshot.getValue(String::class.java) != null) {
                     onLoginButtonClickToMainPage()
@@ -187,6 +207,7 @@ class LoginActivity : AppCompatActivity() {
 
     // 아이디 찾기 버튼 클릭 시 호출될 메서드
     fun onFindIdButtonClick(view: View) {
+        Log.d("LoginActivity", "Find ID button clicked")
         val intent = Intent(this, FindIdActivity::class.java)
         startActivity(intent)
     }
