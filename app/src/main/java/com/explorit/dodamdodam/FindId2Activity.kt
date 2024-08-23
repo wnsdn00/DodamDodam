@@ -2,6 +2,7 @@ package com.explorit.dodamdodam
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.view.View
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,13 @@ class FindId2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.find_id2)
+
+        // 전달된 아이디 받기
+        val userId = intent.getStringExtra("USER_ID")
+
+        // TextView에 아이디 표시
+        val userIdTextView = findViewById<TextView>(R.id.yourId)
+        userIdTextView.text = userId ?: "아이디를 찾을 수 없습니다."
 
         val backButton = findViewById<ImageButton>(R.id.back)
         backButton.setOnClickListener {
