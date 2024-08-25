@@ -13,6 +13,8 @@ import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 import kotlin.random.Random
 
@@ -22,6 +24,7 @@ class FindIdActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
     private lateinit var codeInputEditText: EditText
     private lateinit var verificationCodeButton: Button
+    private lateinit var functions: FirebaseFunctions
 
     private val firestore = Firebase.firestore
 
@@ -31,6 +34,7 @@ class FindIdActivity : AppCompatActivity() {
 
         // FirebaseAuth 인스턴스 초기화
         auth = Firebase.auth
+        functions = Firebase.functions
 
         // 이메일 입력 필드
         emailEditText = findViewById(R.id.registerEmail)
@@ -165,26 +169,20 @@ class FindIdActivity : AppCompatActivity() {
 
     // 이메일로 인증 코드를 보내는 메서드
     private fun sendVerificationCodeEmail(email: String, code: String) {
-        val auth = FirebaseAuth.getInstance()
+        val data = hashMapOf(
+            "email" to email,
+            "code" to code
+        )
 
-        // 사용자에게 이메일 확인 링크를 보내는 메서드
-        val actionCodeSettings = ActionCodeSettings.newBuilder()
-            .setUrl("https://dodamdodam.page.link/explorit")
-            .setHandleCodeInApp(true) // 앱 내에서 코드 처리
-            .setAndroidPackageName(
-                "com.explorit.dodamdodam",
-                true,  /* installIfNotAvailable */
-                "12"   /* minimumVersion */
-            )
-            .build()
-
-        auth.sendSignInLinkToEmail(email, actionCodeSettings)
+        functions.getHttpsCallable("sendVerificationCodeEmail")
+            .call(data)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // 이메일 링크가 성공적으로 전송되었음을 사용자에게 알림
+                    // 함수 호출 성공
                     Log.d("FindIdActivity", "인증 코드가 이메일로 전송되었습니다.")
                     Toast.makeText(this, "인증 코드가 이메일로 전송되었습니다.", Toast.LENGTH_SHORT).show()
                 } else {
+                    // 함수 호출 실패
                     Log.e("FindIdActivity", "Error sending email", task.exception)
                     Toast.makeText(this, "이메일 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }

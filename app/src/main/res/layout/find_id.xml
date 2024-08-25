@@ -56,6 +56,8 @@
             android:background="@drawable/login_border"
             android:gravity="center"
             android:hint="가입한 이메일"
+            android:textColor="@color/black"
+            android:textColorHint="#696969"
             android:inputType="textEmailAddress"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
@@ -70,6 +72,7 @@
             android:background="@drawable/login_border"
             android:backgroundTint="#63C0F4"
             android:hint="인증코드 보내기"
+            android:textColor="@color/black"
             android:inputType="textPassword"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
@@ -83,6 +86,8 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/login_border"
             android:hint="인증코드"
+            android:textColor="@color/black"
+            android:textColorHint="#696969"
             android:inputType="textPassword"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
@@ -97,6 +102,7 @@
             android:background="@drawable/login_border"
             android:backgroundTint="#63C0F4"
             android:text="아이디 확인"
+            android:textColor="@color/black"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -120,6 +126,7 @@
                 android:paddingRight="4dp"
                 android:background="@android:color/transparent"
                 android:text="비밀번호 찾기"
+                android:textColor="@color/black"
                 android:textSize="10dp"
                 android:onClick="onFindPwButtonClick" />
 
@@ -139,6 +146,7 @@
                 android:background="@android:color/transparent"
                 android:text="로그인"
                 android:textSize="10dp"
+                android:textColor="@color/black"
                 android:onClick="onBackButtonClick"/>
 
             <TextView
@@ -146,7 +154,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
-                android:text="|"/>
+                android:text="|"
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/join"
@@ -160,6 +169,7 @@
                 android:paddingLeft="4dp"
                 android:text="회원가입"
                 android:textSize="10dp"
+                android:textColor="@color/black"
                 android:onClick="onRegisterButtonClick"/>
         </LinearLayout>
 

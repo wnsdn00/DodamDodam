@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">DodamDodam</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="DodamDodam">Dodam Dodam</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="back_button">Back</string>
     <string name="historyquestion_button">HistoryQuestion</string>
     <string name="nextMonth_button">NextMonth</string>
@@ -13,4 +12,5 @@
     <string name="search_button">Search</string>
     <string name="gallery_button">Gallery</string>
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+    <string name="kakao_app_key">1eab06d74f71b2a4f53d54f7c9423784</string>
 </resources>
