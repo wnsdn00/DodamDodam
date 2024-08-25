@@ -8,21 +8,27 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kakao.sdk.user.UserApiClient
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var kakaoAuthViewModel: KakaoAuthViewModel
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
 
     private val RC_SIGN_IN = 9001
 
@@ -89,32 +96,87 @@ class LoginActivity : AppCompatActivity() {
             signInWithGoogle()
         }
 
+        // ActivityResultLauncher 설정
+        googleSignInLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    firebaseAuthWithGoogle(account)
+                } catch (e: ApiException) {
+                    Log.w("LoginActivity", "Google sign in failed", e)
+                    Toast.makeText(this, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         // 카카오 로그인 버튼 추가
         val buttonKaKao = findViewById<ImageButton>(R.id.buttonKaKao)
         buttonKaKao.setOnClickListener {
-            kakaoAuthViewModel.handleKakaoLogin()
+            signInWithKakao()
         }
+    }
+    
+    private fun signInWithKakao() {
+        UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
+            if (error != null) {
+                Log.e("LoginActivity", "카카오 로그인 실패", error)
+                Toast.makeText(this, "카카오 로그인 실패", Toast.LENGTH_SHORT).show()
+            } else if (token != null) {
+                Log.i("LoginActivity", "카카오 로그인 성공: ${token.accessToken}")
+                fetchFirebaseCustomToken(token.accessToken)
+            }
+        }
+    }
+
+    private fun fetchFirebaseCustomToken(kakaoAccessToken: String) {
+        // 예시: 서버에 요청하여 Firebase Custom Token을 받는 과정
+        val url = "YOUR_SERVER_URL_TO_GET_FIREBASE_CUSTOM_TOKEN"
+        val request = object : StringRequest(Method.POST, url,
+            Response.Listener { response ->
+                val firebaseCustomToken = response // 서버로부터 받은 Firebase Custom Token
+                firebaseAuthWithCustomToken(firebaseCustomToken)
+            },
+            Response.ErrorListener { error ->
+                Log.e("LoginActivity", "서버로부터 Firebase Custom Token을 받는 데 실패했습니다.", error)
+            }) {
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["kakaoAccessToken"] = kakaoAccessToken
+                return params
+            }
+        }
+
+        // RequestQueue에 추가
+        Volley.newRequestQueue(this).add(request)
+    }
+
+    private fun firebaseAuthWithCustomToken(customToken: String) {
+        auth.signInWithCustomToken(customToken)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d("LoginActivity", "Firebase Custom Token으로 로그인 성공")
+                    val user = auth.currentUser
+                    user?.let {
+                        val username = it.uid
+                        database.child("users").child(username).child("email").setValue(it.email)
+                        checkUserFamilyCode(username)
+                    }
+                } else {
+                    Log.w("LoginActivity", "Firebase Custom Token으로 로그인 실패", task.exception)
+                    Toast.makeText(this, "Firebase 로그인 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun signInWithGoogle() {
         val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        googleSignInLauncher.launch(signInIntent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                firebaseAuthWithGoogle(account)
-            } catch (e: ApiException) {
-                Log.w("LoginActivity", "Google sign in failed", e)
-                Toast.makeText(this, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
         Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account?.id)

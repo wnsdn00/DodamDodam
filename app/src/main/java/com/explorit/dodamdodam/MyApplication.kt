@@ -8,6 +8,6 @@ class MyApplication : Application() {
         super.onCreate()
 
         // Kakao SDK 초기화
-        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+        KakaoSdk.init(this, getString(R.string.kakao_app_key))
     }
 }
