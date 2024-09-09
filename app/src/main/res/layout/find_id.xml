@@ -31,7 +31,6 @@
         app:layout_constraintTop_toBottomOf="@id/back"
         app:layout_constraintBottom_toBottomOf="parent">
 
-
     <LinearLayout
         android:id="@+id/linearLayoutCenter"
         android:layout_width="wrap_content"
@@ -119,8 +118,8 @@
                 android:id="@+id/findPw"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
                 android:paddingRight="4dp"
@@ -139,8 +138,8 @@
                 android:id="@+id/LoginButton"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
                 android:layout_marginBottom="20dp"
                 android:padding="4dp"
                 android:background="@android:color/transparent"
@@ -161,8 +160,8 @@
                 android:id="@+id/join"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
                 android:background="@android:color/transparent"
                 android:paddingTop="4dp"
                 android:paddingBottom="4dp"
@@ -176,6 +175,5 @@
     </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
