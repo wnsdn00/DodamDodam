@@ -4,83 +4,123 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#EAF3F8"
     tools:context=".RandomQuestionFragment">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            tools:ignore="MissingConstraints">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/questionProfileRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal"
-                    android:background="#FEFEFE"
-                    tools:ignore="MissingConstraints">
-                </androidx.recyclerview.widget.RecyclerView>
-
-                <TextView
-                    android:id="@+id/todayQuestionTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:text="Loading question..."
-                    android:layout_margin="16dp"
-                    tools:ignore="MissingConstraints" />
-                <EditText
-                    android:id="@+id/answerEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="답변을 입력하세요"
-                    android:layout_margin="16dp"
-                    tools:ignore="MissingConstraints"/>
-                <Button
-                    android:id="@+id/submitAnswerButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="제출"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"/>
                 <ImageButton
-                    android:id="@+id/viewQuestionHistoryButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="30dp"
-                    app:srcCompat="@drawable/ic_historyquestionarrow"
-                    android:contentDescription="@string/historyquestion_button"/>
+                    android:id="@+id/randomQuestionBackBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="start"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/historyquestion_button"
+                    app:srcCompat="@drawable/ic_back" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/answersRecyclerView"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:background="#FEFEFE"
-                    tools:ignore="MissingConstraints">
-                </androidx.recyclerview.widget.RecyclerView>
-
-
-                <LinearLayout
-                    android:id="@+id/historyQuestionsLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:orientation="vertical"
-                    android:background="#FFFFFF"
-                    android:elevation="8dp"
-                    android:translationY="400dp"
-                    android:layout_alignParentBottom="true">
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp">
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/historyQuestionsRecyclerView"
+                            android:id="@+id/questionProfileRecyclerView"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:orientation="horizontal"
+                            tools:ignore="MissingConstraints">
                         </androidx.recyclerview.widget.RecyclerView>
-                </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/todayQuestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:text="오늘의 질문"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:layout_marginBottom="10dp"
+                            tools:ignore="MissingConstraints" />
+                        <TextView
+                            android:id="@+id/todayQuestionTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="18dp"
+                            android:text="Loading question..."
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:background="@drawable/random_question_border"
+                            tools:ignore="MissingConstraints" />
+                        <EditText
+                            android:id="@+id/answerEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="답변을 입력하세요"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginLeft="16dp"
+                            tools:ignore="MissingConstraints"/>
+                        <Button
+                            android:id="@+id/submitAnswerButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="제출"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/family_button"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/answersRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:orientation="vertical"
+                            android:background="@drawable/random_question_border"
+                            tools:ignore="MissingConstraints">
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <ImageButton
+                            android:id="@+id/viewQuestionHistoryButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:contentDescription="@string/historyquestion_button"
+                            app:srcCompat="@drawable/ic_historyquestionarrow" />
+
+                        <LinearLayout
+                            android:id="@+id/historyQuestionsLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            android:orientation="vertical"
+                            android:background="#FFFFFF"
+                            android:elevation="8dp"
+                            android:translationY="400dp"
+                            android:layout_alignParentBottom="true">
+
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/historyQuestionsRecyclerView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+                                </androidx.recyclerview.widget.RecyclerView>
+
+                        </LinearLayout>
+
+                 </LinearLayout>
 
         </LinearLayout>
+
 
 
 
