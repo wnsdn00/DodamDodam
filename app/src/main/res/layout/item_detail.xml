@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <!-- 바인딩할 데이터 선언 가능 -->
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 프로필 이미지 -->
+        <ImageView
+            android:id="@+id/detailviewitemProfileImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/profile_image" />
+
+        <!-- 프로필 이름 -->
+        <TextView
+            android:id="@+id/detailviewitemProfileTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_id" />
+
+        <!-- 게시물 이미지 -->
+        <ImageView
+            android:id="@+id/detailviewitemImageviewContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/content_image" />
+
+        <!-- 게시물 설명 -->
+        <TextView
+            android:id="@+id/detailviewitemExplainTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/explanation" />
+
+        <!-- 좋아요 버튼 -->
+        <ImageView
+            android:id="@+id/detailviewitemFavoriteImageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/favorite" />
+
+        <!-- 좋아요 수 -->
+        <TextView
+            android:id="@+id/detailviewitemFavoritecounterTextview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_counter" />
+
+        <!-- 댓글 버튼 -->
+        <ImageView
+            android:id="@+id/detailviewitemCommentImageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/comment" />
+    </LinearLayout>
+</layout>

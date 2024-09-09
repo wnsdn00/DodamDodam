@@ -47,15 +47,24 @@
             android:hint="Image description"
             android:layout_width="match_parent"
             android:layout_height="100dp" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/addpost_btn_upload"
-        android:text="Photo Upload"
-        android:layout_toRightOf="@+id/addpost_image"
-        android:layout_below="@+id/edittext"
-        android:theme="@style/ButtonStyle"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addpost_image"
+        android:layout_margin="5dp"
+        android:text="미디어 선택"/>
+
+    <Button
+        android:id="@+id/uploadBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/addpost_btn_upload"
+        android:layout_below="@id/addpost_image"
+        android:layout_margin="5dp"
+        android:text="게시글 업로드" />
 
 </RelativeLayout>

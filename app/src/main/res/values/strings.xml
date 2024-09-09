@@ -13,4 +13,10 @@
     <string name="gallery_button">Gallery</string>
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
     <string name="kakao_app_key">1eab06d74f71b2a4f53d54f7c9423784</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="user_id">User ID</string>
+    <string name="content_image">Content Image</string>
+    <string name="explanation">Explanation</string>
+    <string name="favorite_counter">Favorite Counter</string>
+    <string name="comment">Comment</string>
 </resources>
