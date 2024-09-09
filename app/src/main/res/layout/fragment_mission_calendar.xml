@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EAF3F8"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".RandomQuestionFragment">
 
@@ -10,14 +11,23 @@
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/missionCalendarBackBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/historyquestion_button"
+                app:srcCompat="@drawable/ic_back" />
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center"
+                android:padding="10dp">
+
                 <ImageButton
                     android:id="@+id/buttonPrevious"
                     android:layout_width="wrap_content"
@@ -25,6 +35,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="16dp"
                     app:srcCompat="@drawable/btn_prev"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/nextMonth_button"
                     android:text="Previous" />
                 <TextView
@@ -32,9 +43,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
                     android:text="2024년 8월"
-                    android:textSize="20sp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:textSize="20dp"
                     tools:ignore="MissingConstraints" />
                 <ImageButton
                     android:id="@+id/buttonNext"
@@ -43,6 +55,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="16dp"
                     app:srcCompat="@drawable/btn_next"
+                    android:background="@android:color/transparent"
                     android:contentDescription="@string/nextMonth_button"
                     android:text="Next" />
             </LinearLayout>
@@ -53,9 +66,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textViewMonthYear"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/calendar_border"
                 tools:ignore="MissingConstraints" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -64,18 +76,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
-                android:background="#FEFEFE"
-                tools:ignore="MissingConstraints">
+                tools:ignore="MissingConstraints"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
 
             </androidx.recyclerview.widget.RecyclerView>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="17dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:background="@drawable/mission_button_border"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
 
                 <Button
                     android:id="@+id/missionRegistrationButton"
@@ -83,7 +98,11 @@
                     android:layout_height="150dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="미션 등록"/>
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@drawable/family_button"
+                    android:text="미션\n등록"/>
 
                 <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
                 <View
@@ -102,7 +121,11 @@
                     android:layout_height="150dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="미션 확인"/>
+                    android:textSize="30dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@drawable/family_button"
+                    android:text="미션\n확인"/>
             </LinearLayout>
     </LinearLayout>
 

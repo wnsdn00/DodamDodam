@@ -1,11 +1,24 @@
 package com.explorit.dodamdodam
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import de.hdodenhof.circleimageview.CircleImageView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +45,7 @@ class MissionCheckFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -41,6 +55,11 @@ class MissionCheckFragment : Fragment() {
 
         selectedMember = arguments?.getSerializable("selectedMember", Member::class.java)!!
 
+        val profileImageView: CircleImageView = view.findViewById(R.id.checkMemberProfileImageView)
+        val nameTextView: TextView = view.findViewById(R.id.checkMemberNameTextView)
+
+        nameTextView.text = selectedMember.nickName
+        selectedMember.profileUrl?.let { loadMissionCheckProfileImage(profileImageView, it) }
         loadMission()
 
         val buttonMissionCheck = view.findViewById<Button>(R.id.buttonMissionCheck)
@@ -51,8 +70,88 @@ class MissionCheckFragment : Fragment() {
     }
 
     private fun loadMission() {
-        // 미션 데이터를 불러오는 로직 구현
-        // Firebase 또는 SharedPreferences에서 데이터 불러오기
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        val database = FirebaseDatabase.getInstance().reference
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        val selectedMemberUid = selectedMember.userId
+                        if (familyCode != null && selectedMemberUid != null) {
+                            database.child("families").child(familyCode).child("missions").child(currentUserUid).orderByChild("registeredById").equalTo(selectedMemberUid)
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if(snapshot.exists()){
+                                            for (missionSnapshot in snapshot.children) {
+                                                try {
+                                                    Log.d("MissionCheckFragment", "Mission Snapshot: ${missionSnapshot.value}")
+                                                        val mission = missionSnapshot.getValue(Mission::class.java)
+                                                        if (mission != null) {
+                                                            displayMission(mission)
+                                                        } else {
+                                                            Toast.makeText(context, "미션을 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                                        }
+
+                                                } catch (e: Exception) {
+                                                    Log.e(
+                                                        "MissionCheckFragment",
+                                                        "Mission object conversion error: ${e.message}"
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            Toast.makeText(context, "사용자에게 등록된 미션이 없습니다.", Toast.LENGTH_SHORT).show()
+                                        }
+
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                                }
+                            })
+                        } else {
+                            Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                    }
+                })
+        } else {
+            Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+            Log.e("RandomQuestionFragment", "Current user UID is null")
+        }
+
+
+    }
+
+    private fun displayMission(mission: Mission) {
+        val missionContentTextView = view?.findViewById<TextView>(R.id.missionContentTextView)
+        val missionTimeTextView = view?.findViewById<TextView>(R.id.missionTimeTextView)
+        val missionDaysTextView = view?.findViewById<TextView>(R.id.missionDaysTextView)
+        val missionCompleteButton = view?.findViewById<Button>(R.id.missionCompleteCheckButton)
+
+        missionContentTextView?.text = mission.content
+        missionTimeTextView?.text = mission.time
+        missionDaysTextView?.text = mission.days.joinToString(", ")
+
+        if (mission.complete) {
+            missionCompleteButton?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+            missionCompleteButton?.text = "완료됨"
+        } else {
+            missionCompleteButton?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+            missionCompleteButton?.text = "미완료"
+        }
+    }
+
+    private fun loadMissionCheckProfileImage(imageView: ImageView, url: String) {
+        Glide.with(imageView.context)
+            .load(url)
+            .error(R.drawable.ic_profile)
+            .into(imageView)
     }
 
     companion object {

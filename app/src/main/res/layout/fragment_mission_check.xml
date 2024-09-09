@@ -12,21 +12,54 @@
         android:orientation="vertical">
 
         <!-- 가족 구성원 정보 표시 -->
-        <ImageView
-            android:id="@+id/imageViewMemberProfile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"/>
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/checkMemberProfileImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_profile"
+            app:civ_border_color="@color/black"
+            app:civ_border_width="2dp"
+            tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/textViewMemberName"
+            android:id="@+id/checkMemberNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
 
-        <!-- 미션 정보 표시 -->
+        <Button
+            android:id="@+id/missionCompleteCheckButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="완료"
+            android:background="@color/gray"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"
+            />
+
+
+        <!-- 미션 요일 표시 -->
         <TextView
-            android:id="@+id/textViewMissionContent"
+            android:id="@+id/missionDaysTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="미션 요일"
+            android:layout_marginTop="8dp" />
+        <!-- 미션 시간 표시 -->
+        <TextView
+            android:id="@+id/missionTimeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="미션 시간"
+            android:layout_marginTop="8dp" />
+
+        <!-- 미션 내용 표시 -->
+        <TextView
+            android:id="@+id/missionContentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="아직 미션이 등록되지 않았습니다."/>

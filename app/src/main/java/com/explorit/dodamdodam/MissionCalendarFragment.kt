@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +24,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.MutableData
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.core.Transaction
 import com.google.gson.Gson
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -54,8 +62,11 @@ class MissionCalendarFragment : Fragment() {
     private var memberList = mutableListOf<Member>()
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var backToMainButton: ImageButton
     private lateinit var missionRegistrationButton : Button
     private lateinit var missionCheckButton : Button
+    private lateinit var selectedMember : Member
+    private var missionCompletedDates = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +74,10 @@ class MissionCalendarFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainPageActivity)?.updateFamilyCoins()
     }
 
     @SuppressLint("MissingInflatedId")
@@ -75,27 +90,30 @@ class MissionCalendarFragment : Fragment() {
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView)
         monthYearText = view.findViewById(R.id.textViewMonthYear)
 
+        backToMainButton = view.findViewById(R.id.missionCalendarBackBtn)
         nextMonthButton = view.findViewById(R.id.buttonPrevious)
         prevMonthButton = view.findViewById(R.id.buttonNext)
 
         selectedDate = LocalDate.now()
-        setMonthView()
 
         missionProfileRecyclerView = view.findViewById(R.id.missionProfileRecyclerView)
         missionProfileRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        missionProfileAdapter = MissionMemberProfileAdapter(memberList)
+        missionProfileAdapter = MissionMemberProfileAdapter(memberList) { member ->
+            selectedMember = member
+        }
         missionProfileRecyclerView.adapter = missionProfileAdapter
 
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
 
+
         missionRegistrationButton = view.findViewById(R.id.missionRegistrationButton)
         missionCheckButton = view.findViewById(R.id.missionCheckButton)
 
         fetchUserFamilyCode()
-        val selectedMember = memberList.firstOrNull()
+
 
         nextMonthButton.setOnClickListener{
             selectedDate = selectedDate.minusMonths(1)
@@ -108,36 +126,103 @@ class MissionCalendarFragment : Fragment() {
         }
 
         missionRegistrationButton.setOnClickListener{
-            selectedMember?.let { member ->
-                openMissionRegistrationFragment(member)
+            if (::selectedMember.isInitialized) {
+                openMissionRegistrationFragment(selectedMember)
+            } else {
+                Toast.makeText(context, "멤버를 선택하지 않았습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
         missionCheckButton.setOnClickListener{
-            selectedMember?.let { member ->
-                openMissionCheckFragment(member)
+            if (::selectedMember.isInitialized) {
+                openMissionCheckFragment(selectedMember)
+            } else {
+                Toast.makeText(context, "멤버를 선택하지 않았습니다.", Toast.LENGTH_SHORT).show()
             }
         }
 
+        backToMainButton.setOnClickListener {
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+        }
 
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+        }
 
         return view
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Fragment가 완전히 생성된 후에 UI 관련 작업 수행
+        setMonthView()
+        resetMissionCompletion()
+        checkTodayMissionsComplete()
+    }
+
 
     private fun setMonthView() {
         monthYearText.text = CalendarUtils.monthYearFromDate(selectedDate)
         val daysInMonth = CalendarUtils.daysInMonthArray(selectedDate)
 
-        val calendarAdapter = CalendarAdapter(daysInMonth) { position ->
+        val database = FirebaseDatabase.getInstance().reference
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        if (familyCode != null) {
+                            database.child("families").child(familyCode).child("missions").child(currentUserUid).child("completedDates").addListenerForSingleValueEvent(object: ValueEventListener{
+                                override fun onDataChange(datesSnapshot: DataSnapshot) {
+                                    if (datesSnapshot.exists()) {
+                                        missionCompletedDates.clear()
+                                        for (dateSnapshot in datesSnapshot.children) {
+                                            val date = dateSnapshot.getValue(String::class.java)
+                                            if (date != null) {
+                                                missionCompletedDates.add(date)
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                                }
+
+                            })
+                        } else {
+                            Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                    }
+                })
+        } else {
+            Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+            Log.e("RandomQuestionFragment", "Current user UID is null")
+        }
+        val calendarAdapter = CalendarAdapter(daysInMonth,selectedDate, { position ->
             val day = daysInMonth[position]
             if (day.isNotEmpty()) {
-                val selectedDay = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
+                val selectedDay =
+                    LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
                 showMemoDialog(selectedDay)
             }
-        }
+        }, missionCompletedDates)
+
+
         val layoutManager = GridLayoutManager(requireContext(), 7)
         calendarRecyclerView.layoutManager = layoutManager
         calendarRecyclerView.adapter = calendarAdapter
+
     }
 
 
@@ -239,7 +324,14 @@ class MissionCalendarFragment : Fragment() {
                         }
                     }
                     missionProfileAdapter.notifyDataSetChanged()
+
+                    if (memberList.isNotEmpty()) {
+                        selectedMember = memberList.firstOrNull()!!
+                    } else {
+                        Toast.makeText(context, "멤버가 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
                 }
+
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
@@ -273,6 +365,190 @@ class MissionCalendarFragment : Fragment() {
             .commit()
     }
 
+    private fun checkTodayMissionsComplete() {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        val database = FirebaseDatabase.getInstance().reference
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                    if (familyCode != null) {
+                        database.child("families").child(familyCode).child("missions").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(missionsSnapshot: DataSnapshot) {
+                                val missions = mutableListOf<Mission>()
+                                if (missionsSnapshot.exists()) {
+                                    for (missionSnapshot in missionsSnapshot.children) {
+                                        val value = missionSnapshot.getValue(Any::class.java)
+                                        if (value is Mission) {
+                                            val mission = missionSnapshot.getValue(Mission::class.java)
+                                            if (mission != null) {
+                                                missions.add(mission)
+                                            }
+                                        }
+                                    }
+
+                                    val today = LocalDate.now()
+                                    val todayMissions = missions.filter { mission ->
+                                        mission.days.contains(
+                                            today.dayOfWeek.getDisplayName(
+                                                TextStyle.SHORT,
+                                                Locale.KOREAN
+                                            )
+                                        )
+                                    }
+                                    val missionCompleted = todayMissions.all { it.complete }
+
+                                    val completedDatesRef = database.child("families")
+                                        .child(familyCode)
+                                        .child("missions")
+                                        .child(currentUserUid)
+                                        .child("completedDates")
+
+                                    val todayMissionCompletedRef = database.child("families")
+                                        .child(familyCode)
+                                        .child("missions")
+                                        .child(currentUserUid)
+                                        .child("todayMissionCompleted")
+
+                                    completedDatesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            val completedDates = snapshot.getValue(object : GenericTypeIndicator<MutableList<String>>() {}) ?: mutableListOf()
+                                            val todayString = today.toString()
+
+                                            setMonthView()
+
+                                            if (missionCompleted) {
+                                                if (!completedDates.contains(todayString)) {
+                                                    completedDates.add(todayString)
+                                                    completedDatesRef.setValue(completedDates).addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            Log.d("MissionUpdate", "Mission completed date added successfully.")
+                                                        } else {
+                                                            Log.e("MissionUpdate", "Failed to update completed dates.")
+                                                        }
+                                                        setMonthView()  // UI 업데이트 호출
+                                                    }
+                                                    todayMissionCompletedRef.addListenerForSingleValueEvent(object: ValueEventListener{
+                                                        override fun onDataChange(completedSnapshot: DataSnapshot) {
+                                                            val todayMissionCompleted = completedSnapshot.getValue(Boolean::class.java)
+                                                            if (todayMissionCompleted != true){
+                                                                todayMissionCompletedRef.setValue(true)
+                                                                rewardCoinsToFamily(familyCode, 10)
+                                                            } else {
+                                                                Toast.makeText(context, "오늘의 미션 코인을 이미 획득하셨습니다.", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                        }
+
+                                                        override fun onCancelled(error: DatabaseError) {
+                                                            TODO("Not yet implemented")
+                                                        }
+                                                    })
+                                                }
+                                            } else {
+                                                if (completedDates.contains(todayString)) {
+                                                    completedDates.remove(todayString)
+                                                    completedDatesRef.setValue(completedDates).addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            Log.d("MissionUpdate", "Today's completed date removed successfully.")
+                                                        } else {
+                                                            Log.e("MissionUpdate", "Failed to remove today's completed date.")
+                                                        }
+                                                        setMonthView()  // UI 업데이트 호출
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            Log.e("MissionUpdate", "Failed to read completed dates: ${error.message}")
+                                        }
+                                    })
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                Log.e("MissionCalendarFragment", "Database error: ${error.message}")
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("MissionCalendarFragment", "Database error: ${error.message}")
+                }
+            })
+        }
+    }
+
+    private fun rewardCoinsToFamily(familyCode: String, coins: Int) {
+        // 현재 코인 값을 가져와서 증가시킨 후 저장
+        database.child("families").child(familyCode).child("familyCoin")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val currentCoins = snapshot.getValue(Int::class.java) ?: 0
+                    database.child("families").child(familyCode).child("familyCoin")
+                        .setValue(currentCoins + coins)
+                    Toast.makeText(context, "코인이 지급되었습니다!", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "코인 지급에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                }
+            })
+    }
+
+    private fun resetMissionCompletion() {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        val today = LocalDate.now()
+
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                    if (familyCode != null) {
+                        database.child("families").child(familyCode).child("missions").child(currentUserUid)
+                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(missionsSnapshot: DataSnapshot) {
+                                    if (missionsSnapshot.exists()) {
+                                        for (missionSnapshot in missionsSnapshot.children) {
+                                            val value = missionSnapshot.getValue(Any::class.java)
+                                            if (value is Mission) {
+                                                val mission = missionSnapshot.getValue(Mission::class.java)
+                                                mission?.let {
+                                                    // 만약 미션이 완료되었고, 오늘이 해당 미션이 속한 주기의 다음 날이라면
+                                                    if (it.complete && it.timestamp != null&& today.isAfter(LocalDate.parse(it.timestamp))) {
+                                                        missionSnapshot.ref.child("complete").setValue(false)
+                                                        missionsSnapshot.ref.child("todayMissionCompleted").setValue(false)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.e("MissionCalendarFragment", "Database error: ${error.message}")
+                                }
+                            })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("MissionCalendarFragment", "Database error: ${error.message}")
+                }
+            })
+        }
+    }
+
+    /*
+        private fun markDateAsComplete(today: LocalDate){
+            missionCompletedDates.add(today)
+            setMonthView()
+        }
+    */
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -297,4 +573,7 @@ class MissionCalendarFragment : Fragment() {
 data class Memo(
     var content: String,
     val date: LocalDate
+)
+data class CompletedDatesList(
+    var completedDates: MutableList<String> = mutableListOf()
 )

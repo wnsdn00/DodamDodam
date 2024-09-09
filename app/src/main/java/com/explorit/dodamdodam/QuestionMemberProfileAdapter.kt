@@ -14,7 +14,7 @@ class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
 
         inner class MemberViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-            val answerStatusView: View = itemView.findViewById(R.id.answerStatusView)
+            val answerStatusView: ImageView = itemView.findViewById(R.id.answerStatusView)
             private val profileImageView: CircleImageView = itemView.findViewById(R.id.profileImageView)
 
             fun bind(member: Member) {
@@ -25,7 +25,7 @@ class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_member, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_question_member, parent, false)
         return MemberViewHolder(view)
     }
 
@@ -33,7 +33,7 @@ class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
         val member = memberList[position]
         holder.bind(memberList[position])
 
-        val colorResId = if (member.hasAnswered) R.color.green else R.color.gray
+        val colorResId = if (member.hasAnswered) R.drawable.circle_green else R.drawable.circle_gray
         holder.answerStatusView.setBackgroundResource(colorResId)
     }
 

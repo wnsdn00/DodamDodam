@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -44,6 +45,7 @@ class RandomQuestionFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private var memberList = mutableListOf<Member>()
     private var answerList = mutableListOf<Answer>()
+    private  lateinit var backToMainButton: ImageButton
     private lateinit var todayQuestionTextView: TextView
     private lateinit var answerEditText: EditText
     private lateinit var submitAnswerButton: Button
@@ -61,6 +63,11 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainPageActivity)?.updateFamilyCoins()
+    }
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,7 +83,7 @@ class RandomQuestionFragment : Fragment() {
         memberProfileAdapter = QuestionMemberProfileAdapter(memberList)
         questionProfileRecyclerView.adapter = memberProfileAdapter
 
-
+        backToMainButton = view.findViewById(R.id.randomQuestionBackBtn)
         todayQuestionTextView = view.findViewById(R.id.todayQuestionTextView)
         answerEditText = view.findViewById(R.id.answerEditText)
         submitAnswerButton = view.findViewById(R.id.submitAnswerButton)
@@ -94,6 +101,10 @@ class RandomQuestionFragment : Fragment() {
 
         fetchUserFamilyCode()
 
+        backToMainButton.setOnClickListener {
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+        }
+
         submitAnswerButton.setOnClickListener {
             submitAnswer()
         }
@@ -102,6 +113,10 @@ class RandomQuestionFragment : Fragment() {
             // 버튼을 눌렀을 때 지난 질문들을 보여주는 함수 작성
             val questionHistoryFragment = QuestionHistoryFragment.newInstance()
             questionHistoryFragment.show(parentFragmentManager, questionHistoryFragment.tag)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
         }
 
 
@@ -189,6 +204,8 @@ class RandomQuestionFragment : Fragment() {
 
         memberList.forEach { member ->
             member.hasAnswered = answers.containsKey(member.nickName)
+
+
         }
         memberProfileAdapter.notifyDataSetChanged()
     }
@@ -301,10 +318,12 @@ class RandomQuestionFragment : Fragment() {
                                     database.child("families").child(familyCode).child("todayQuestion").child("answers").child(nickName).setValue(answer).addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
                                             database.child("families").child(familyCode).child("questionHistory").child(today).child("answers").child(nickName).setValue(answer)
+                                            fetchHasAnsweredAndRewardCoins(familyCode, currentUserUid)
                                         } else {
                                             Toast.makeText(context, "답변을 저장하는데 실패했습니다.", Toast.LENGTH_SHORT).show()
                                         }
                                     }
+
                                 } else {
                                     Toast.makeText(context, "닉네임을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                                 }
@@ -328,6 +347,42 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    private fun fetchHasAnsweredAndRewardCoins(familyCode: String, currentUserUid: String) {
+        database.child("families").child(familyCode).child("members").child(currentUserUid).child("hasAnswered").addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val hasAnswered = snapshot.getValue(Boolean::class.java)
+                if(hasAnswered == false) {
+                    database.child("families").child(familyCode).child("members").child(currentUserUid).child("hasAnswered").setValue(true).addOnCompleteListener{ task ->
+                        if(task.isSuccessful) {
+                            rewardCoinsToFamily(familyCode, 10)
+                        }
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+            }
+        })
+    }
+
+
+    private fun rewardCoinsToFamily(familyCode: String, coins: Int) {
+        // 현재 코인 값을 가져와서 증가시킨 후 저장
+        database.child("families").child(familyCode).child("familyCoin")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val currentCoins = snapshot.getValue(Int::class.java) ?: 0
+                    database.child("families").child(familyCode).child("familyCoin")
+                        .setValue(currentCoins + coins)
+                    Toast.makeText(context, "코인이 지급되었습니다!", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(context, "코인 지급에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                }
+            })
+    }
 
 
 

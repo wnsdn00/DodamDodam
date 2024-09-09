@@ -3,6 +3,7 @@ package com.explorit.dodamdodam
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object CalendarUtils {
     private val daysOfWeek = listOf("일", "월", "화", "수", "목", "금", "토")

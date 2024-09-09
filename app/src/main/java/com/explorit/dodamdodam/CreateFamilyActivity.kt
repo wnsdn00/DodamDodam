@@ -56,7 +56,7 @@ class CreateFamilyActivity : AppCompatActivity() {
                     if(task.isSuccessful) {
                     // 가족 생성 성공
                     database.child("families").child(familyCode).child("members").child(userId).setValue(member).addOnCompleteListener { memberTask ->
-                        if (memberTask.isSuccessful){
+                        if (memberTask.isSuccessful) {
                             database.child("users").child(userId).child("familyCode").setValue(familyCode)
 
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -85,7 +85,8 @@ data class Family(
     val members: MutableList<String> = mutableListOf(),
     val questionNoList: MutableList<Int> = mutableListOf(),
     val todayQuestion: MutableList<String> = mutableListOf(),
-    val questionHistory: MutableList<String> = mutableListOf()
+    val questionHistory: MutableList<String> = mutableListOf(),
+    val familyCoin: Int = 100
 )
 
 data class Member(
@@ -96,8 +97,6 @@ data class Member(
 ) : Serializable
 
 {
-
-
     // 기본 생성자
     constructor() : this(null, null, null)
 }
