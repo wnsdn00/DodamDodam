@@ -61,12 +61,6 @@ class LoginActivity : AppCompatActivity() {
             signInWithGoogle()
         }
 
-        // 카카오 로그인 버튼 추가
-        val buttonKaKao = findViewById<ImageButton>(R.id.buttonKaKao)
-        buttonKaKao.setOnClickListener {
-            signInWithKakao()
-        }
-
         // 아이디 찾기, 비밀번호 찾기 버튼 설정...
         val findIdButton = findViewById<Button>(R.id.findID)
         findIdButton.setOnClickListener {
@@ -120,17 +114,6 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun signInWithKakao() {
-        UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
-            if (error != null) {
-                Log.e("LoginActivity", "카카오 로그인 실패", error)
-                Toast.makeText(this, "카카오 로그인 실패", Toast.LENGTH_SHORT).show()
-            } else if (token != null) {
-                Log.i("LoginActivity", "카카오 로그인 성공: ${token.accessToken}")
-                fetchFirebaseCustomToken(token.accessToken)
-            }
-        }
-    }
 
     private fun fetchFirebaseCustomToken(kakaoAccessToken: String) {
         // 예시: 서버에 요청하여 Firebase Custom Token을 받는 과정
