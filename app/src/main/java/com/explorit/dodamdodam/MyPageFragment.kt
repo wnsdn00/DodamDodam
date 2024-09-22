@@ -103,9 +103,12 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
         }
 
         binding.btnCustomize.setOnClickListener {
-            // 가족 카드 수정 버튼 클릭 시 FamilyCardEditActivity로 이동
-            val intent = Intent(activity, FamilyCardEditActivity::class.java)
-            startActivity(intent)
+            // 가족 카드 수정 버튼 클릭 시 MyPageEditFragment로 이동
+            val fragment = MyPageEditFragment()
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.myPageFragment, fragment)
+            transaction?.addToBackStack(null)
+            transaction?.commit()
         }
 
         backToMainButton.setOnClickListener {

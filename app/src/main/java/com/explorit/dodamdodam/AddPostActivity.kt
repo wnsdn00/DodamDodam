@@ -1,7 +1,6 @@
 package com.explorit.dodamdodam
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -14,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -158,14 +158,20 @@ class AddPostActivity : AppCompatActivity() {
 
     // Firestore에 URL 저장 후 게시물 목록 새로 고침
     private fun saveFileUrlToFirestore(downloadUrl: String) {
-        val userId = "User ID" // 실제 사용자 ID를 가져와야 합니다. 예: FirebaseAuth.getInstance().currentUser?.uid
-        val postData = hashMapOf(
-            "imageUrl" to downloadUrl,
-            "timestamp" to System.currentTimeMillis(),
-            "userId" to "User ID",
-            "explain" to binding.addpostEditExplain.text.toString()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userId = currentUser?.uid ?: "Unknown User"
+        val userProfile = currentUser?.photoUrl?.toString() ?: ""
+
+        val postData = ContentDTO(
+            userId = userId,
+            explain = binding.addpostEditExplain.text.toString(),
+            imageUrl = downloadUrl,
+            timestamp = System.currentTimeMillis(),
+            profileImageUrl = userProfile
         )
-        firestore.collection("posts").add(postData).addOnSuccessListener {
+
+        firestore.collection("posts").add(postData).addOnSuccessListener { documentReference ->
+            postData.documentId = documentReference.id // ID 업데이트
             Toast.makeText(this, getString(R.string.upload_success), Toast.LENGTH_LONG).show()
             EventBus.getDefault().post(NewPostEvent())
             finish() // 업로드 성공 후 액티비티 종료
