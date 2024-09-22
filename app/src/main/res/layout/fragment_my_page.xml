@@ -52,6 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="아들"
+                android:textColor="@color/black"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp" />
@@ -79,6 +80,7 @@
                 android:layout_margin="5dp"
                 android:paddingBottom="8dp"
                 android:text="가족 등록증"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -99,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="**네 가족 >"
+                android:textColor="@color/black"
                 android:layout_margin="3dp"/>
             </LinearLayout>
 
@@ -113,6 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="가족코드"
+                android:textColor="@color/black"
                 android:layout_marginLeft="5dp"/>
             <View
                 android:layout_width="0dp"
@@ -122,6 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2024.07.30"
+                android:textColor="@color/black"
                 android:layout_marginRight="5dp"/>
         </LinearLayout>
         </RelativeLayout>
@@ -156,6 +161,7 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="상점"
+            android:textColor="@color/black"
             android:background="@drawable/custome_border" />
 
         <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
@@ -176,6 +182,7 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="꾸미기"
+            android:textColor="@color/black"
             android:background="@drawable/custome_border"/>
     </LinearLayout>
 
@@ -207,6 +214,7 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  고객센터"
+            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
@@ -221,6 +229,7 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  앱 정보"
+            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
@@ -235,6 +244,7 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  환경설정"
+            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
