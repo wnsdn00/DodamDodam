@@ -15,6 +15,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth // Firebase를 사용하는 권한
     private lateinit var firestore: FirebaseFirestore
+    private var isEmailChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +25,18 @@ class RegisterActivity : AppCompatActivity() {
         firestore = FirebaseFirestore.getInstance()
 
         val registerButton: Button = findViewById(R.id.buttonRegister) // 회원가입 버튼 객체 생성
+        val checkEmailButton: Button = findViewById(R.id.buttonCheckEmail)
+
+        checkEmailButton.setOnClickListener {
+            checkEmailDuplication()
+        }
 
         registerButton.setOnClickListener { // 눌렀을 때 registerUser 함수를 쓸 것이다!
-            registerUser()
+            if (!isEmailChecked) {
+                Toast.makeText(this, "이메일 중복확인을 해주세요.", Toast.LENGTH_SHORT).show()
+            } else {
+                registerUser()
+            }
         }
 
         val backButton = findViewById<ImageButton>(R.id.back)
@@ -35,17 +45,47 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser() { // xml에 있는 id의 이름을 가져와서 객체로 생성
-        val username = findViewById<EditText>(R.id.registerId).text.toString()
-        val email = findViewById<EditText>(R.id.registerEmail).text.toString()
-        val password = findViewById<EditText>(R.id.registerPw).text.toString()
 
-        auth.createUserWithEmailAndPassword(email, password) // Firebase 권한으로 email, password를 만든다.
+    private fun checkEmailDuplication() {
+        val email = findViewById<EditText>(R.id.registerEmail).text.toString()
+        if (email.isEmpty()) {
+            Toast.makeText(this, "이메일을 입력하세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        firestore.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    Toast.makeText(this, "사용 가능한 이메일입니다.", Toast.LENGTH_SHORT).show()
+                    isEmailChecked = true
+                } else {
+                    Toast.makeText(this, "이미 사용 중인 이메일입니다.", Toast.LENGTH_SHORT).show()
+                    isEmailChecked = false
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "이메일 확인 중 오류 발생: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun registerUser() { // xml에 있는 id의 이름을 가져와서 객체로 생성
+        val useremail = findViewById<EditText>(R.id.registerEmail).text.toString()
+        val password = findViewById<EditText>(R.id.registerPw).text.toString()
+        val passwordconfirm = findViewById<EditText>(R.id.registerPwConfirm).text.toString()
+        val username = findViewById<EditText>(R.id.registerUserName).text.toString()
+        val userbirth = findViewById<EditText>(R.id.registerUserBirth).text.toString()
+
+        if (password != passwordconfirm) {
+            Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        auth.createUserWithEmailAndPassword(useremail, password) // Firebase 권한으로 email, password를 만든다.
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = auth.currentUser
                     // Firestore에 사용자 세부 정보 저장
-                    saveUserData(username, email)
+                    saveUserData(useremail, username, userbirth)
                     // 회원가입 성공 메시지 표시
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show() // Toast는 아래에 메시지를 띄워줍니다.
                     // 로그인 액티비티로 이동
@@ -57,10 +97,11 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveUserData(username: String, email: String) { // Firebase에 저장
+    private fun saveUserData(useremail: String, username: String, userbirth: String) { // Firebase에 저장
         val user = hashMapOf( // 해시맵으로 username, email 필드에 저장
-            "username" to username,
-            "email" to email
+            "userEmail" to useremail,
+            "userName" to username,
+            "userBirth" to userbirth
         )
 
         // 생성된 ID로 새 문서 추가
