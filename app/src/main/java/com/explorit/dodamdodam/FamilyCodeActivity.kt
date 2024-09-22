@@ -17,6 +17,7 @@ class FamilyCodeActivity : AppCompatActivity() {
     private lateinit var inputFamilyCode: EditText
     private lateinit var btn_CheckCode: Button
     private lateinit var database: DatabaseReference
+    // 가족 참여를 원할때 가족 코드를 입력하는 화면
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +28,7 @@ class FamilyCodeActivity : AppCompatActivity() {
         btn_CheckCode = findViewById(R.id.btnCheckCode)
         database = FirebaseDatabase.getInstance().reference
 
+        // 가족 코드 확인 버튼 클릭
         btn_CheckCode.setOnClickListener {
             val familyCode = inputFamilyCode.text.toString()
             if (familyCode.isNotEmpty()){
@@ -38,6 +40,7 @@ class FamilyCodeActivity : AppCompatActivity() {
         }
     }
 
+    // 입력한 가족 코드를 확인 하는 함수
     private fun checkFamilyCode(familyCode: String) {
         // 초대 코드로 그룹 검색
         database.child("families").child(familyCode).addListenerForSingleValueEvent(object :

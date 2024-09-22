@@ -24,6 +24,7 @@ class JoinFamilyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_family)
+        // 가족 코드 입력 후 화면
 
         inputFamilyPW = findViewById(R.id.inputFamilyPW)
         inputNickname = findViewById(R.id.inputNickname)
@@ -32,6 +33,7 @@ class JoinFamilyActivity : AppCompatActivity() {
 
         val familyCode = intent.getStringExtra("familyCode") ?: return
 
+        // 가족 참여 버튼 클릭 시
         btnJoinFamilyFinish.setOnClickListener {
             val familyPW = inputFamilyPW.text.toString()
             val nickName = inputNickname.text.toString()
@@ -45,6 +47,7 @@ class JoinFamilyActivity : AppCompatActivity() {
         }
     }
 
+    // 입력한 가족 비밀번호를 확인하는 함수
     private fun checkPassWordAndJoinFamily(familyCode: String, password: String, nickName: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -72,6 +75,7 @@ class JoinFamilyActivity : AppCompatActivity() {
         }
     }
 
+    // 올바른 비밀번호를 입력 했을 시 가족 구성원에 사용자를 추가하는 함수
     private fun addMemberToFamily(userId: String, familyCode: String?, nickName:String) {
         if(familyCode != null) {
             // 가족 그룹 내에서 호칭이 이미 사용 중인지 확인

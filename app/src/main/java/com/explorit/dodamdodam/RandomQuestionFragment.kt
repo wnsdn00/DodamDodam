@@ -102,10 +102,12 @@ class RandomQuestionFragment : Fragment() {
         fetchUserFamilyCode()
 
         backToMainButton.setOnClickListener {
+            // 메인으로 가는 버튼 함수
             (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
         }
 
         submitAnswerButton.setOnClickListener {
+            // 답변 제출 버튼 클릭 함수
             submitAnswer()
         }
 
@@ -116,6 +118,7 @@ class RandomQuestionFragment : Fragment() {
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
+            // 기기의 뒤로 가기 버튼 클릭 함수(메인으로)
             (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
         }
 
@@ -124,6 +127,7 @@ class RandomQuestionFragment : Fragment() {
         return view
     }
 
+    // 사용자의 가족 코드를 불러오는 함수
     private fun fetchUserFamilyCode() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserUid != null) {
@@ -150,18 +154,20 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
-
+    // 사용자가 속한 가족의 구성원을 불러오는 함수
     private fun fetchMembers(familyCode: String) {
         database.child("families").child(familyCode).child("members")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     memberList.clear()
+                    // 구성원을 확인하여 구성원 리스트에 추가
                     for (data in snapshot.children) {
                         val member = data.getValue(Member::class.java)
                         if (member != null) {
                             memberList.add(member)
                         }
                     }
+                    // 구성원 리스트를 어댑터에 전달
                     memberProfileAdapter.notifyDataSetChanged()
                     fetchAnswers(familyCode)
                 }
@@ -174,10 +180,12 @@ class RandomQuestionFragment : Fragment() {
             })
     }
 
+    // 사용자가 속한 가족의 구성원들의 답변을 불러오는 함수
     private fun fetchAnswers(familyCode: String) {
         database.child("families").child(familyCode).child("todayQuestion").child("answers").addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val answers = mutableMapOf<String, String>()
+                // 오늘의 질문의 답변을 확인하여 답변 리스트에 저장
                 for (data in snapshot.children) {
                     val answer = data.getValue(String::class.java)
                     if(answer != null) {
@@ -195,7 +203,9 @@ class RandomQuestionFragment : Fragment() {
 
     }
 
+    // 불러온 답변을 화면에 띄워주는 함수 (답변이 없으면 ?로 표시)
     private fun updateAnswers(answers: Map<String, String>) {
+        // 답변 리스트를 어댑터에 전달
         val answerList = memberList.map { member ->
             val answer = answers[member.nickName] ?: "?"
             Answer(member, answer)
@@ -204,17 +214,18 @@ class RandomQuestionFragment : Fragment() {
 
         memberList.forEach { member ->
             member.hasAnswered = answers.containsKey(member.nickName)
-
-
         }
+
         memberProfileAdapter.notifyDataSetChanged()
     }
 
+    // 오늘의 질문을 불러오는 함수
     private fun checkAndFetchQuestion(famliyCode: String){
         val today = dateFormat.format(Date())
 
         database.child("families").child(famliyCode).child("todayQuestion").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // 날짜를 확인하고 오늘의 질문을 불러오거나 생성
                 val lastDate = snapshot.child("date").getValue(String::class.java)
                 if (lastDate != null && lastDate == today) {
                     showSavedQuestion(snapshot)
@@ -230,28 +241,41 @@ class RandomQuestionFragment : Fragment() {
         })
     }
 
+    // 불러온 질문을 화면에 띄워주는 함수
     private fun showSavedQuestion(snapshot: DataSnapshot) {
         val question = snapshot.child("question").getValue(String::class.java)
         todayQuestionTextView.text = question ?: "질문을 불러오는데 실패했습니다."
     }
 
+    // 오늘의 질문을 생성하고 지난 질문 목록에 추가하는 함수
     private fun selectAndSaveRandomQuestion(familyCode: String, today: String) {
+
         database.child("families").child(familyCode).child("questionNoList").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                // 사용된 질문 리스트(questionNoList)에서 사용된 질문 목록을 불러옴
                 val usedQuestions = snapshot.children.mapNotNull { it.key?.toInt() to it.getValue(Boolean::class.java) }.toMap()
 
                 database.child("questionList").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        // 모든 질문 리스트(questionList)에서 사용된 질문을 필터링하여 사용 가능한 질문을 불러옴
                         val allQuestions =
                             snapshot.children.mapNotNull { it.key?.toInt() to it.getValue(String::class.java) }
                                 .toMap()
                         val availableQuestions =
                             allQuestions.filter { !usedQuestions.containsKey(it.key) || !usedQuestions[it.key]!! }
 
+                        // 사용 가능한 질문들 중에 랜덤으로 오늘의 질문을 생성
                         if (availableQuestions.isNotEmpty()) {
                             val randomQuestion = availableQuestions.entries.random()
                             todayQuestionTextView.text = randomQuestion.value
 
+                            // 오늘의 질문이 새로 생겼으므로 답변 여부를 false로 초기화
+                            val currentUserUid = auth.currentUser?.uid
+                            if(currentUserUid != null) {
+                                database.child("families").child(familyCode).child("members")
+                                    .child(currentUserUid).child("hasAnswered").setValue(false)
+                            }
+                            // 오늘의 질문을 저장
                             database.child("families").child(familyCode).child("todayQuestion")
                                 .setValue(
                                     mapOf(
@@ -261,9 +285,11 @@ class RandomQuestionFragment : Fragment() {
                                     )
                                 )
 
+                            // 오늘의 질문을 사용된 질문을 사용된 질문 리스트에 저장
                             database.child("families").child(familyCode).child("questionNoList")
                                 .child(randomQuestion.key.toString()).setValue(true)
 
+                            // 생성된 질문을 지난 질문 리스트에 저장
                             database.child("families").child(familyCode).child("questionHistory")
                                 .child(today).setValue(
                                     mapOf(
@@ -272,6 +298,7 @@ class RandomQuestionFragment : Fragment() {
                                     )
                                 )
                         } else {
+                            // 준비된 모든 질문이 사용되었으면 사용된 질문 리스트를 리셋
                             resetQuestionNoList(familyCode, today)
                         }
                     }
@@ -290,6 +317,7 @@ class RandomQuestionFragment : Fragment() {
         })
     }
 
+    // 모든 질문이 한번씩 사용 되었을 때 질문 사용 목록을 리셋하고 오늘의 질문을 생성하는 함수
     private fun resetQuestionNoList(familyCode: String, today: String) {
         database.child("families").child(familyCode).child("questionNoList").removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -301,6 +329,7 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    // 답변을 저장하는 함수
     private fun submitAnswer() {
         val currentUserUid = auth.currentUser?.uid
         val answer = answerEditText.text.toString()
@@ -315,8 +344,10 @@ class RandomQuestionFragment : Fragment() {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val nickName = snapshot.getValue(String::class.java)
                                 if (nickName != null) {
+                                    // 작성한 답변을 오늘의 질문에 저장
                                     database.child("families").child(familyCode).child("todayQuestion").child("answers").child(nickName).setValue(answer).addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
+                                            // 작성한 답변을 지난 질문 리스트에 저장
                                             database.child("families").child(familyCode).child("questionHistory").child(today).child("answers").child(nickName).setValue(answer)
                                             fetchHasAnsweredAndRewardCoins(familyCode, currentUserUid)
                                         } else {
@@ -347,13 +378,14 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
+    // 답변을 했을 때 답변 여부를 체크해 주고 코인을 지급 해주는 함수
     private fun fetchHasAnsweredAndRewardCoins(familyCode: String, currentUserUid: String) {
         database.child("families").child(familyCode).child("members").child(currentUserUid).child("hasAnswered").addListenerForSingleValueEvent(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val hasAnswered = snapshot.getValue(Boolean::class.java)
                 if(hasAnswered == false) {
                     database.child("families").child(familyCode).child("members").child(currentUserUid).child("hasAnswered").setValue(true).addOnCompleteListener{ task ->
-                        if(task.isSuccessful) {
+                       if(task.isSuccessful) {
                             rewardCoinsToFamily(familyCode, 10)
                         }
                     }
@@ -365,9 +397,8 @@ class RandomQuestionFragment : Fragment() {
         })
     }
 
-
+    // 현재 코인 값을 가져 와서 증가 시킨 후 저장 하는 함수
     private fun rewardCoinsToFamily(familyCode: String, coins: Int) {
-        // 현재 코인 값을 가져와서 증가시킨 후 저장
         database.child("families").child(familyCode).child("familyCoin")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -406,6 +437,6 @@ class RandomQuestionFragment : Fragment() {
             }
     }
 }
-
+// 답변 데이터 클래스
 data class Answer(val member: Member, val answer: String)
 

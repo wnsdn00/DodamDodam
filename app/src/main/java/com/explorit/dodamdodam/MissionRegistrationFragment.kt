@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -43,8 +45,10 @@ class MissionRegistrationFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var selectedMember: Member
-    private lateinit var missionCompleteButton: Button
+    private lateinit var missionCompleteButton: ImageButton
     private var isMissionComplete: Boolean = false
+    private lateinit var backButton: ImageButton
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +71,7 @@ class MissionRegistrationFragment : Fragment() {
 
         missionCompleteButton = view.findViewById(R.id.missionCompleteButton)
         selectedMember = arguments?.getSerializable("selectedMember", Member::class.java)!!
-
+        backButton = view.findViewById(R.id.missionRegistrationBackBtn)
         val profileImageView: CircleImageView = view.findViewById(R.id.registrationMemberProfile)
         val nameTextView: TextView = view.findViewById(R.id.registrationMemberNameTextView)
         val timeEditText: EditText = view.findViewById(R.id.timeEditText)
@@ -108,6 +112,11 @@ class MissionRegistrationFragment : Fragment() {
                 Toast.makeText(context, "모든 필드를 채워주세요.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         return view
     }
 
@@ -187,11 +196,9 @@ class MissionRegistrationFragment : Fragment() {
     }
 
     private fun updateMissionCompleteButton() {
-        if(isMissionComplete) {
-            missionCompleteButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-        } else {
-            missionCompleteButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-        }
+
+        val colorResId = if (isMissionComplete) R.drawable.check_green else R.drawable.check_gray
+        missionCompleteButton.setBackgroundResource(colorResId)
     }
 
     private fun saveMission(

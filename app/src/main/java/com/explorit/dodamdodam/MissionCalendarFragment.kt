@@ -87,6 +87,8 @@ class MissionCalendarFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_mission_calendar, container, false)
+        // 미션 캘린더 화면
+
         calendarRecyclerView = view.findViewById(R.id.calendarRecyclerView)
         monthYearText = view.findViewById(R.id.textViewMonthYear)
 
@@ -113,6 +115,9 @@ class MissionCalendarFragment : Fragment() {
         missionCheckButton = view.findViewById(R.id.missionCheckButton)
 
         fetchUserFamilyCode()
+        checkTodayMissionsComplete()
+        resetMissionCompletion()
+        setMonthView()
 
 
         nextMonthButton.setOnClickListener{
@@ -156,12 +161,12 @@ class MissionCalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Fragment가 완전히 생성된 후에 UI 관련 작업 수행
-        setMonthView()
-        resetMissionCompletion()
         checkTodayMissionsComplete()
+        resetMissionCompletion()
+        setMonthView()
     }
 
-
+    // 달력 화면 생성 함수
     private fun setMonthView() {
         monthYearText.text = CalendarUtils.monthYearFromDate(selectedDate)
         val daysInMonth = CalendarUtils.daysInMonthArray(selectedDate)
@@ -225,7 +230,7 @@ class MissionCalendarFragment : Fragment() {
 
     }
 
-
+    // 달력 메모 함수
     private fun showMemoDialog(date: LocalDate) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_memo, null)
         val memoEditText = dialogView.findViewById<EditText>(R.id.editTextMemo)
@@ -267,6 +272,7 @@ class MissionCalendarFragment : Fragment() {
         dialog.show()
     }
 
+    // 작성한 달력 메모 불러오는 함수
     private fun loadMemos(date: LocalDate): MutableList<Memo> {
         val sharedPreferences = requireContext().getSharedPreferences("memos", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -278,6 +284,8 @@ class MissionCalendarFragment : Fragment() {
             mutableListOf()
         }
     }
+
+    // 입력한 메모 저장하는 함수 (Json형식)
     private fun saveMemos(date: LocalDate, memos: List<Memo>) {
         val sharedPreferences = requireContext().getSharedPreferences("memos", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -287,6 +295,7 @@ class MissionCalendarFragment : Fragment() {
         editor.apply()
     }
 
+    // 사용자의 가족 그룹을 확인 하는 함수
     private fun fetchUserFamilyCode() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserUid != null) {
@@ -312,6 +321,7 @@ class MissionCalendarFragment : Fragment() {
         }
     }
 
+    // 확인한 사용자의 가족그룹 구성원을 확인하는 함수
     private fun fetchMembers(familyCode: String) {
         database.child("families").child(familyCode).child("members")
             .addValueEventListener(object : ValueEventListener {
@@ -341,6 +351,7 @@ class MissionCalendarFragment : Fragment() {
             })
     }
 
+    // 미션 등록 프래그먼트를 띄워주는 함수
     private fun openMissionRegistrationFragment(member: Member) {
         val fragment = MissionRegistrationFragment().apply {
             arguments = Bundle().apply {
@@ -353,6 +364,7 @@ class MissionCalendarFragment : Fragment() {
             .commit()
     }
 
+    // 미션 확인 프래그먼트를 띄워주는 함수
     private fun openMissionCheckFragment(member: Member) {
         val fragment = MissionCheckFragment().apply {
             arguments = Bundle().apply {
@@ -365,6 +377,7 @@ class MissionCalendarFragment : Fragment() {
             .commit()
     }
 
+    // 사용자에게 주어진 오늘의 미션이 모두 완료 되었는지 확인하는 함수
     private fun checkTodayMissionsComplete() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         val database = FirebaseDatabase.getInstance().reference
@@ -499,6 +512,7 @@ class MissionCalendarFragment : Fragment() {
             })
     }
 
+    // 하루가 지났을때 미션 완료 상태를 초기화 하는 함수
     private fun resetMissionCompletion() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         val today = LocalDate.now()
@@ -517,10 +531,10 @@ class MissionCalendarFragment : Fragment() {
                                             if (value is Mission) {
                                                 val mission = missionSnapshot.getValue(Mission::class.java)
                                                 mission?.let {
-                                                    // 만약 미션이 완료되었고, 오늘이 해당 미션이 속한 주기의 다음 날이라면
-                                                    if (it.complete && it.timestamp != null&& today.isAfter(LocalDate.parse(it.timestamp))) {
+                                                    // 만약 미션이 완료되었고, 오늘이 해당 미션이 완료된 날의 다음 날이라면
+                                                    if (it.complete && it.timestamp != null && today.isAfter(LocalDate.parse(it.timestamp))) {
                                                         missionSnapshot.ref.child("complete").setValue(false)
-                                                        missionsSnapshot.ref.child("todayMissionCompleted").setValue(false)
+                                                        //missionsSnapshot.ref.child("todayMissionCompleted").setValue(false)
                                                     }
                                                 }
                                             }
@@ -541,13 +555,6 @@ class MissionCalendarFragment : Fragment() {
             })
         }
     }
-
-    /*
-        private fun markDateAsComplete(today: LocalDate){
-            missionCompletedDates.add(today)
-            setMonthView()
-        }
-    */
 
     companion object {
         /**
@@ -570,6 +577,7 @@ class MissionCalendarFragment : Fragment() {
     }
 }
 
+// 메모 데이터 클래스
 data class Memo(
     var content: String,
     val date: LocalDate

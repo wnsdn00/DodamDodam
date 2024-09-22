@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AnswerAdapter(private var answers: List<Answer>) : RecyclerView.Adapter<AnswerAdapter.AnswerViewHolder>() {
-
+    // 답변 목록 어댑터
     class AnswerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val answerProfileImageView: CircleImageView = itemView.findViewById(R.id.answerProfileImageView)
         val answerNameTextView: TextView = itemView.findViewById(R.id.answerNameTextView)

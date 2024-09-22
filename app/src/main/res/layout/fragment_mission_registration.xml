@@ -1,113 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EAF3F8"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MissionRegistrationFragment">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!-- 가족 구성원 정보 표시 -->
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/registrationMemberProfile"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/ic_profile"
-            app:civ_border_color="@color/black"
-            app:civ_border_width="2dp"
-            tools:ignore="MissingConstraints" />
-        <TextView
-            android:id="@+id/registrationMemberNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-        <Button
-            android:id="@+id/missionCompleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="완료"
-            android:background="@color/gray"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center"
-        />
-        <!-- 요일 선택 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/missionRegistrationBackBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/historyquestion_button"
+                app:srcCompat="@drawable/ic_back" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/mission_border"
+            android:padding="16dp"
+            android:orientation="vertical">
+            <!-- 가족 구성원 정보 표시 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/missionRegistrationProfileLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/checkBoxMonday"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/registrationMemberProfile"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_margin="20dp"
+                    android:src="@drawable/ic_profile"
+                    app:civ_border_color="@color/black"
+                    app:civ_border_width="2dp"
+                    app:layout_constraintStart_toStartOf="@id/missionRegistrationProfileLayout"
+                    tools:ignore="MissingConstraints" />
+                <TextView
+                    android:id="@+id/registrationMemberNameTextView"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:gravity="center"
+                    app:layout_constraintTop_toBottomOf="@+id/registrationMemberProfile"
+                    app:layout_constraintStart_toStartOf="@id/registrationMemberProfile"
+                    app:layout_constraintEnd_toEndOf="@id/registrationMemberProfile"
+                    tools:ignore="MissingConstraints" />
+                <ImageButton
+                    android:id="@+id/missionCompleteButton"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/check_btn"
+                    android:background="@drawable/check_gray"
+                    android:layout_marginLeft="20dp"
+                    app:layout_constraintStart_toEndOf="@id/registrationMemberProfile"
+                    app:layout_constraintTop_toTopOf="@id/registrationMemberProfile"
+                    app:layout_constraintBottom_toBottomOf="@id/registrationMemberProfile"
+                    app:layout_constraintEnd_toEndOf="@id/missionRegistrationProfileLayout"
+                    tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- 요일 선택 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkBoxMonday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+
+                    android:text="월" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxTuesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="화" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxWednesday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="수" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxThursday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="목" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxFriday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="금" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxSaturday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="토" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxSunday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:textColor="@drawable/day_checkbox"
+                    android:textSize="25dp"
+                    android:padding="10dp"
+                    android:text="일" />
+            </LinearLayout>
+
+            <!-- 시간 입력 -->
+            <EditText
+                android:id="@+id/timeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:hint="시간을 입력하세요 (예: 14:00)"
+                android:inputType="time" />
+
+            <!-- 미션 정보 입력 -->
+            <EditText
+                android:id="@+id/editTextMissionContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:paddingBottom="150dp"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:hint="미션 내용을 입력하세요"/>
+
+            <!-- 미션 저장 버튼 -->
+            <Button
+                android:id="@+id/saveMissionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="월" />
+                android:layout_gravity="center"
+                android:background="@drawable/blue_btn"
+                android:text="등록"/>
 
-            <CheckBox
-                android:id="@+id/checkBoxTuesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="화" />
 
-            <CheckBox
-                android:id="@+id/checkBoxWednesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="수" />
-
-            <CheckBox
-                android:id="@+id/checkBoxThursday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="목" />
-
-            <CheckBox
-                android:id="@+id/checkBoxFriday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="금" />
-
-            <CheckBox
-                android:id="@+id/checkBoxSaturday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="토" />
-
-            <CheckBox
-                android:id="@+id/checkBoxSunday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="일" />
         </LinearLayout>
-
-        <!-- 시간 입력 -->
-        <EditText
-            android:id="@+id/timeEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="시간을 입력하세요 (예: 14:00)"
-            android:inputType="time" />
-
-        <!-- 미션 정보 입력 -->
-        <EditText
-            android:id="@+id/editTextMissionContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="미션 내용"/>
-
-        <!-- 미션 저장 버튼 -->
-        <Button
-            android:id="@+id/saveMissionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="등록"/>
     </LinearLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

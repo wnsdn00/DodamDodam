@@ -8,9 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -36,6 +38,7 @@ class MissionCheckFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var selectedMember: Member
+    private lateinit var backButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +47,7 @@ class MissionCheckFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -54,6 +58,7 @@ class MissionCheckFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_mission_check, container, false)
 
         selectedMember = arguments?.getSerializable("selectedMember", Member::class.java)!!
+        backButton = view.findViewById(R.id.missionCheckBackBtn)
 
         val profileImageView: CircleImageView = view.findViewById(R.id.checkMemberProfileImageView)
         val nameTextView: TextView = view.findViewById(R.id.checkMemberNameTextView)
@@ -66,6 +71,15 @@ class MissionCheckFragment : Fragment() {
         buttonMissionCheck.setOnClickListener{
             parentFragmentManager.popBackStack()
         }
+
+        backButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            parentFragmentManager.popBackStack()
+        }
+
         return view
     }
 
@@ -132,18 +146,15 @@ class MissionCheckFragment : Fragment() {
         val missionContentTextView = view?.findViewById<TextView>(R.id.missionContentTextView)
         val missionTimeTextView = view?.findViewById<TextView>(R.id.missionTimeTextView)
         val missionDaysTextView = view?.findViewById<TextView>(R.id.missionDaysTextView)
-        val missionCompleteButton = view?.findViewById<Button>(R.id.missionCompleteCheckButton)
+        val missionCompleteButton = view?.findViewById<ImageButton>(R.id.missionCompleteCheckButton)
 
         missionContentTextView?.text = mission.content
         missionTimeTextView?.text = mission.time
         missionDaysTextView?.text = mission.days.joinToString(", ")
 
-        if (mission.complete) {
-            missionCompleteButton?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-            missionCompleteButton?.text = "완료됨"
-        } else {
-            missionCompleteButton?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-            missionCompleteButton?.text = "미완료"
+        val colorResId = if (mission.complete) R.drawable.check_green else R.drawable.check_gray
+        if (missionCompleteButton != null) {
+            missionCompleteButton.setBackgroundResource(colorResId)
         }
     }
 
