@@ -26,6 +26,7 @@ class CreateFamilyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_family)
+        // 가족 생성 화면
 
         familyNameEditText = findViewById(R.id.editFamilyName)
         familyPasswordEditText = findViewById(R.id.editFamilyPW)
@@ -33,6 +34,7 @@ class CreateFamilyActivity : AppCompatActivity() {
         btnCreateFamilyFinish = findViewById(R.id.btnCreateFamilyFinish)
         database = FirebaseDatabase.getInstance().reference
 
+        // 생성 버튼 클릭 시
         btnCreateFamilyFinish.setOnClickListener {
             val familyName = familyNameEditText.text.toString()
             val familyPassword = familyPasswordEditText.text.toString()
@@ -59,6 +61,7 @@ class CreateFamilyActivity : AppCompatActivity() {
                         if (memberTask.isSuccessful) {
                             database.child("users").child(userId).child("familyCode").setValue(familyCode)
 
+                            // 생성된 가족 코드를 클립보드에 복사
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("Family Code", familyCode)
                             clipboard.setPrimaryClip(clip)
@@ -77,6 +80,7 @@ class CreateFamilyActivity : AppCompatActivity() {
     }
 }
 
+// 가족 데이터 클래스
 data class Family(
     val familyCode: String,
     val familyName: String,
@@ -89,6 +93,7 @@ data class Family(
     val familyCoin: Int = 100
 )
 
+// 가족 구성원 데이터 클래스
 data class Member(
     val userId: String? = null,
     val nickName: String? = null,

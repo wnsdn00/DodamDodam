@@ -1,0 +1,65 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:layout_margin="15dp"
+    android:background="@drawable/store_box">
+
+    <ImageView
+        android:id="@+id/storeItemImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/storeItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:text="이름"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/storeItemImage"
+        app:layout_constraintStart_toStartOf="@id/storeItemImage"
+        app:layout_constraintEnd_toEndOf="@id/storeItemImage"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/storeItemName"
+        app:layout_constraintStart_toStartOf="@id/storeItemName"
+        app:layout_constraintEnd_toEndOf="@id/storeItemName"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/ic_coin"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="3dp"
+            android:src="@drawable/ic_coin"/>
+        <TextView
+            android:id="@+id/storeItemPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="14dp"
+            android:layout_margin="3dp"
+            android:text="가격"/>
+
+        <Button
+            android:id="@+id/buyButton"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/round_btn"
+            android:textSize="12dp"
+            android:text="구매"/>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

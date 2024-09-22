@@ -16,10 +16,10 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
@@ -39,6 +39,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
 
+    private val RC_SIGN_IN = 9001
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -48,25 +50,18 @@ class LoginActivity : AppCompatActivity() {
 
         // Firebase 인증 초기화
         auth = FirebaseAuth.getInstance()
-        FirebaseApp.initializeApp(this)
 
         // Firebase 데이터베이스 참조 초기화
         database = FirebaseDatabase.getInstance().reference
         firestore = FirebaseFirestore.getInstance()
 
-
-        // 구글 로그인 버튼 클릭 리스너 설정
-        val buttonGoogle = findViewById<ImageButton>(R.id.buttonGoogle)
-        buttonGoogle.setOnClickListener {
-            signInWithGoogle()
-        }
-
-        // 아이디 찾기, 비밀번호 찾기 버튼 설정...
+        // Id 찾기 버튼
         val findIdButton = findViewById<Button>(R.id.findID)
         findIdButton.setOnClickListener {
             onFindIdButtonClick(it)
         }
 
+        // 비밀번호 찾기 버튼
         val findPwButton = findViewById<Button>(R.id.findPW)
         findPwButton.setOnClickListener {
             onFindPwButtonClick(it)
@@ -86,33 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 loginWithUsername(username, password)
             }
         }
-    }
-
-    private fun signInWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        googleSignInLauncher.launch(signInIntent)
-    }
-
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        Log.d("LoginActivity", "firebaseAuthWithGoogle:" + idToken)
-
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Log.d("LoginActivity", "signInWithCredential:success")
-                    val user = auth.currentUser
-                    user?.let {
-                        val username = it.uid
-                        database.child("users").child(username).child("email").setValue(it.email)
-                        checkUserFamilyCode(username)
-                    }
-                } else {
-                    Log.w("LoginActivity", "signInWithCredential:failure", task.exception)
-                    Toast.makeText(baseContext, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
 
 
     private fun fetchFirebaseCustomToken(kakaoAccessToken: String) {
@@ -155,6 +123,34 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        googleSignInLauncher.launch(signInIntent)
+    }
+
+
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
+        Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account?.id)
+
+        val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d("LoginActivity", "signInWithCredential:success")
+                    val user = auth.currentUser
+                    user?.let {
+                        val username = it.uid
+                        database.child("users").child(username).child("email").setValue(it.email)
+                        checkUserFamilyCode(username)
+                    }
+                } else {
+                    Log.w("LoginActivity", "signInWithCredential:failure", task.exception)
+                    Toast.makeText(baseContext, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
     private fun loginWithUsername(username: String, password: String) {
         firestore.collection("users")
             .whereEqualTo("username", username)
@@ -162,7 +158,7 @@ class LoginActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // 이메일을 가져와서 로그인 시도
-                    val email = documents.first().getString("email") ?: ""
+                    var email = documents.first().getString("email") ?: ""
                     auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {

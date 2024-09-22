@@ -18,7 +18,6 @@ firebaseStorageKtx = "21.0.0"
 kakao = "2.8.6"
 volley = "1.2.1"
 playServicesAuth = "21.2.0"
-
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore", version.ref = "firebaseFirestoreKtx" }
@@ -39,7 +38,6 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

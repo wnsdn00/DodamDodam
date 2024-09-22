@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EAF3F8"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MissionCheckFragment">
 
     <LinearLayout
@@ -10,66 +12,111 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/missionCheckBackBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/historyquestion_button"
+            app:srcCompat="@drawable/ic_back" />
 
-        <!-- 가족 구성원 정보 표시 -->
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/checkMemberProfileImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/ic_profile"
-            app:civ_border_color="@color/black"
-            app:civ_border_width="2dp"
-            tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/checkMemberNameTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-
-        <Button
-            android:id="@+id/missionCompleteCheckButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="완료"
-            android:background="@color/gray"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center"
-            />
-
-
-        <!-- 미션 요일 표시 -->
-        <TextView
-            android:id="@+id/missionDaysTextView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="미션 요일"
-            android:layout_marginTop="8dp" />
-        <!-- 미션 시간 표시 -->
-        <TextView
-            android:id="@+id/missionTimeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="미션 시간"
-            android:layout_marginTop="8dp" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/mission_border"
+            android:padding="16dp"
+            android:orientation="vertical">
 
-        <!-- 미션 내용 표시 -->
-        <TextView
-            android:id="@+id/missionContentTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="아직 미션이 등록되지 않았습니다."/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/missionCheckProfileLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:orientation="vertical">
 
-        <!-- 확인 버튼 -->
-        <Button
-            android:id="@+id/buttonMissionCheck"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="확인"/>
+            <!-- 가족 구성원 정보 표시 -->
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/checkMemberProfileImageView"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="20dp"
+                android:src="@drawable/ic_profile"
+                app:civ_border_color="@color/black"
+                app:civ_border_width="2dp"
+                app:layout_constraintStart_toStartOf="@id/missionCheckProfileLayout"
+                tools:ignore="MissingConstraints" />
+
+            <TextView
+                android:id="@+id/checkMemberNameTextView"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toBottomOf="@+id/checkMemberProfileImageView"
+                app:layout_constraintStart_toStartOf="@id/checkMemberProfileImageView"
+                app:layout_constraintEnd_toEndOf="@id/checkMemberProfileImageView"
+                tools:ignore="MissingConstraints" />
+
+            <ImageButton
+                android:id="@+id/missionCompleteCheckButton"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/check_btn"
+                android:background="@drawable/check_gray"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintStart_toEndOf="@id/checkMemberProfileImageView"
+                app:layout_constraintTop_toTopOf="@id/checkMemberProfileImageView"
+                app:layout_constraintBottom_toBottomOf="@id/checkMemberProfileImageView"
+                app:layout_constraintEnd_toEndOf="@id/missionCheckProfileLayout"
+                tools:ignore="MissingConstraints" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- 미션 요일 표시 -->
+            <TextView
+                android:id="@+id/missionDaysTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:textSize="25dp"
+                android:text="미션 요일"
+               />
+            <!-- 미션 시간 표시 -->
+            <TextView
+                android:id="@+id/missionTimeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:padding="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="미션 시간"/>
+
+            <!-- 미션 내용 표시 -->
+            <TextView
+                android:id="@+id/missionContentTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/mission_border"
+                android:paddingBottom="150dp"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="아직 미션이 등록되지 않았습니다."/>
+
+            <!-- 확인 버튼 -->
+            <Button
+                android:id="@+id/buttonMissionCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/blue_btn"
+                android:layout_gravity="center"
+                android:text="확인"/>
+        </LinearLayout>
     </LinearLayout>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -149,9 +149,10 @@
 
                 <!-- Redirect URI: "kakao${NATIVE_APP_KEY}://oauth" -->
                 <data android:host="oauth"
-                    android:scheme="@string/kakao_oauth_host" />
+                    android:scheme="kakao1eab06d74f71b2a4f53d54f7c9423784" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:exported="true">

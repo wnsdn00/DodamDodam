@@ -61,7 +61,7 @@ class MainPageActivity : AppCompatActivity() {
         }
     }
 
-
+    // 지정한 프래그먼트를 보여주는 함수
     fun setFragment(tag: String, fragment: Fragment) {
         val manager: FragmentManager = supportFragmentManager
         val fragTransaction = manager.beginTransaction()
@@ -102,6 +102,7 @@ class MainPageActivity : AppCompatActivity() {
         */
     }
 
+    // 가족 코인을 메인화면에서 보여주는 함수
     private fun fetchFamilyCoins() {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserUid != null) {
