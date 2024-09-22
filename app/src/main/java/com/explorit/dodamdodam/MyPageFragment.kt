@@ -82,6 +82,12 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
             // startActivity(Intent(activity, AppInfoActivity::class.java))
         }
 
+        binding.btnCustomize.setOnClickListener {
+            // 가족 카드 수정 버튼 클릭 시 FamilyCardEditActivity로 이동
+            val intent = Intent(activity, FamilyCardEditActivity::class.java)
+            startActivity(intent)
+        }
+
         // back 버튼 클릭
         binding.buttonPreference.setOnClickListener {
             val intent = Intent(activity, PreferenceActivity::class.java)

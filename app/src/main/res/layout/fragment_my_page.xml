@@ -5,7 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EAF3F8"
     tools:context=".MyPageFragment">
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ic_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- 상단: 가족 등록증 -->
     <androidx.cardview.widget.CardView
@@ -22,7 +33,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:background="@drawable/familycard_border">
 
             <TextView
                 android:id="@+id/family_role"
@@ -109,7 +121,7 @@
         android:layout_width="380dp"
         android:layout_height="2dp"
         android:layout_margin="15dp"
-        android:background="@android:color/darker_gray"
+        android:background="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/family_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -126,20 +138,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_store"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="상점"
-            android:background="@drawable/store5"
-            android:scaleType="fitCenter"/>
+            android:background="@drawable/custome_border" />
 
         <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
         <View
             android:id="@+id/vertical_divider"
-            android:layout_width="2dp"
+            android:layout_width="1dp"
             android:layout_height="170dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@id/btn_store"
@@ -153,7 +164,8 @@
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:text="꾸미기"/>
+            android:text="꾸미기"
+            android:background="@drawable/custome_border"/>
     </LinearLayout>
 
     <!-- 선: middle_section 아래 -->
@@ -161,7 +173,7 @@
         android:layout_width="380dp"
         android:layout_height="2dp"
         android:layout_margin="2dp"
-        android:background="@android:color/darker_gray"
+        android:background="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/middle_section"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -184,21 +196,38 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  고객센터"
-            android:gravity=""
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
             android:background="@android:color/transparent" />
+        <View
+            android:layout_width="370dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <Button
             android:id="@+id/btn_app_info"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  앱 정보"
-            android:gravity=""
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
             android:background="@android:color/transparent"/>
+        <View
+            android:layout_width="370dp"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
         <Button
             android:id="@+id/buttonPreference"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  환경설정"
-            android:gravity=""
+            android:textSize="17dp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"
             android:background="@android:color/transparent" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
