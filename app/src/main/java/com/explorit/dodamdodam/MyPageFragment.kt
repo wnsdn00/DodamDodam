@@ -1,5 +1,9 @@
 package com.explorit.dodamdodam
 
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -13,37 +17,49 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import android.text.method.LinkMovementMethod
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import com.explorit.dodamdodam.databinding.FragmentMyPageBinding
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class MyPageFragment : Fragment(R.layout.fragment_my_page) {
+/**
+* A simple [Fragment] subclass.
+* Use the [MissionRegistrationFragment.newInstance] factory method to
+* create an instance of this fragment.
+*/
 
+class MyPageFragment : Fragment() {
+    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
-    private var _binding: FragmentMyPageBinding? = null
-    private val binding get() = _binding!!
     private lateinit var backToMainButton: ImageButton
+    private lateinit var btnStore: Button
+    private lateinit var btnCustomize: Button
+    private lateinit var btnCustomerService: Button
+    private lateinit var btnAppInfo: Button
+    private lateinit var btnPreference: Button
 
-    companion object {
-        private const val ARG_USER_NAME = "user_name"
-        private const val ARG_USER_BIRTHDAY = "user_birthday"
+    private lateinit var nickNameView: TextView
+    private lateinit var userNameView: TextView
+    private lateinit var userBirthView: TextView
+    private lateinit var familyCodeView: TextView
+    private lateinit var familyNameView: TextView
+    private lateinit var copyButton: ImageButton
+    private lateinit var editButton: ImageButton
 
-        fun newInstance(userName: String?, userBirthday: String?): MyPageFragment {
-            val fragment = MyPageFragment()
-            val args = Bundle().apply {
-                putString(ARG_USER_NAME, userName)
-                putString(ARG_USER_BIRTHDAY, userBirthday)
-            }
-            fragment.arguments = args
-            return fragment
-        }
-    }
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,56 +69,72 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMyPageBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // arguments에서 user_name과 user_birthday 가져오기
-        val userName = arguments?.getString("user_name") ?: "Unknown"
-        val userBirthday = arguments?.getString("user_birthday") ?: "Unknown"
-
-        // TextView에 user_name과 user_birthday 설정
-        binding.userName.text = userName
-        binding.userBirthday.text = userBirthday
-
+        val view = inflater.inflate(R.layout.fragment_my_page, container, false)
         backToMainButton = view.findViewById(R.id.myPageBackBtn)
+        btnStore = view.findViewById(R.id.btn_store)
+        btnCustomize = view.findViewById(R.id.btn_customize)
+        btnCustomerService = view.findViewById(R.id.btn_customer_service)
+        btnAppInfo = view.findViewById(R.id.btn_app_info)
+        btnPreference = view.findViewById(R.id.btn_setting)
 
-        binding.btnStore.setOnClickListener {
-            // 상점 버튼 클릭 이벤트 처리
-            Toast.makeText(activity, "상점 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            // 예: 상점 액티비티로 이동
+        nickNameView = view.findViewById(R.id.user_nickName)
+        userNameView = view.findViewById(R.id.user_name)
+        userBirthView = view.findViewById(R.id.user_birthday)
+        familyCodeView = view.findViewById(R.id.family_code)
+        familyNameView = view.findViewById(R.id.family_name)
+
+        copyButton = view.findViewById(R.id.btn_copy_family_code)
+        editButton = view.findViewById(R.id.btn_edit_family_card)
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        database = FirebaseDatabase.getInstance().reference
+
+
+
+        loadUserData()
+
+        copyButton.setOnClickListener {
+            copyFamilyCodeToClipboard()
+        }
+
+        editButton.setOnClickListener {
+            openEditFragment()
+        }
+
+       btnStore.setOnClickListener {
             openStoreFragment()
         }
 
-        binding.btnCustomize.setOnClickListener {
-            // 꾸미기 버튼 클릭 이벤트 처리
-            Toast.makeText(activity, "꾸미기 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            // 예: 꾸미기 액티비티로 이동
+       btnCustomize.setOnClickListener {
             openCustomizeFragment()
         }
 
-        binding.btnCustomerService.setOnClickListener {
+        btnCustomerService.setOnClickListener {
             // 고객센터 버튼 클릭 이벤트 처리
             Toast.makeText(activity, "고객센터 버튼 클릭됨", Toast.LENGTH_SHORT).show()
             // 예: 고객센터 액티비티로 이동
             // startActivity(Intent(activity, CustomerServiceActivity::class.java))
         }
 
-        binding.btnAppInfo.setOnClickListener {
+        btnAppInfo.setOnClickListener {
             // 앱 정보 버튼 클릭 이벤트 처리
             Toast.makeText(activity, "앱 정보 버튼 클릭됨", Toast.LENGTH_SHORT).show()
             // 예: 앱 정보 액티비티로 이동
             // startActivity(Intent(activity, AppInfoActivity::class.java))
         }
 
-        binding.btnCustomize.setOnClickListener {
+        btnPreference.setOnClickListener {
+            val intent = Intent(context, PreferenceActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnCustomize.setOnClickListener {
             // 가족 카드 수정 버튼 클릭 시 MyPageEditFragment로 이동
             val fragment = MyPageEditFragment()
             val transaction = activity?.supportFragmentManager?.beginTransaction()
@@ -119,35 +151,71 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
             (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
         }
 
-        // SpannableString 설정
-        val fullText = "준우네 가족 >"
-        val spannableString = SpannableString(fullText)
 
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(p0: View) {
-                Toast.makeText(activity, "수정하기", Toast.LENGTH_SHORT).show()
-            }
+        return view
+    }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.color = Color.BLUE
-                ds.isUnderlineText = false
+    private fun copyFamilyCodeToClipboard() {
+        val familyCode = familyCodeView.text.toString()
+        if (familyCode.isNotEmpty()) {
+            // 클립보드 관리자 가져오기
+            val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            // 클립보드에 복사할 텍스트 데이터 생성
+            val clip = ClipData.newPlainText("Family Code", familyCode)
+            // 클립보드에 복사
+            clipboard.setPrimaryClip(clip)
+            // 사용자에게 복사 완료 메시지 표시
+            Toast.makeText(requireContext(), "가족코드가 복사되었습니다.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "가족코드가 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadUserData() {
+        val userId = auth.currentUser?.uid
+
+        if (userId != null) {
+            database.child("users").child(userId).get().addOnSuccessListener { dataSnapshot ->
+                if (dataSnapshot.exists()) {
+                    val familyCode = dataSnapshot.child("familyCode").value.toString()
+                    val familyName = dataSnapshot.child("familyName").value.toString()
+                    if(familyCode != null) {
+                        familyCodeView.text = familyCode
+                        familyNameView.text = familyName
+                        database.child("families").child(familyCode).child("members").child(userId).get().addOnSuccessListener { userDataSnapshot ->
+                            if(userDataSnapshot.exists()){
+                                val nickName = userDataSnapshot.child("nickName").value.toString()
+                                val userName = userDataSnapshot.child("userName").value.toString()
+                                val userBirth = userDataSnapshot.child("userBirth").value.toString()
+                                nickNameView.text = nickName
+                                userNameView.text = userName
+                                userBirthView.text = userBirth
+
+                            } else {
+                                Toast.makeText(requireContext(), "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }.addOnFailureListener {
+                            Toast.makeText(requireContext(), "데이터를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "사용자의 가족 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "데이터를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
             }
         }
-
-        // '>' 문자를 클릭 가능한 부분으로 설정
-        val end = fullText.length
-        spannableString.setSpan(clickableSpan, fullText.indexOf(">"), end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        val familyNameTextView: TextView = binding.familyCardModify
-        familyNameTextView.text = spannableString
-        familyNameTextView.movementMethod = LinkMovementMethod.getInstance() // 클릭 가능하게 만들기
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    private fun openEditFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.mainFrameLayout, MyPageEditFragment())
+            .addToBackStack(null)
+            .commit()
     }
+
 
     private fun openStoreFragment() {
         parentFragmentManager.beginTransaction()
@@ -163,6 +231,24 @@ class MyPageFragment : Fragment(R.layout.fragment_my_page) {
             .commit()
     }
 
-
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment MissionCalendarFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            MyPageFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
+    }
 
 }

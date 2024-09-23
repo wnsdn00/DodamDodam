@@ -72,13 +72,13 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
 
         buttonLogin.setOnClickListener {
-            val username = editTextEmail.text.toString() // 아이디 입력 필드
+            val userEmail = editTextEmail.text.toString() // 아이디 입력 필드
             val password = editTextPassword.text.toString() // 비밀번호 입력 필드
 
-            if (username.isEmpty() || password.isEmpty()) {
+            if (userEmail.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "아이디와 비밀번호를 입력하시오", Toast.LENGTH_SHORT).show()
             } else {
-                loginWithUsername(username, password)
+                loginWithUsername(userEmail, password)
             }
         }
     }
@@ -153,14 +153,16 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        private fun loginWithUsername(username: String, password: String) {
+        private fun loginWithUsername(userEmail: String, password: String) {
             firestore.collection("users")
-                .whereEqualTo("username", username)
+                .whereEqualTo("email", userEmail)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         // 이메일을 가져와서 로그인 시도
                         var email = documents.first().getString("email") ?: ""
+                        var userName = documents.first().getString("username") ?: ""
+                        var userBirth = documents.first().getString("userbirth") ?: ""
                         auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
@@ -168,10 +170,14 @@ class LoginActivity : AppCompatActivity() {
                                     Log.d("LoginActivity", "signInWithEmail:success")
                                     val user = auth.currentUser
                                     user?.let {
-                                        val username = it.uid
-                                        database.child("users").child(username).child("email")
+                                        val userId = it.uid
+                                        database.child("users").child(userId).child("email")
                                             .setValue(email)
-                                        checkUserFamilyCode(username)
+                                        database.child("users").child(userId).child("userName")
+                                            .setValue(userName)
+                                        database.child("users").child(userId).child("userBirth")
+                                            .setValue(userBirth)
+                                        checkUserFamilyCode(userId)
                                     }
                                 } else {
                                     // 로그인 실패

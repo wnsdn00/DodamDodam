@@ -114,6 +114,7 @@ dependencies {
     implementation("com.sun.mail:android-mail:1.6.7")
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation("com.android.volley:volley:1.2.1")
+    implementation("org.greenrobot:eventbus:3.3.1")
 
     // AndroidX 라이브러리
     implementation(libs.androidx.core.ktx)
@@ -128,6 +129,8 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
     implementation(libs.play.services.auth)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.firebase.functions.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

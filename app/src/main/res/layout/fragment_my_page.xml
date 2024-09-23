@@ -6,18 +6,8 @@
     android:background="#EAF3F8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EAF3F8"
     tools:context=".MyPageFragment">
 
-    <ImageButton
-        android:id="@+id/back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/myPageBackBtn"
@@ -48,11 +38,10 @@
             android:background="@drawable/familycard_border">
 
             <TextView
-                android:id="@+id/family_role"
+                android:id="@+id/user_nickName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="아들"
-                android:textColor="@color/black"
+                android:text="호칭"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp" />
@@ -80,7 +69,6 @@
                 android:layout_margin="5dp"
                 android:paddingBottom="8dp"
                 android:text="가족 등록증"
-                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -97,15 +85,15 @@
                 android:text=""
                 android:layout_margin="3dp"/>
             <TextView
-                android:id="@+id/family_card_modify"
+                android:id="@+id/family_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="**네 가족 >"
-                android:textColor="@color/black"
                 android:layout_margin="3dp"/>
             </LinearLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/family_card_bottom_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -113,22 +101,47 @@
             android:layout_gravity="bottom">
 
             <TextView
+                android:id="@+id/family_code"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="가족코드"
                 android:textColor="@color/black"
-                android:layout_marginLeft="5dp"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:textSize="11dp"
+                app:layout_constraintStart_toStartOf="@id/family_card_bottom_section"
+                app:layout_constraintTop_toTopOf="@id/family_card_bottom_section"
+                app:layout_constraintBottom_toBottomOf="@id/family_card_bottom_section"
+                tools:ignore="MissingConstraints" />
+
+            <ImageButton
+                android:id="@+id/btn_copy_family_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_copy"
+                android:background="@android:color/transparent"
+                android:layout_marginLeft="5dp"
+                app:layout_constraintStart_toEndOf="@id/family_code"
+                tools:ignore="MissingConstraints" />
+
+            <ImageButton
+                android:id="@+id/btn_edit_family_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_edit"
+                android:background="@android:color/transparent"
+                android:layout_marginLeft="5dp"
+                app:layout_constraintEnd_toEndOf="@id/family_card_bottom_section"
+                tools:ignore="MissingConstraints" />
+
+
+            <!--
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2024.07.30"
                 android:textColor="@color/black"
                 android:layout_marginRight="5dp"/>
-        </LinearLayout>
+                -->
+        </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
@@ -161,7 +174,6 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="상점"
-            android:textColor="@color/black"
             android:background="@drawable/custome_border" />
 
         <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
@@ -182,7 +194,6 @@
             android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:text="꾸미기"
-            android:textColor="@color/black"
             android:background="@drawable/custome_border"/>
     </LinearLayout>
 
@@ -214,7 +225,6 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  고객센터"
-            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
@@ -229,7 +239,6 @@
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  앱 정보"
-            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"
@@ -240,11 +249,10 @@
             android:background="@android:color/darker_gray" />
 
         <Button
-            android:id="@+id/buttonPreference"
+            android:id="@+id/btn_setting"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:text="    •  환경설정"
-            android:textColor="@color/black"
             android:textSize="17dp"
             android:textStyle="bold"
             android:gravity="center_vertical"

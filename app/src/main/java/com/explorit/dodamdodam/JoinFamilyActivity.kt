@@ -20,6 +20,9 @@ class JoinFamilyActivity : AppCompatActivity() {
     private lateinit var btnJoinFamilyFinish: Button
     private lateinit var database: DatabaseReference
 
+    private lateinit var userName: String
+    private lateinit var userBirth: String
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +60,20 @@ class JoinFamilyActivity : AppCompatActivity() {
                     if (dataSnapshot.exists()) {
                         val familyPassword =
                             dataSnapshot.child("familyPassWord").getValue(String::class.java)
-                        if (familyPassword == password) {
-                            addMemberToFamily(userId, familyCode, nickName)
+                        val familyName = dataSnapshot.child("familyName").getValue(String::class.java)
+                        if (familyPassword == password && familyName !== null) {
+                            database.child("users").child(userId).get().addOnSuccessListener { userDataSnapshot ->
+                                if (userDataSnapshot.exists()) {
+                                    userName = userDataSnapshot.child("userName").value.toString()
+                                    userBirth = userDataSnapshot.child("userBirth").value.toString()
+                                    addMemberToFamily(userId, familyCode, nickName, userName, userBirth, familyName)
+                                } else {
+                                    Toast.makeText(this@JoinFamilyActivity, "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            }.addOnFailureListener {
+                                Toast.makeText(this@JoinFamilyActivity, "데이터를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
+                            }
+
                         } else {
                             Toast.makeText(this@JoinFamilyActivity, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show()
                         }
@@ -76,7 +91,7 @@ class JoinFamilyActivity : AppCompatActivity() {
     }
 
     // 올바른 비밀번호를 입력 했을 시 가족 구성원에 사용자를 추가하는 함수
-    private fun addMemberToFamily(userId: String, familyCode: String?, nickName:String) {
+    private fun addMemberToFamily(userId: String, familyCode: String?, nickName:String, userName: String, userBirth: String, familyName: String) {
         if(familyCode != null) {
             // 가족 그룹 내에서 호칭이 이미 사용 중인지 확인
             val familyRef = database.child("families").child(familyCode).child("members")
@@ -97,10 +112,11 @@ class JoinFamilyActivity : AppCompatActivity() {
                         Toast.makeText(this@JoinFamilyActivity, "이미 사용 중인 호칭입니다. 다른 호칭을 선택해 주세요.", Toast.LENGTH_SHORT).show()
                     } else {
                         // 중복되지 않으면 멤버를 추가
-                        val member = Member(userId, nickName)
+                        val member = Member(userId, nickName, userName, userBirth)
                         familyRef.child(userId).setValue(member).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 database.child("users").child(userId).child("familyCode").setValue(familyCode)
+                                database.child("users").child(userId).child("familyName").setValue(familyName)
                                 val intent = Intent(this@JoinFamilyActivity, MainPageActivity::class.java)
                                 startActivity(intent)
                             } else {
