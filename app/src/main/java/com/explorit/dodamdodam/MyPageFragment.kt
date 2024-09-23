@@ -47,7 +47,7 @@ class MyPageFragment : Fragment() {
     private lateinit var btnCustomize: Button
     private lateinit var btnCustomerService: Button
     private lateinit var btnAppInfo: Button
-    private lateinit var btnSetting: Button
+    private lateinit var btnPreference: Button
 
     private lateinit var nickNameView: TextView
     private lateinit var userNameView: TextView
@@ -55,6 +55,7 @@ class MyPageFragment : Fragment() {
     private lateinit var familyCodeView: TextView
     private lateinit var familyNameView: TextView
     private lateinit var copyButton: ImageButton
+    private lateinit var editButton: ImageButton
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var database: DatabaseReference
@@ -79,7 +80,7 @@ class MyPageFragment : Fragment() {
         btnCustomize = view.findViewById(R.id.btn_customize)
         btnCustomerService = view.findViewById(R.id.btn_customer_service)
         btnAppInfo = view.findViewById(R.id.btn_app_info)
-        btnSetting = view.findViewById(R.id.btn_setting)
+        btnPreference = view.findViewById(R.id.btn_setting)
 
         nickNameView = view.findViewById(R.id.user_nickName)
         userNameView = view.findViewById(R.id.user_name)
@@ -88,6 +89,7 @@ class MyPageFragment : Fragment() {
         familyNameView = view.findViewById(R.id.family_name)
 
         copyButton = view.findViewById(R.id.btn_copy_family_code)
+        editButton = view.findViewById(R.id.btn_edit_family_card)
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -99,6 +101,10 @@ class MyPageFragment : Fragment() {
 
         copyButton.setOnClickListener {
             copyFamilyCodeToClipboard()
+        }
+
+        editButton.setOnClickListener {
+            openEditFragment()
         }
 
        btnStore.setOnClickListener {
@@ -121,6 +127,11 @@ class MyPageFragment : Fragment() {
             Toast.makeText(activity, "앱 정보 버튼 클릭됨", Toast.LENGTH_SHORT).show()
             // 예: 앱 정보 액티비티로 이동
             // startActivity(Intent(activity, AppInfoActivity::class.java))
+        }
+
+        btnPreference.setOnClickListener {
+            val intent = Intent(context, PreferenceActivity::class.java)
+            startActivity(intent)
         }
 
         btnCustomize.setOnClickListener {
@@ -196,6 +207,13 @@ class MyPageFragment : Fragment() {
                 Toast.makeText(requireContext(), "데이터를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun openEditFragment() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.mainFrameLayout, MyPageEditFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
 
