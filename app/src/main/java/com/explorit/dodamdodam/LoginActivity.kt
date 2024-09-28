@@ -81,30 +81,15 @@ class LoginActivity : AppCompatActivity() {
                 loginWithUsername(userEmail, password)
             }
         }
-    }
 
-
-        private fun fetchFirebaseCustomToken(kakaoAccessToken: String) {
-            // 예시: 서버에 요청하여 Firebase Custom Token을 받는 과정
-            val url = "YOUR_SERVER_URL_TO_GET_FIREBASE_CUSTOM_TOKEN"
-            val request = object : StringRequest(Method.POST, url,
-                Response.Listener { response ->
-                    val firebaseCustomToken = response // 서버로부터 받은 Firebase Custom Token
-                    firebaseAuthWithCustomToken(firebaseCustomToken)
-                },
-                Response.ErrorListener { error ->
-                    Log.e("LoginActivity", "서버로부터 Firebase Custom Token을 받는 데 실패했습니다.", error)
-                }) {
-                override fun getParams(): Map<String, String> {
-                    val params = HashMap<String, String>()
-                    params["kakaoAccessToken"] = kakaoAccessToken
-                    return params
-                }
-            }
-
-            // RequestQueue에 추가
-            Volley.newRequestQueue(this).add(request)
+        // 로그인 되어있는 사용자를 확인
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            // 자동 로그인
+            onLoginButtonClickToMainPage()
+            return
         }
+    }
 
         private fun firebaseAuthWithCustomToken(customToken: String) {
             auth.signInWithCustomToken(customToken)

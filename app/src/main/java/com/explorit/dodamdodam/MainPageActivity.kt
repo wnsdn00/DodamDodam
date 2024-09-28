@@ -19,6 +19,7 @@ private const val TAG_QUESTION = "RandomQuestionFragment"
 private const val TAG_CALENDAR = "MissionCalendarFragment"
 private const val TAG_DIARY = "DiaryFragment"
 private const val TAG_MY_PAGE = "MyPageFragment"
+private const val TAG_SEARCH = "SearchGragment"
 
 private lateinit var database:DatabaseReference
 private lateinit var familyCoinsTextView: TextView

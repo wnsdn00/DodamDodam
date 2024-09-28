@@ -99,9 +99,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun saveUserData(useremail: String, username: String, userbirth: String) { // Firebase에 저장
         val user = hashMapOf( // 해시맵으로 username, email 필드에 저장
-            "userEmail" to useremail,
-            "userName" to username,
-            "userBirth" to userbirth
+            "email" to useremail,
+            "username" to username,
+            "userbirth" to userbirth
         )
 
         // 생성된 ID로 새 문서 추가

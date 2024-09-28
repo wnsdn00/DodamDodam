@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EAF3F8"
-    tools:context=".DiaryFragment">
+    tools:context=".SearchFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutTop"
@@ -48,7 +48,6 @@
             android:id="@+id/search"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:text="Search"
             android:background="#EAF3F8"
             android:layout_marginBottom="30dp"
             app:srcCompat="@drawable/search"
@@ -65,7 +64,7 @@
             android:contentDescription="@string/gallery_button"/>
     </LinearLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fragment_container"
         android:layout_width="400dp"
         android:layout_height="70dp"
@@ -76,12 +75,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-    </FrameLayout>
+        <EditText
+            android:id="@+id/search_button1"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="작성자"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:imeOptions="actionSearch"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/search_button2"
+            android:layout_width="10dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="작성 날짜"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="575dp"
+        android:layout_height="500dp"
         android:background="#EAF3F8"
         app:layout_constraintBottom_toBottomOf="parent" />
 

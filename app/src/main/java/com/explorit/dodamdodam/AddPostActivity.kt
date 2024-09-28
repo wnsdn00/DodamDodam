@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -23,7 +23,10 @@ import org.greenrobot.eventbus.EventBus
 
 class AddPostActivity : AppCompatActivity() {
 
-    private val REQUEST_READ_EXTERNAL_STORAGE = 100
+    companion object {
+        private const val REQUEST_READ_EXTERNAL_STORAGE = 100
+    }
+
     private lateinit var binding: ActivityAddPostBinding
     private lateinit var storage: FirebaseStorage
     private lateinit var firestore: FirebaseFirestore
@@ -46,13 +49,11 @@ class AddPostActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Firebase 초기화
-        FirebaseApp.initializeApp(this)
         storage = FirebaseStorage.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
         // Photo Upload 버튼 클릭
         binding.addpostBtnUpload.setOnClickListener {
-            // 권한 확인 및 앨범 열기
             checkPermissionAndOpenAlbum()
         }
 
@@ -84,7 +85,6 @@ class AddPostActivity : AppCompatActivity() {
                     openAlbum()
                 }
             }
-
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
                 if (ContextCompat.checkSelfPermission(
                         this,
@@ -100,9 +100,7 @@ class AddPostActivity : AppCompatActivity() {
                     openAlbum()
                 }
             }
-
             else -> {
-                // 권한 확인이 필요하지 않은 경우 (Android 6.0 미만)
                 openAlbum()
             }
         }
@@ -114,15 +112,12 @@ class AddPostActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        // 부모 클래스의 메서드 호출
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한이 허용된 경우 앨범 열기
                 openAlbum()
             } else {
-                // 권한이 거부된 경우
                 Toast.makeText(this, "파일 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show()
             }
         }
@@ -139,16 +134,15 @@ class AddPostActivity : AppCompatActivity() {
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             val imageFileName = "IMAGE_$timestamp.png"
 
-            // Get a reference to the storage
             val storageRef: StorageReference =
                 storage.reference.child("images").child(imageFileName)
 
             // 파일 업로드
             storageRef.putFile(uri).addOnSuccessListener {
+                Toast.makeText(this, "업로드 성공", Toast.LENGTH_LONG).show()
                 storageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
                     saveFileUrlToFirestore(downloadUrl.toString())
                 }
-                Toast.makeText(this, "업로드 성공", Toast.LENGTH_LONG).show()
             }.addOnFailureListener { exception ->
                 Toast.makeText(this, "업로드 실패: ${exception.message}", Toast.LENGTH_LONG).show()
                 Log.e("AddPostActivity", "파일 업로드 실패", exception)
@@ -162,26 +156,42 @@ class AddPostActivity : AppCompatActivity() {
         val userId = currentUser?.uid ?: "Unknown User"
         val userProfile = currentUser?.photoUrl?.toString() ?: ""
 
-        val postData = ContentDTO(
-            userId = userId,
-            explain = binding.addpostEditExplain.text.toString(),
-            imageUrl = downloadUrl,
-            timestamp = System.currentTimeMillis(),
-            profileImageUrl = userProfile
-        )
+        getFamilyCode(userId) { familyCode ->
+            val postData = DiaryFragment.ContentDTO(
+                userId = userId,
+                explain = binding.addpostEditExplain.text.toString(),
+                imageUrl = downloadUrl,
+                timestamp = System.currentTimeMillis(),
+                profileImageUrl = userProfile,
+                familyCode = familyCode
+            )
 
-        firestore.collection("posts").add(postData).addOnSuccessListener { documentReference ->
-            postData.documentId = documentReference.id // ID 업데이트
-            Toast.makeText(this, getString(R.string.upload_success), Toast.LENGTH_LONG).show()
-            EventBus.getDefault().post(NewPostEvent())
-            finish() // 업로드 성공 후 액티비티 종료
-        }.addOnFailureListener { exception ->
-            Toast.makeText(this, getString(R.string.upload_failed), Toast.LENGTH_LONG).show()
-            Log.e("AddPostActivity", "Firestore 저장 실패", exception)
+            firestore.collection("posts").add(postData).addOnSuccessListener { documentReference ->
+                postData.documentId = documentReference.id
+                Log.d("AddPostActivity", "게시물 업로드 성공, ID: ${postData.documentId}")
+                EventBus.getDefault().post(NewPostEvent())
+                finish()
+            }.addOnFailureListener { exception ->
+                Log.e("AddPostActivity", "Firestore 저장 실패", exception)
+            }
         }
+    }
+
+    // familyCode를 가져오는 함수
+    private fun getFamilyCode(userId: String, callback: (String) -> Unit) {
+        val database = FirebaseDatabase.getInstance().reference // Realtime Database 초기화
+        database.child("users").child(userId).child("familyCode").get()
+            .addOnSuccessListener { dataSnapshot ->
+                val familyCode = dataSnapshot.value.toString()
+                Log.d("AddPostActivity", "familyCode 저장: $familyCode")
+                callback(familyCode)
+            }.addOnFailureListener { exception ->
+                Log.e("AddPostActivity", "사용자 familyCode 정보 가져오기 실패", exception)
+                callback("defaultFamilyCode")
+            }
     }
 }
 
 class NewPostEvent {
-
+    // NewPostEvent 정의
 }

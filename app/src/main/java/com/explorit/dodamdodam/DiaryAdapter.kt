@@ -14,8 +14,10 @@ import com.explorit.dodamdodam.databinding.ItemDiaryBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.auth.FirebaseAuth
 
-class DiaryAdapter(private var postData: MutableList<ContentDTO>, private val context: Context) :
-    RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder>() {
+class DiaryAdapter(
+    private var postData: MutableList<DiaryFragment.ContentDTO>,
+    private val context: Context
+) : RecyclerView.Adapter<DiaryAdapter.DiaryViewHolder>() {
 
     private val firestore = FirebaseFirestore.getInstance()
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
@@ -23,18 +25,15 @@ class DiaryAdapter(private var postData: MutableList<ContentDTO>, private val co
     inner class DiaryViewHolder(private val binding: ItemDiaryBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(post: ContentDTO) {
+        fun bind(post: DiaryFragment.ContentDTO) {
             binding.userId.text = post.userId
             binding.userPostExplanation.text = post.explain ?: ""
             Glide.with(binding.root.context).load(post.imageUrl).into(binding.userPost)
 
-            if (post.userId == currentUserId) {
-                binding.postDelete.visibility = View.VISIBLE
-                binding.postEdit.visibility = View.VISIBLE
-            } else {
-                binding.postDelete.visibility = View.GONE
-                binding.postEdit.visibility = View.GONE
-            }
+            binding.postDelete.visibility =
+                if (post.userId == currentUserId) View.VISIBLE else View.GONE
+            binding.postEdit.visibility =
+                if (post.userId == currentUserId) View.VISIBLE else View.GONE
 
             binding.postDelete.setOnClickListener {
                 val position = bindingAdapterPosition
@@ -60,7 +59,7 @@ class DiaryAdapter(private var postData: MutableList<ContentDTO>, private val co
     override fun getItemCount(): Int = postData.size
 
     // 게시물 삭제 함수
-    private fun deletePost(post: ContentDTO, position: Int) {
+    private fun deletePost(post: DiaryFragment.ContentDTO, position: Int) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("게시물 삭제")
             .setMessage("게시물을 삭제하시겠습니까?")
@@ -74,63 +73,57 @@ class DiaryAdapter(private var postData: MutableList<ContentDTO>, private val co
                             postData.removeAt(position)
                             notifyItemRemoved(position)
                             Toast.makeText(context, "게시물 삭제 완료", Toast.LENGTH_SHORT).show()
+                            Log.d("DiaryAdapter", "게시물 삭제 성공: $documentId")
                         }
                         .addOnFailureListener { e ->
+                            Toast.makeText(context, "게시물 삭제 실패", Toast.LENGTH_SHORT).show()
                             Log.e("DiaryAdapter", "게시물 삭제 실패: ${e.message}")
-                            Toast.makeText(context, "게시물 삭제 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
-                } else {
-                    Toast.makeText(context, "게시물 ID가 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("아니오") { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
+            .setNegativeButton("아니요", null)
+            .show()
     }
 
     // 게시물 수정 함수
-    private fun updatePost(post: ContentDTO, position: Int) {
-        val builder = AlertDialog.Builder(context)
-        val input = EditText(context).apply {
-            setText(post.explain)
-        }
-        builder.setView(input)
+    private fun updatePost(post: DiaryFragment.ContentDTO, position: Int) {
+        val editText = EditText(context)
+        editText.setText(post.explain)
 
+        val builder = AlertDialog.Builder(context)
         builder.setTitle("게시물 수정")
-            .setMessage("새로운 설명을 입력하세요.")
+            .setView(editText)
             .setPositiveButton("확인") { _, _ ->
-                val newExplanation = input.text.toString()
+                val updatedExplain = editText.text.toString()
                 val documentId = post.documentId ?: ""
                 if (documentId.isNotEmpty()) {
-                    // Firestore에서 게시물 수정
                     firestore.collection("posts").document(documentId)
-                        .update("explain", newExplanation)
+                        .update("explain", updatedExplain)
                         .addOnSuccessListener {
-                            post.explain = newExplanation // 로컬 데이터 업데이트
-                            notifyItemChanged(position) // 특정 아이템만 업데이트
-                            Toast.makeText(context, "게시물이 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                            postData[position].explain = updatedExplain
+                            notifyItemChanged(position)
+                            Toast.makeText(context, "게시물 수정 완료", Toast.LENGTH_SHORT).show()
+                            Log.d("DiaryAdapter", "게시물 수정 성공: $documentId")
                         }
                         .addOnFailureListener { e ->
+                            Toast.makeText(context, "게시물 수정 실패", Toast.LENGTH_SHORT).show()
                             Log.e("DiaryAdapter", "게시물 수정 실패: ${e.message}")
-                            Toast.makeText(context, "게시물 수정 실패: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
-                } else {
-                    Toast.makeText(context, "게시물 ID가 없습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("취소") { dialog, _ -> dialog.cancel() }
-
-        builder.create().show()
+            .setNegativeButton("취소", null)
+            .show()
     }
 
-    fun addItems(newItems: List<ContentDTO>) {
-        val startPosition = postData.size
-        postData.addAll(newItems)
-        notifyItemRangeInserted(startPosition, newItems.size)
-    }
-
-    fun updatePostList(newPostList: List<ContentDTO>) {
+    fun updatePostList(newPosts: List<DiaryFragment.ContentDTO>) {
         postData.clear()
-        postData.addAll(newPostList)
+        postData.addAll(newPosts)
         notifyDataSetChanged()
+    }
+
+    fun addItems(newPosts: List<DiaryFragment.ContentDTO>) {
+        val startPosition = postData.size
+        postData.addAll(newPosts)
+        notifyItemRangeInserted(startPosition, newPosts.size)
     }
 }
