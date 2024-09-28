@@ -75,10 +75,6 @@ class MissionCalendarFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainPageActivity)?.updateFamilyCoins()
-    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -115,8 +111,7 @@ class MissionCalendarFragment : Fragment() {
         missionCheckButton = view.findViewById(R.id.missionCheckButton)
 
         fetchUserFamilyCode()
-        checkTodayMissionsComplete()
-        resetMissionCompletion()
+        resetMissionCompletionAndCheck()
         setMonthView()
 
 
@@ -161,9 +156,14 @@ class MissionCalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Fragment가 완전히 생성된 후에 UI 관련 작업 수행
-        checkTodayMissionsComplete()
-        resetMissionCompletion()
+        resetMissionCompletionAndCheck()
         setMonthView()
+    }
+
+    private fun resetMissionCompletionAndCheck() {
+        resetMissionCompletion { // resetMissionCompletion에서 콜백을 받아 완료 후 실행
+            checkTodayMissionsComplete()
+        }
     }
 
     // 달력 화면 생성 함수
@@ -392,7 +392,7 @@ class MissionCalendarFragment : Fragment() {
                                 if (missionsSnapshot.exists()) {
                                     for (missionSnapshot in missionsSnapshot.children) {
                                         val value = missionSnapshot.getValue(Any::class.java)
-                                        if (value is Mission) {
+                                        if (value !is List<*> && value !is String && value !is Boolean) {
                                             val mission = missionSnapshot.getValue(Mission::class.java)
                                             if (mission != null) {
                                                 missions.add(mission)
@@ -435,6 +435,7 @@ class MissionCalendarFragment : Fragment() {
                                                     completedDates.add(todayString)
                                                     completedDatesRef.setValue(completedDates).addOnCompleteListener { task ->
                                                         if (task.isSuccessful) {
+                                                            database.child("families").child(familyCode).child("missions").child(currentUserUid).child("completedDay").setValue(todayString)
                                                             Log.d("MissionUpdate", "Mission completed date added successfully.")
                                                         } else {
                                                             Log.e("MissionUpdate", "Failed to update completed dates.")
@@ -513,7 +514,7 @@ class MissionCalendarFragment : Fragment() {
     }
 
     // 하루가 지났을때 미션 완료 상태를 초기화 하는 함수
-    private fun resetMissionCompletion() {
+    private fun resetMissionCompletion(onComplete:() -> Unit) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         val today = LocalDate.now()
 
@@ -528,17 +529,25 @@ class MissionCalendarFragment : Fragment() {
                                     if (missionsSnapshot.exists()) {
                                         for (missionSnapshot in missionsSnapshot.children) {
                                             val value = missionSnapshot.getValue(Any::class.java)
-                                            if (value is Mission) {
+                                            val completedDay = missionsSnapshot.child("completedDay").getValue(String::class.java)
+                                            if (value !is List<*> && value !is String && value !is Boolean)  {
                                                 val mission = missionSnapshot.getValue(Mission::class.java)
                                                 mission?.let {
                                                     // 만약 미션이 완료되었고, 오늘이 해당 미션이 완료된 날의 다음 날이라면
-                                                    if (it.complete && it.timestamp != null && today.isAfter(LocalDate.parse(it.timestamp))) {
+                                                    if (today.isAfter(LocalDate.parse(completedDay))) {
                                                         missionSnapshot.ref.child("complete").setValue(false)
-                                                        //missionsSnapshot.ref.child("todayMissionCompleted").setValue(false)
+                                                        missionsSnapshot.ref.child("todayMissionCompleted")
+                                                            .setValue(false) .addOnSuccessListener {
+                                                                Log.d("MissionCalendarFragment", "todayMissionCompleted reset successfully")
+                                                            }
+                                                            .addOnFailureListener {
+                                                                Log.e("MissionCalendarFragment", "Failed to reset todayMissionCompleted: ${it.message}")
+                                                            }
                                                     }
                                                 }
                                             }
                                         }
+                                        onComplete()
                                     }
                                 }
 

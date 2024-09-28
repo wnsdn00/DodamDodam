@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -45,15 +46,31 @@
             android:layout_margin="5dp"
             android:text="배경" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/selectedItemImage"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/selectedItemView"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="@drawable/custom_border"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:padding="50dp"/>
+        android:background="@drawable/custom_border">
+        <ImageView
+            android:id="@+id/selectedItemImage"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:padding="50dp"
+            tools:ignore="MissingConstraints" />
+        <Button
+            android:id="@+id/btn_apply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_kategorie_btn"
+            android:layout_margin="10dp"
+            android:text="적용"
+            app:layout_constraintBottom_toBottomOf="@+id/selectedItemView"
+            app:layout_constraintEnd_toEndOf="@+id/selectedItemView"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemNameRecyclerView"

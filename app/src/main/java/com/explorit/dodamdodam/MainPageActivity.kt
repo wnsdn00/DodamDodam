@@ -22,7 +22,7 @@ private const val TAG_MY_PAGE = "MyPageFragment"
 private const val TAG_SEARCH = "SearchGragment"
 
 private lateinit var database:DatabaseReference
-private lateinit var familyCoinsTextView: TextView
+
 
 
 
@@ -34,14 +34,9 @@ class MainPageActivity : AppCompatActivity() {
         binding = ActivityMainPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        familyCoinsTextView = findViewById(R.id.familyCoinsTextView)
         database = FirebaseDatabase.getInstance().reference
 
-        fetchFamilyCoins()
 
-        // 사용자 정보 가져오기
-        val userName = intent.getStringExtra("user_name") ?: "Unkown"
-        val userBirthday = intent.getStringExtra("user_birthday") ?: "0000.00.00"
 
         // 초기 프래그먼트 설정
         if (savedInstanceState == null) {
@@ -53,10 +48,8 @@ class MainPageActivity : AppCompatActivity() {
                 R.id.diaryFragment -> setFragment(TAG_DIARY, DiaryFragment())
                 R.id.questionFragment -> setFragment(TAG_QUESTION, RandomQuestionFragment())
                 R.id.calendarFragment -> setFragment(TAG_CALENDAR, MissionCalendarFragment())
-                R.id.myPageFragment -> {
-                    val myPageFragment = MyPageFragment.newInstance(userName, userBirthday)
-                    setFragment(TAG_MY_PAGE, myPageFragment)
-                }
+                R.id.myPageFragment -> setFragment(TAG_MY_PAGE, MyPageFragment())
+
             }
             true
         }
@@ -103,41 +96,6 @@ class MainPageActivity : AppCompatActivity() {
         */
     }
 
-    // 가족 코인을 메인화면에서 보여주는 함수
-    private fun fetchFamilyCoins() {
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-        if (currentUserUid != null) {
-            database.child("users").child(currentUserUid)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
-                        if (familyCode != null) {
-                            database.child("families").child(familyCode).child("familyCoin")
-                                .addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        val coins = snapshot.getValue(Int::class.java) ?: 0
-                                        familyCoinsTextView.text = "$coins"
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                        Toast.makeText(this@MainPageActivity, "코인 정보를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                                    }
-                                })
-                        } else {
-                            Toast.makeText(this@MainPageActivity, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(this@MainPageActivity, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                })
-        }
-    }
-
-    fun updateFamilyCoins() {
-        fetchFamilyCoins() // 코인 정보를 업데이트하는 메서드 호출
-    }
 
 }
 

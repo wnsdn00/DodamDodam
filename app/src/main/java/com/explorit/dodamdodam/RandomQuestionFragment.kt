@@ -63,11 +63,6 @@ class RandomQuestionFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainPageActivity)?.updateFamilyCoins()
-    }
-
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
