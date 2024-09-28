@@ -79,12 +79,13 @@ dependencies {
 
     // Firebase 라이브러리
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
-    implementation(libs.firebase.firestore)
+    implementation("com.google.firebase:firebase-firestore:25.1.0")
     implementation("com.google.firebase:firebase-analytics") // 파이어베이스 앱 분석
     implementation("com.google.firebase:firebase-core:21.1.1") // 파이어베이스 코어
     implementation("com.google.firebase:firebase-auth:23.0.0") // 파이어베이스 인증
     implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
+    implementation("com.google.firebase:firebase-functions-ktx:21.0.0")
 
     // Kakao 라이브러리
     implementation ("com.kakao.sdk:v2-all:2.20.3") // 전체 모듈 설치, 2.11.0 버전부터 지원
@@ -100,12 +101,16 @@ dependencies {
     implementation ("com.google.firebase:firebase-bom:33.1.2")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0") // Firebase 인증 라이브러리
-    implementation ("com.google.android.gms:play-services-auth:21.2.0") // Google 로그인 라이브러리
+    implementation ("com.google.android.gms:play-services-auth:20.0.0") // Google 로그인 라이브러리
     implementation ("com.google.android.gms:play-services-identity:18.1.0")
 
     // Glide 라이브러리
     implementation("com.github.bumptech.glide:compiler:4.12.0") // 글라이드 이미지 로딩1
     implementation("com.github.bumptech.glide:glide:4.12.0") // 글라이드 이미지 로딩2
+
+    // Navigation Component
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.1")
 
     //  라이브러리
     implementation("androidx.recyclerview:recyclerview:1.3.2")
@@ -129,8 +134,8 @@ dependencies {
     implementation(libs.firebase.storage.ktx)
     implementation(libs.volley)
     implementation(libs.play.services.auth)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.firebase.functions.ktx)
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

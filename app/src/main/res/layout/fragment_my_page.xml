@@ -63,85 +63,85 @@
                 android:orientation="vertical"
                 android:layout_centerHorizontal="true">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:paddingBottom="8dp"
-                android:text="가족 등록증"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingBottom="8dp"
+                    android:text="가족 등록증"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:layout_margin="3dp"/>
-            <TextView
-                android:id="@+id/user_birthday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:layout_margin="3dp"/>
-            <TextView
-                android:id="@+id/family_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="**네 가족 >"
-                android:layout_margin="3dp"/>
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_margin="3dp"/>
+                <TextView
+                    android:id="@+id/user_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_margin="3dp"/>
+                <TextView
+                    android:id="@+id/family_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="**네 가족"
+                    android:layout_margin="3dp"/>
             </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/family_card_bottom_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom">
-
-            <TextView
-                android:id="@+id/family_code"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="가족코드"
-                android:textColor="@color/black"
-                android:textSize="11dp"
-                app:layout_constraintStart_toStartOf="@id/family_card_bottom_section"
-                app:layout_constraintTop_toTopOf="@id/family_card_bottom_section"
-                app:layout_constraintBottom_toBottomOf="@id/family_card_bottom_section"
-                tools:ignore="MissingConstraints" />
-
-            <ImageButton
-                android:id="@+id/btn_copy_family_code"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/family_card_bottom_section"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_copy"
-                android:background="@android:color/transparent"
-                android:layout_marginLeft="5dp"
-                app:layout_constraintStart_toEndOf="@id/family_code"
-                tools:ignore="MissingConstraints" />
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom">
 
-            <ImageButton
-                android:id="@+id/btn_edit_family_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_edit"
-                android:background="@android:color/transparent"
-                android:layout_marginLeft="5dp"
-                app:layout_constraintEnd_toEndOf="@id/family_card_bottom_section"
-                tools:ignore="MissingConstraints" />
+                <TextView
+                    android:id="@+id/family_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="가족코드"
+                    android:textColor="@color/black"
+                    android:textSize="11dp"
+                    app:layout_constraintStart_toStartOf="@id/family_card_bottom_section"
+                    app:layout_constraintTop_toTopOf="@id/family_card_bottom_section"
+                    app:layout_constraintBottom_toBottomOf="@id/family_card_bottom_section"
+                    tools:ignore="MissingConstraints" />
+
+                <ImageButton
+                    android:id="@+id/btn_copy_family_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_copy"
+                    android:background="@android:color/transparent"
+                    android:layout_marginLeft="5dp"
+                    app:layout_constraintStart_toEndOf="@id/family_code"
+                    tools:ignore="MissingConstraints" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit_family_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_edit"
+                    android:background="@android:color/transparent"
+                    android:layout_marginLeft="5dp"
+                    app:layout_constraintEnd_toEndOf="@id/family_card_bottom_section"
+                    tools:ignore="MissingConstraints" />
 
 
-            <!--
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2024.07.30"
-                android:textColor="@color/black"
-                android:layout_marginRight="5dp"/>
-                -->
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <!--
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2024.07.30"
+                    android:textColor="@color/black"
+                    android:layout_marginRight="5dp"/>
+                    -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

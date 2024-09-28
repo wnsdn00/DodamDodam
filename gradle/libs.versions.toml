@@ -40,8 +40,6 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
-androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
-firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
