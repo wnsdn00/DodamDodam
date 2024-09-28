@@ -9,13 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-class StoreAdapter(private val storeItems: List<StoreItem>, private val onBuyClick: (StoreItem) -> Unit) : RecyclerView.Adapter<StoreAdapter.StoreViewHolder>(){
+class StoreAdapter(private val storeItems: List<StoreItem>, private val purchasedItems: List<String?>, private val onBuyClick: (StoreItem) -> Unit) : RecyclerView.Adapter<StoreAdapter.StoreViewHolder>(){
 
     class StoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val itemImage: ImageView = itemView.findViewById(R.id.storeItemImage)
         val itemName: TextView = itemView.findViewById(R.id.storeItemName)
         val itemPrice: TextView = itemView.findViewById(R.id.storeItemPrice)
         val buyButton: Button = itemView.findViewById(R.id.buyButton)
+
     }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoreViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_store, parent, false)
@@ -32,8 +33,17 @@ class StoreAdapter(private val storeItems: List<StoreItem>, private val onBuyCli
             .load(item.imageUrl)
             .into(holder.itemImage)
 
-        holder.buyButton.setOnClickListener {
-            onBuyClick(item)  // 아이템 구매 콜백 호출
+        if (purchasedItems.contains(item.name)) {
+            holder.buyButton.text = "보유"
+            holder.buyButton.isEnabled = false
+            holder.buyButton.setBackgroundResource(R.drawable.store_button_hold)
+        } else {
+            holder.buyButton.text = "구매"
+            holder.buyButton.isEnabled = true
+            holder.buyButton.setBackgroundResource(R.drawable.store_button_buy)  // 배경색 변경 (기본 파랑)
+            holder.buyButton.setOnClickListener {
+                onBuyClick(item)  // 아이템 구매 콜백 호출
+            }
         }
     }
 

@@ -1,0 +1,13 @@
+<!-- res/drawable/oval_border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- 배경색 설정 -->
+    <solid android:color="@color/blue"/>
+
+    <!-- 테두리 설정 -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000"/> <!-- 빨간색 테두리 -->
+
+</shape>

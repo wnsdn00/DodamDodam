@@ -19,8 +19,10 @@ import android.widget.Toast
 import android.text.method.LinkMovementMethod
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.FragmentMyPageBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -49,6 +51,7 @@ class MyPageFragment : Fragment() {
     private lateinit var btnAppInfo: Button
     private lateinit var btnPreference: Button
 
+    private lateinit var profileImageView: ImageView
     private lateinit var nickNameView: TextView
     private lateinit var userNameView: TextView
     private lateinit var userBirthView: TextView
@@ -82,6 +85,7 @@ class MyPageFragment : Fragment() {
         btnAppInfo = view.findViewById(R.id.btn_app_info)
         btnPreference = view.findViewById(R.id.btn_setting)
 
+        profileImageView = view.findViewById(R.id.profile_image)
         nickNameView = view.findViewById(R.id.user_nickName)
         userNameView = view.findViewById(R.id.user_name)
         userBirthView = view.findViewById(R.id.user_birthday)
@@ -134,14 +138,6 @@ class MyPageFragment : Fragment() {
             startActivity(intent)
         }
 
-        btnCustomize.setOnClickListener {
-            // 가족 카드 수정 버튼 클릭 시 MyPageEditFragment로 이동
-            val fragment = MyPageEditFragment()
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.myPageFragment, fragment)
-            transaction?.addToBackStack(null)
-            transaction?.commit()
-        }
 
         backToMainButton.setOnClickListener {
             (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
@@ -187,9 +183,20 @@ class MyPageFragment : Fragment() {
                                 val nickName = userDataSnapshot.child("nickName").value.toString()
                                 val userName = userDataSnapshot.child("userName").value.toString()
                                 val userBirth = userDataSnapshot.child("userBirth").value.toString()
+                                val profileImageUrl = userDataSnapshot.child("profileUrl").value.toString()
+
                                 nickNameView.text = nickName
                                 userNameView.text = userName
                                 userBirthView.text = userBirth
+
+                                if (profileImageUrl.isNotEmpty()) {
+                                    Glide.with(this)
+                                        .load(profileImageUrl)
+                                        .into(profileImageView!!)
+                                } else {
+                                    // 기본 이미지 설정
+                                    profileImageView?.setImageResource(R.drawable.ic_profile)
+                                }
 
                             } else {
                                 Toast.makeText(requireContext(), "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()

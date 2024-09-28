@@ -82,6 +82,22 @@ class CreateFamilyActivity : AppCompatActivity() {
                             database.child("users").child(userId).child("familyCode").setValue(familyCode)
                             database.child("users").child(userId).child("familyName").setValue(familyName)
 
+                            val defaultCharacter = StoreItem(
+                                name = "복실이",
+                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/storeItemImages%2Fcharacter_01.png?alt=media&token=831a326a-41d1-48cf-a084-3aae1142f1ee",
+                                price = 200,
+                                itemCategory = "character"
+                            )
+                            val itemId = database.child("families").child(familyCode).child("purchasedItems").push().key
+                            if (itemId != null) {
+                                database.child("families")
+                                    .child(familyCode)
+                                    .child("purchasedItems")
+                                    .child(itemId)
+                                    .setValue(defaultCharacter)
+                            }
+                            database.child("families").child(familyCode).child("mainScreenItems").setValue(defaultCharacter)
+
                             // 생성된 가족 코드를 클립보드에 복사
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("Family Code", familyCode)
@@ -121,7 +137,7 @@ data class Member(
     val userName: String? = null,
     val userBirth: String? = null,
     val familyName: String? = null,
-    val profileUrl: String? = "android.resource://com.explorit.dodamdodam/drawable/ic_profile",
+    val profileUrl: String? = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profile.png?alt=media&token=9da0e69f-7001-4bae-a286-e16f6680ee1e",
     var hasAnswered: Boolean = false
 ) : Serializable
 

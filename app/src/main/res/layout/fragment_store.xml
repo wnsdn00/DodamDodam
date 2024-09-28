@@ -48,7 +48,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_btn"
+                android:background="@drawable/store_kategorie_button"
                 android:text="캐릭터" />
 
             <View
@@ -61,7 +61,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_btn"
+                android:background="@drawable/store_kategorie_button"
                 android:text="패션" />
 
             <View
@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_btn"
+                android:background="@drawable/store_kategorie_button"
                 android:text="배경" />
 
             <ImageView

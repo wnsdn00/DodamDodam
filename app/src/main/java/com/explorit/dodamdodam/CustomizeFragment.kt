@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
@@ -36,9 +37,12 @@ class CustomizeFragment : Fragment() {
     private lateinit var itemNameListView: RecyclerView
     private lateinit var customizeAdapter: CustomizeAdapter
     private lateinit var selectedItemView: ImageView
+    private lateinit var applyButton: Button
     private  lateinit var backToMainButton: ImageButton
     private val database = FirebaseDatabase.getInstance().reference
     private lateinit var auth: FirebaseAuth
+    private var selectedItem: StoreItem? = null
+    private var selectedCategory: String = "character"
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -50,10 +54,19 @@ class CustomizeFragment : Fragment() {
 
         itemNameListView = view.findViewById(R.id.itemNameRecyclerView)
         selectedItemView = view.findViewById(R.id.selectedItemImage)
+        applyButton = view.findViewById(R.id.btn_apply)
+        applyButton.visibility = View.GONE // 버튼 처음에는 숨김 처리
+
+        val characterButton = view.findViewById<Button>(R.id.btn_character)
+        val fashionButton = view.findViewById<Button>(R.id.btn_fashion) // 추가된 버튼이라면
+        val backgroundButton = view.findViewById<Button>(R.id.btn_background)
+
+
 
         itemNameListView.layoutManager = GridLayoutManager(context, 3)
 
         fetchPurchasedItems()
+        setSelectedButton(characterButton, backgroundButton, fashionButton)
 
         backToMainButton = view.findViewById(R.id.customizeBackBtn)
 
@@ -63,6 +76,33 @@ class CustomizeFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             parentFragmentManager.popBackStack()
+        }
+
+        applyButton.setOnClickListener {
+            selectedItem?.let { item ->
+                saveSelectedItemToMainScreen(item)
+                Toast.makeText(context, "메인 화면에 적용되었습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        characterButton.setOnClickListener {
+            setSelectedButton(characterButton, backgroundButton, fashionButton)
+            selectedCategory = "character"
+            fetchPurchasedItems()  // 캐릭터 아이템만 보여줍니다.
+        }
+
+        // 패션 버튼 클릭 시 (추가된 버튼이므로 필요 시)
+        fashionButton?.setOnClickListener {
+            setSelectedButton(fashionButton, characterButton, backgroundButton)
+            selectedCategory = "fashion"
+            fetchPurchasedItems()  // 패션 아이템만 보여줍니다.
+        }
+
+        // 배경 버튼 클릭 시
+        backgroundButton.setOnClickListener {
+            setSelectedButton(backgroundButton, characterButton, fashionButton)
+            selectedCategory = "background"
+            fetchPurchasedItems()  // 배경 아이템만 보여줍니다.
         }
 
         return view
@@ -85,7 +125,7 @@ class CustomizeFragment : Fragment() {
                                     val items = mutableListOf<StoreItem>()
                                     for (itemSnapshot in dataSnapshot.children) {
                                         val item = itemSnapshot.getValue(StoreItem::class.java)
-                                        if (item != null) {
+                                        if (item != null && item.itemCategory == selectedCategory) {
                                             items.add(item)
                                         }
                                     }
@@ -94,11 +134,16 @@ class CustomizeFragment : Fragment() {
                                     customizeAdapter = CustomizeAdapter(items) { selectedItem ->
                                         // 아이템 이름 클릭 시 중앙에 이미지 표시
                                         Glide.with(requireContext()).load(selectedItem.imageUrl).into(selectedItemView)
+
+                                        this@CustomizeFragment.selectedItem = selectedItem
+
+                                        applyButton.visibility = View.VISIBLE
                                     }
                                     itemNameListView.adapter = customizeAdapter
+
                                 }
                                 .addOnFailureListener { exception ->
-                                    Log.w("DecorationFragment", "Error getting purchased items.", exception)
+                                    Log.w("CustomizeFragment", "Error getting purchased items.", exception)
                                 }
                         } else {
                             Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -115,13 +160,37 @@ class CustomizeFragment : Fragment() {
             Log.e("RandomQuestionFragment", "Current user UID is null")
         }
 
-
-
-
-
-
-
     }
+
+    private fun saveSelectedItemToMainScreen(selectedItem: StoreItem) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        if (familyCode != null) {
+                            // 선택한 아이템을 가족의 'mainScreenItems'에 저장
+                            database.child("families").child(familyCode)
+                                .child("mainScreenItems")
+                                .setValue(selectedItem)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터 저장 실패", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
+    }
+
+    private fun setSelectedButton(selected: Button, vararg others: Button) {
+        // 선택된 버튼은 선택 상태로 표시
+        selected.isSelected = true
+        // 다른 버튼은 선택 해제
+        others.forEach { it.isSelected = false }
+    }
+
 
 
     companion object {
