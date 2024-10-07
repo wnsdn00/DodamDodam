@@ -84,8 +84,8 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
-
                     android:text="월" />
 
                 <CheckBox
@@ -95,6 +95,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="화" />
 
@@ -105,6 +106,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="수" />
 
@@ -115,6 +117,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="목" />
 
@@ -125,6 +128,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="금" />
 
@@ -135,6 +139,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="토" />
 
@@ -145,6 +150,7 @@
                     android:button="@null"
                     android:textColor="@drawable/day_checkbox"
                     android:textSize="25dp"
+                    android:fontFamily="@font/onglyp"
                     android:padding="10dp"
                     android:text="일" />
             </LinearLayout>
@@ -157,6 +163,8 @@
                 android:background="@drawable/mission_border"
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
+                android:textSize="25dp"
+                android:fontFamily="@font/onglyp"
                 android:hint="시간을 입력하세요 (예: 14:00)"
                 android:inputType="time" />
 
@@ -171,6 +179,8 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:layout_marginBottom="20dp"
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"
                 android:hint="미션 내용을 입력하세요"/>
 
             <!-- 미션 저장 버튼 -->
@@ -180,7 +190,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@drawable/blue_btn"
-                android:text="등록"/>
+                android:text="등록"
+                android:fontFamily="@font/onglyp"
+                android:textColor="@color/white"
+                android:textSize="25dp"/>
 
 
         </LinearLayout>

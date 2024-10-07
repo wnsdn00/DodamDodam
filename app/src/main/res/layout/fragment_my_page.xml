@@ -42,6 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="호칭"
+                android:fontFamily="@font/onglyp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp" />
@@ -72,26 +73,29 @@
                     android:layout_margin="5dp"
                     android:paddingBottom="8dp"
                     android:text="가족 등록증"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/onglyp"
+                    android:textSize="25sp" />
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="이름"
+                    android:fontFamily="@font/onglyp"
                     android:layout_margin="3dp"/>
                 <TextView
                     android:id="@+id/user_birthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="생년월일"
+                    android:fontFamily="@font/onglyp"
                     android:layout_margin="3dp"/>
                 <TextView
                     android:id="@+id/family_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="**네 가족"
+                    android:text="가족이름"
+                    android:fontFamily="@font/onglyp"
                     android:layout_margin="3dp"/>
             </LinearLayout>
 
@@ -134,16 +138,6 @@
                     android:layout_marginLeft="5dp"
                     app:layout_constraintEnd_toEndOf="@id/family_card_bottom_section"
                     tools:ignore="MissingConstraints" />
-
-
-                <!--
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2024.07.30"
-                    android:textColor="@color/black"
-                    android:layout_marginRight="5dp"/>
-                    -->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -161,7 +155,7 @@
     <!-- 중간: 상점과 꾸미기 버튼 -->
     <LinearLayout
         android:id="@+id/middle_section"
-        android:layout_width="360dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
         android:orientation="horizontal"
@@ -170,16 +164,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
-            android:id="@+id/btn_store"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="상점"
-            android:background="@drawable/custome_border" />
-
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="5dp"
+            android:paddingEnd="15dp">
         <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
+        <ImageButton
+            android:id="@+id/btn_store"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_store"
+            android:background="@drawable/custome_border"
+            tools:ignore="MissingConstraints" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="상점"
+                android:textSize="25dp"
+                android:fontFamily="@font/onglyp"
+                app:layout_constraintTop_toBottomOf="@id/btn_store"
+                app:layout_constraintStart_toStartOf="@id/btn_store"
+                app:layout_constraintEnd_toEndOf="@id/btn_store"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <View
             android:id="@+id/vertical_divider"
             android:layout_width="1dp"
@@ -189,15 +199,31 @@
             app:layout_constraintEnd_toEndOf="@id/btn_customize"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp" />
-
-        <Button
-            android:id="@+id/btn_customize"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="꾸미기"
-            android:background="@drawable/custome_border"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="15dp">
+            <ImageButton
+                android:id="@+id/btn_customize"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_custom"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/custome_border"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="꾸미기"
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"
+                app:layout_constraintTop_toBottomOf="@id/btn_customize"
+                app:layout_constraintStart_toStartOf="@id/btn_customize"
+                app:layout_constraintEnd_toEndOf="@id/btn_customize"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
     <!-- 선: middle_section 아래 -->

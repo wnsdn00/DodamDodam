@@ -1,6 +1,8 @@
 package com.explorit.dodamdodam
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.credentials.GetCredentialRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -15,11 +17,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
@@ -30,23 +36,39 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kakao.sdk.user.UserApiClient
 
+@Suppress("DEPRECATION")
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var kakaoAuthViewModel: KakaoAuthViewModel
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var googleSignInLauncher: ActivityResultLauncher<Intent>
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+
+    private lateinit var googleSignInButton: ImageButton
     private val RC_SIGN_IN = 9001
 
+    private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result ->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        Log.d("LOGIN--", task.toString())
+        try {
+            // Google 로그인이 성공하면, Firebase로 인증합니다.
+            val account = task.getResult(ApiException::class.java)!!
+            Log.d("LOGIN--22", account.idToken!!)
+            firebaseAuthWithGoogle(account.idToken!!)
+        } catch (e: ApiException) {
+            // Google 로그인 실패
+            Log.e("GoogleSignIn", "로그인 실패, 코드: ${e.statusCode}")
+            Toast.makeText(this, "Google 로그인에 실패했습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        // ViewModel 초기화
-        kakaoAuthViewModel = ViewModelProvider(this).get(KakaoAuthViewModel::class.java)
 
         // Firebase 인증 초기화
         auth = FirebaseAuth.getInstance()
@@ -54,6 +76,19 @@ class LoginActivity : AppCompatActivity() {
         // Firebase 데이터베이스 참조 초기화
         database = FirebaseDatabase.getInstance().reference
         firestore = FirebaseFirestore.getInstance()
+
+        googleSignInButton = findViewById(R.id.buttonGoogle)
+
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestServerAuthCode(getString(R.string.web_client_id))
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
+            .build()
+
+        // GoogleSignInClient를 초기화합니다.
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
 
         // Id 찾기 버튼
         val findIdButton = findViewById<Button>(R.id.findID)
@@ -67,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
             onFindPwButtonClick(it)
         }
 
-        val editTextEmail = findViewById<EditText>(R.id.editTextId)
+        val editTextEmail = findViewById<EditText>(R.id.editTextEmail)
         val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
 
@@ -82,61 +117,72 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        googleSignInButton.setOnClickListener{
+            googleSignIn()
+        }
+
         // 로그인 되어있는 사용자를 확인
         val currentUser = auth.currentUser
-        if (currentUser != null) {
+        val userId = auth.currentUser?.uid
+        if (currentUser != null && userId != null) {
             // 자동 로그인
-            onLoginButtonClickToMainPage()
+            checkIfNewUser(userId)
             return
         }
     }
 
-        private fun firebaseAuthWithCustomToken(customToken: String) {
-            auth.signInWithCustomToken(customToken)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d("LoginActivity", "Firebase Custom Token으로 로그인 성공")
-                        val user = auth.currentUser
-                        user?.let {
-                            val username = it.uid
-                            database.child("users").child(username).child("email")
-                                .setValue(it.email)
-                            checkUserFamilyCode(username)
-                        }
-                    } else {
-                        Log.w("LoginActivity", "Firebase Custom Token으로 로그인 실패", task.exception)
-                        Toast.makeText(this, "Firebase 로그인 실패", Toast.LENGTH_SHORT).show()
+
+
+
+
+    private fun googleSignIn() {
+        val signInIntent = googleSignInClient.signInIntent
+        googleSignInLauncher.launch(signInIntent)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        Log.d("LOGIN--3",idToken)
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // 로그인 성공
+                    val userUid = auth.currentUser?.uid
+                    if (userUid != null) {
+                        checkIfNewUser(userUid)
                     }
+                } else {
+                    // 로그인 실패
+                    Toast.makeText(this, "Firebase 인증에 실패했습니다.", Toast.LENGTH_SHORT).show()
                 }
-        }
+            }
+    }
 
-        private fun signInWithGoogle() {
-            val signInIntent = googleSignInClient.signInIntent
-            googleSignInLauncher.launch(signInIntent)
-        }
-
-
-        private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
-            Log.d("LoginActivity", "firebaseAuthWithGoogle:" + account?.id)
-
-            val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
-            auth.signInWithCredential(credential)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d("LoginActivity", "signInWithCredential:success")
-                        val user = auth.currentUser
-                        user?.let {
-                            val username = it.uid
-                            database.child("users").child(username).child("email")
-                                .setValue(it.email)
-                            checkUserFamilyCode(username)
-                        }
-                    } else {
-                        Log.w("LoginActivity", "signInWithCredential:failure", task.exception)
-                        Toast.makeText(baseContext, "Google 로그인 실패", Toast.LENGTH_SHORT).show()
-                    }
+    private fun checkIfNewUser(userId: String) {
+        database.child("users").child(userId)
+        .addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // 이미 데이터베이스에 사용자가 있음
+                    checkUserFamilyCode(userId)
+                } else {
+                    // 새로운 사용자이므로 추가 정보 입력 페이지로 이동
+                    goToAdditionalInfoPage()
                 }
-        }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@LoginActivity, "오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun goToAdditionalInfoPage() {
+        val intent = Intent(this, AdditionalInfoActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
 
         private fun loginWithUsername(userEmail: String, password: String) {
             firestore.collection("users")

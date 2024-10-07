@@ -111,7 +111,7 @@ class MissionCalendarFragment : Fragment() {
         missionCheckButton = view.findViewById(R.id.missionCheckButton)
 
         fetchUserFamilyCode()
-        resetMissionCompletionAndCheck()
+        resetMissionCompletionIfNeeded { checkTodayMissionsComplete() }
         setMonthView()
 
 
@@ -153,18 +153,32 @@ class MissionCalendarFragment : Fragment() {
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // Fragment가 완전히 생성된 후에 UI 관련 작업 수행
-        resetMissionCompletionAndCheck()
-        setMonthView()
-    }
 
-    private fun resetMissionCompletionAndCheck() {
-        resetMissionCompletion { // resetMissionCompletion에서 콜백을 받아 완료 후 실행
-            checkTodayMissionsComplete()
+    private fun resetMissionCompletionIfNeeded(onComplete: () -> Unit) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            // 사용자 UID를 기반으로 고유한 SharedPreferences 이름 생성
+            val sharedPreferences = requireContext().getSharedPreferences("MissionPrefs_$currentUserUid", Context.MODE_PRIVATE)
+            val lastResetDate = sharedPreferences.getString("lastResetDate", null)
+            val today = LocalDate.now().toString()
+
+            // 마지막으로 저장된 날짜와 오늘 날짜가 다를 경우에만 resetMissionCompletion() 실행
+            if (lastResetDate == null || lastResetDate != today) {
+                resetMissionCompletion {
+                    // 미션 완료 상태를 초기화한 후에 마지막 실행 날짜를 업데이트
+                    sharedPreferences.edit().putString("lastResetDate", today).apply()
+                    onComplete()
+                }
+            } else {
+                // 이미 오늘 실행했으므로 그냥 onComplete 호출
+                onComplete()
+            }
+        } else {
+            // 사용자 UID가 없을 때 처리
+            onComplete()
         }
     }
+
 
     // 달력 화면 생성 함수
     private fun setMonthView() {
@@ -534,7 +548,7 @@ class MissionCalendarFragment : Fragment() {
                                                 val mission = missionSnapshot.getValue(Mission::class.java)
                                                 mission?.let {
                                                     // 만약 미션이 완료되었고, 오늘이 해당 미션이 완료된 날의 다음 날이라면
-                                                    if (today.isAfter(LocalDate.parse(completedDay))) {
+                                                    if (completedDay == null || today.isAfter(LocalDate.parse(completedDay))) {
                                                         missionSnapshot.ref.child("complete").setValue(false)
                                                         missionsSnapshot.ref.child("todayMissionCompleted")
                                                             .setValue(false) .addOnSuccessListener {

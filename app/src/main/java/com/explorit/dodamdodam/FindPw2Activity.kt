@@ -26,10 +26,4 @@ class FindPw2Activity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
-    // 이 메서드는 회원가입 버튼 클릭 시 LoginActivity로 이동
-    fun onRegisterButtonClick(view: View) {
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-    }
 }

@@ -1,6 +1,7 @@
 package com.explorit.dodamdodam
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,8 @@ class CalendarAdapter(private val daysOfMonth: List<String>, private val selecte
         val day = daysOfMonth[position]
 
         holder.dayText.text = day
+
+
 
         if (day.isNotEmpty() && day.all { it.isDigit() }) {
             val cellDate = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())

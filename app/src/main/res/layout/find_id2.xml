@@ -48,8 +48,8 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
         app:layout_constraintVertical_bias="0.378">
 
-        <EditText
-            android:id="@+id/registerId"
+        <TextView
+            android:id="@+id/yourIdIs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
@@ -61,8 +61,8 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp" />
 
-        <EditText
-            android:id="@+id/yourId"
+        <TextView
+            android:id="@+id/findIdView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

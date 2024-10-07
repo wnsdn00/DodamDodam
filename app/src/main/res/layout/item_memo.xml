@@ -16,19 +16,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sample Memo" />
+            android:text="Sample Memo"
+            android:fontFamily="@font/onglyp"
+            android:textSize="25dp"/>
 
         <Button
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="수정" />
+            android:text="수정"
+            android:fontFamily="@font/onglyp"
+            android:textSize="25dp"/>
 
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="삭제" />
+            android:text="삭제"
+            android:fontFamily="@font/onglyp"
+            android:textSize="25dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

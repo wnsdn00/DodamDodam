@@ -11,11 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth // Firebase를 사용하는 권한
     private lateinit var firestore: FirebaseFirestore
     private var isEmailChecked = false
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +30,15 @@ class RegisterActivity : AppCompatActivity() {
         val registerButton: Button = findViewById(R.id.buttonRegister) // 회원가입 버튼 객체 생성
         val checkEmailButton: Button = findViewById(R.id.buttonCheckEmail)
 
+
         checkEmailButton.setOnClickListener {
             checkEmailDuplication()
         }
 
+
         registerButton.setOnClickListener { // 눌렀을 때 registerUser 함수를 쓸 것이다!
             if (!isEmailChecked) {
-                Toast.makeText(this, "이메일 중복확인을 해주세요.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "이메일 중복 확인을 해 주세요.", Toast.LENGTH_SHORT).show()
             } else {
                 registerUser()
             }
@@ -70,12 +75,16 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
+
+
     private fun registerUser() { // xml에 있는 id의 이름을 가져와서 객체로 생성
         val useremail = findViewById<EditText>(R.id.registerEmail).text.toString()
         val password = findViewById<EditText>(R.id.registerPw).text.toString()
         val passwordconfirm = findViewById<EditText>(R.id.registerPwConfirm).text.toString()
         val username = findViewById<EditText>(R.id.registerUserName).text.toString()
         val userbirth = findViewById<EditText>(R.id.registerUserBirth).text.toString()
+        val userPhone = findViewById<EditText>(R.id.registerPhoneNumber).text.toString() // 전화번호 가져오기
+
 
         if (password != passwordconfirm) {
             Toast.makeText(this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -85,7 +94,7 @@ class RegisterActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Firestore에 사용자 세부 정보 저장
-                    saveUserData(useremail, username, userbirth)
+                    saveUserData(useremail, username, userbirth, userPhone)
                     // 회원가입 성공 메시지 표시
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show() // Toast는 아래에 메시지를 띄워줍니다.
                     // 로그인 액티비티로 이동
@@ -97,11 +106,12 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun saveUserData(useremail: String, username: String, userbirth: String) { // Firebase에 저장
+    private fun saveUserData(useremail: String, username: String, userbirth: String, userPhone: String) { // Firebase에 저장
         val user = hashMapOf( // 해시맵으로 username, email 필드에 저장
             "email" to useremail,
             "username" to username,
-            "userbirth" to userbirth
+            "userbirth" to userbirth,
+            "phone" to userPhone
         )
 
         // 생성된 ID로 새 문서 추가
@@ -121,12 +131,4 @@ class RegisterActivity : AppCompatActivity() {
         finish()  // 현재 액티비티를 종료하여 뒤로가기 버튼으로 다시 돌아오지 않도록 한다.
     }
 
-    private fun proceedToMainPage(userName: String, userBirthday: String) {
-        val intent = Intent(this, MainPageActivity::class.java).apply {
-            putExtra("user_name", userName)
-            putExtra("user_birthday", userBirthday)
-        }
-        startActivity(intent)
-        finish()
-    }
 }

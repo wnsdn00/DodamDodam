@@ -170,11 +170,18 @@ class CustomizeFragment : Fragment() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val familyCode = snapshot.child("familyCode").getValue(String::class.java)
                         if (familyCode != null) {
-                            // 선택한 아이템을 가족의 'mainScreenItems'에 저장
-                            database.child("families").child(familyCode)
-                                .child("mainScreenItems")
-                                .setValue(selectedItem)
+                            if (selectedItem.itemCategory == "character") {
+                                // 선택한 아이템을 가족의 'mainScreenItems'에 저장
+                                database.child("families").child(familyCode)
+                                    .child("mainScreenItems")
+                                    .setValue(selectedItem)
+                            } else if (selectedItem.itemCategory == "background") {
+                                database.child("families").child(familyCode)
+                                    .child("mainScreenBackground")
+                                    .setValue(selectedItem)
+                            }
                         }
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {

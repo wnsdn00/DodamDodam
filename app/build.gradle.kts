@@ -101,8 +101,13 @@ dependencies {
     implementation ("com.google.firebase:firebase-bom:33.1.2")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0") // Firebase 인증 라이브러리
-    implementation ("com.google.android.gms:play-services-auth:20.0.0") // Google 로그인 라이브러리
+    implementation ("com.google.android.gms:play-services-auth:20.1.0") // Google 로그인 라이브러리
     implementation ("com.google.android.gms:play-services-identity:18.1.0")
+
+
+    implementation ("androidx.credentials:credentials:1.2.2")
+    implementation ("androidx.credentials:credentials-play-services-auth:1.2.2")
+    implementation ("com.google.android.libraries.identity.googleid:googleid:1.0.0")
 
     // Glide 라이브러리
     implementation("com.github.bumptech.glide:compiler:4.12.0") // 글라이드 이미지 로딩1

@@ -49,9 +49,10 @@
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/family_button"
                 android:text="초대보내기"
-                android:textSize="50px"
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"
                 android:textColor="@color/white"
-                android:textStyle="bold"/>
+                />
 
             <Button
                 android:id="@+id/btnGoMain"
@@ -65,9 +66,9 @@
                 android:paddingRight="100dp"
                 android:background="@drawable/family_button"
                 android:text="메인으로"
-                android:textSize="50px"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </LinearLayout>
