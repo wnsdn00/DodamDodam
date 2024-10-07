@@ -84,7 +84,7 @@
                 android:layout_marginBottom="20dp"
                 android:textSize="25dp"
                 android:text="미션 요일"
-               />
+                android:fontFamily="@font/onglyp" />
             <!-- 미션 시간 표시 -->
             <TextView
                 android:id="@+id/missionTimeTextView"
@@ -93,7 +93,9 @@
                 android:background="@drawable/mission_border"
                 android:padding="10dp"
                 android:layout_marginBottom="20dp"
-                android:text="미션 시간"/>
+                android:text="미션 시간"
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"/>
 
             <!-- 미션 내용 표시 -->
             <TextView
@@ -106,7 +108,9 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:layout_marginBottom="20dp"
-                android:text="아직 미션이 등록되지 않았습니다."/>
+                android:text="아직 미션이 등록되지 않았습니다."
+                android:fontFamily="@font/onglyp"
+                android:textSize="25dp"/>
 
             <!-- 확인 버튼 -->
             <Button
@@ -115,7 +119,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/blue_btn"
                 android:layout_gravity="center"
-                android:text="확인"/>
+                android:text="확인"
+                android:fontFamily="@font/onglyp"
+                android:textColor="@color/white"
+                android:textSize="25dp"/>
         </LinearLayout>
     </LinearLayout>
 

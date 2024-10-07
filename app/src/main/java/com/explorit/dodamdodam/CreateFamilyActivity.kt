@@ -84,7 +84,7 @@ class CreateFamilyActivity : AppCompatActivity() {
 
                             val defaultCharacter = StoreItem(
                                 name = "복실이",
-                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/storeItemImages%2Fcharacter_01.png?alt=media&token=831a326a-41d1-48cf-a084-3aae1142f1ee",
+                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/storeItemImages%2FCharacter01.png?alt=media&token=57eefb5b-e428-49de-981b-70e6089272c2",
                                 price = 200,
                                 itemCategory = "character"
                             )

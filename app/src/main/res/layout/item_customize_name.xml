@@ -12,8 +12,9 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:textSize="16dp"
         android:gravity="center"
+        android:fontFamily="@font/onglyp"
+        android:textSize="20dp"
         android:text="Item Name"/>
 
 </LinearLayout>

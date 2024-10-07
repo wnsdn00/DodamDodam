@@ -53,6 +53,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/login_border"
                         android:hint="가족 이름"
+                        android:fontFamily="@font/onglyp"
+                        android:textSize="25dp"
                         android:inputType="textEmailAddress"
                         android:paddingLeft="16dp"
                         android:paddingTop="10dp"
@@ -65,6 +67,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/login_border"
                         android:hint="비밀번호"
+                        android:fontFamily="@font/onglyp"
+                        android:textSize="25dp"
                         android:inputType="textEmailAddress"
                         android:paddingLeft="16dp"
                         android:paddingTop="10dp"
@@ -77,6 +81,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/login_border"
                         android:hint="호칭"
+                        android:fontFamily="@font/onglyp"
+                        android:textSize="25dp"
                         android:inputType="textEmailAddress"
                         android:paddingLeft="16dp"
                         android:paddingTop="10dp"
@@ -98,9 +104,9 @@
                 android:paddingRight="100dp"
                 android:background="@drawable/family_button"
                 android:text="생성"
-                android:textSize="50px"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
+                android:fontFamily="@font/onglyp"
+                android:textSize="30dp"
+                android:textColor="@color/white"/>
         </FrameLayout>
 
 

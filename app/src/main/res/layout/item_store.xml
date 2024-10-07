@@ -15,14 +15,15 @@
         android:id="@+id/storeItemImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
+        android:scaleType="centerInside"
         tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/storeItemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
+        android:fontFamily="@font/onglyp"
+        android:textSize="25dp"
         android:text="이름"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/storeItemImage"
@@ -49,7 +50,8 @@
             android:id="@+id/storeItemPrice"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="14dp"
+            android:textSize="20dp"
+            android:fontFamily="@font/onglyp"
             android:layout_margin="3dp"
             android:text="가격"/>
 
@@ -59,7 +61,8 @@
             android:layout_height="25dp"
             android:layout_margin="3dp"
             android:background="@drawable/round_btn"
-            android:textSize="12dp"
+            android:fontFamily="@font/onglyp"
+            android:textSize="16dp"
             android:text="구매"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

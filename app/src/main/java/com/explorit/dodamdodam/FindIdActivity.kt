@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.ktx.functions
@@ -21,12 +22,11 @@ import kotlin.random.Random
 class FindIdActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var emailEditText: EditText
-    private lateinit var codeInputEditText: EditText
-    private lateinit var verificationCodeButton: Button
-    private lateinit var functions: FirebaseFunctions
+    private lateinit var findIdName: EditText
+    private lateinit var findIdPhoneNumber: EditText
+    private lateinit var idCheckBtn: Button
 
-    private val firestore = Firebase.firestore
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +34,22 @@ class FindIdActivity : AppCompatActivity() {
 
         // FirebaseAuth 인스턴스 초기화
         auth = Firebase.auth
-        functions = Firebase.functions
+        firestore =FirebaseFirestore.getInstance()
 
-        // 이메일 입력 필드
-        emailEditText = findViewById(R.id.registerEmail)
+        findIdName= findViewById(R.id.findIdName)
+        findIdPhoneNumber= findViewById(R.id.findIdPhoneNumber)
+        idCheckBtn = findViewById<Button>(R.id.idCheckBtn)
 
-        // 인증 코드 받기 필드
-        verificationCodeButton = findViewById(R.id.GetCode)
+        idCheckBtn.setOnClickListener {
+            val name = findIdName.text.toString()
+            val phoneNumber = findIdPhoneNumber.text.toString()
 
-        // 받은 인증 코드 입력 필드
-        codeInputEditText = findViewById(R.id.GotCode)
+            if (name.isNotEmpty() && phoneNumber.isNotEmpty()) {
+                findUserId(name, phoneNumber)
+            } else {
+                Toast.makeText(this, "모든 필드를 입력하세요.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // 뒤로가기 버튼 설정
         val backButton = findViewById<ImageButton>(R.id.back)
@@ -51,153 +57,30 @@ class FindIdActivity : AppCompatActivity() {
             finish()
         }
 
-        // 아이디 확인 버튼 설정
-        val registerIdCheckButton = findViewById<Button>(R.id.registerIdCheck)
-        registerIdCheckButton.setOnClickListener {
-            onIdCheckButtonClick(it)
-        }
-
-        // 인증 코드 보내기 버튼 설정
-        verificationCodeButton.setOnClickListener {
-            sendVerificationCode()
-        }
     }
 
-    // 아이디 확인 버튼 클릭 시 호출될 메서드
-    fun onIdCheckButtonClick(view: View) {
-        val codeEntered = codeInputEditText.text.toString().trim()
-
-        if (codeEntered.isEmpty()) {
-            Toast.makeText(this, "인증코드를 입력해주세요", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Firestore에서 인증 코드 확인
-        val email = emailEditText.text.toString().trim()
-        firestore.collection("verificationCodes")
-            .document(email)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val savedCode = document.getString("code")
-                    if (savedCode == codeEntered) {
-                        // 인증 코드가 맞으면 Firestore에서 해당 이메일로 등록된 아이디 가져오기
-                        firestore.collection("users")
-                            .whereEqualTo("email", email)
-                            .get()
-                            .addOnSuccessListener { documents ->
-                                if (!documents.isEmpty) {
-                                    val userId = documents.documents[0].getString("userid")
-                                    // 아이디를 FindId2Activity로 전달
-                                    val intent = Intent(this, FindId2Activity::class.java).apply {
-                                        putExtra("USER_ID", userId)
-                                    }
-                                    startActivity(intent)
-                                } else {
-                                    Toast.makeText(this, "등록된 아이디를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            .addOnFailureListener { exception ->
-                                Log.e("FindIdActivity", "Error getting user ID", exception)
-                                Toast.makeText(this, "오류가 발생했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-                            }
-                    } else {
-                        Toast.makeText(this, "잘못된 인증 코드입니다", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(this, "인증 코드가 존재하지 않습니다", Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("FindIdActivity", "Error checking verification code", exception)
-                Toast.makeText(this, "오류가 발생했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    // 인증 코드 보내기 버튼 클릭 시 호출될 메서드
-    private fun sendVerificationCode() {
-        val email = emailEditText.text.toString().trim()
-
-        if (email.isEmpty()) {
-            Toast.makeText(this, "이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Firestore에서 사용자 데이터 확인
+    private fun findUserId(name: String, phoneNumber: String) {
         firestore.collection("users")
-            .whereEqualTo("email", email)
+            .whereEqualTo("username", name)
+            .whereEqualTo("phone", phoneNumber)
             .get()
             .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    // 이메일이 존재하는 경우, 인증 코드를 생성하고 저장
-                    val verificationCode = generateVerificationCode()
-                    saveVerificationCode(email, verificationCode)
-                    // 이메일로 인증 코드 발송
-                    sendVerificationCodeEmail(email, verificationCode)
+                if (documents.isEmpty) {
+                    Toast.makeText(this, "해당 사용자를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                 } else {
-                    // 이메일이 존재하지 않는 경우
-                    Toast.makeText(this, "등록되지 않은 이메일입니다", Toast.LENGTH_SHORT).show()
+                    for (document in documents) {
+                        val email = document.getString("email")
+                        val intent = Intent(this, FindId2Activity::class.java)
+                        intent.putExtra("userEmail", email) // 이메일을 Intent에 추가
+                        startActivity(intent) // 새로운 액티비티 시작
+                        return@addOnSuccessListener // 이메일이 발견되면 더 이상 진행하지 않음
+                    }
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("FindIdActivity", "Error getting documents: ", exception)
-                Toast.makeText(this, "오류가 발생했습니다. 다시 시도해주세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "오류 발생: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    // 인증 코드를 생성하는 메서드
-    private fun generateVerificationCode(): String {
-        val random = Random.nextInt(100000, 999999)
-        return random.toString()
-    }
 
-    // 인증 코드를 Firestore에 저장하는 메서드
-    private fun saveVerificationCode(email: String, code: String) {
-        val data = hashMapOf(
-            "code" to code
-        )
-        firestore.collection("verificationCodes")
-            .document(email)
-            .set(data)
-            .addOnSuccessListener {
-                Log.d("FindIdActivity", "Verification code successfully written!")
-            }
-            .addOnFailureListener { e ->
-                Log.w("FindIdActivity", "Error writing verification code", e)
-            }
-    }
-
-    // 이메일로 인증 코드를 보내는 메서드
-    private fun sendVerificationCodeEmail(email: String, code: String) {
-        val data = hashMapOf(
-            "email" to email,
-            "code" to code
-        )
-
-        functions.getHttpsCallable("sendVerificationCodeEmail")
-            .call(data)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // 함수 호출 성공
-                    Log.d("FindIdActivity", "인증 코드가 이메일로 전송되었습니다.")
-                    Toast.makeText(this, "인증 코드가 이메일로 전송되었습니다.", Toast.LENGTH_SHORT).show()
-                } else {
-                    // 함수 호출 실패
-                    Log.e("FindIdActivity", "Error sending email", task.exception)
-                    Toast.makeText(this, "이메일 전송에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
-
-    // 비밀번호 찾기 버튼 클릭 시 호출될 메서드
-    fun onFindPwButtonClick(view: View) {
-        val intent = Intent(this, FindPwActivity::class.java)
-        startActivity(intent)
-    }
-
-    // 회원가입 버튼 클릭 시 호출될 메서드
-    fun onRegisterButtonClick(view: View) {
-        val intent = Intent(this, RegisterActivity::class.java)
-        startActivity(intent)
-    }
 }

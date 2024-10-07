@@ -47,23 +47,9 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
         app:layout_constraintVertical_bias="0.378">
 
-        <EditText
-            android:id="@+id/registerId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/login_border"
-            android:gravity="center"
-            android:hint="가입한 아이디"
-            android:textColor="@color/black"
-            android:textColorHint="#696969"
-            android:inputType="textPassword"
-            android:paddingLeft="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
 
         <EditText
-            android:id="@+id/registerEmail"
+            android:id="@+id/findPwEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -73,12 +59,39 @@
             android:textColor="@color/black"
             android:textColorHint="#696969"
             android:inputType="textPassword"
-            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <EditText
+            android:id="@+id/findPwName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_border"
+            android:hint="가입한 이름"
+            android:textColor="@color/black"
+            android:textColorHint="#696969"
+            android:inputType="textPassword"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <EditText
+            android:id="@+id/findPwPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_border"
+            android:hint="가입한 이메일"
+            android:textColor="@color/black"
+            android:textColorHint="#696969"
+            android:inputType="textPassword"
             android:paddingTop="10dp"
             android:paddingBottom="10dp" />
 
         <Button
-            android:id="@+id/registerPwCheck"
+            android:id="@+id/pwCheckBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -87,10 +100,8 @@
             android:backgroundTint="#63C0F4"
             android:text="비밀번호 확인"
             android:textColor="@color/black"
-            android:paddingLeft="16dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:onClick="onRegisterPwCheckButtonClick" />
+            android:paddingBottom="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,8 +141,7 @@
                 android:background="@android:color/transparent"
                 android:text="로그인"
                 android:textSize="10dp"
-                android:textColor="@color/black"
-                android:onClick="onBackButtonClick"/>
+                android:textColor="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"

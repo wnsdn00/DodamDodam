@@ -8,17 +8,16 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
 class FindId2Activity : AppCompatActivity() {
-
+    private lateinit var findIdView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.find_id2)
 
-        // 전달된 아이디 받기
-        val userId = intent.getStringExtra("USER_ID")
 
-        // TextView에 아이디 표시
-        val userIdTextView = findViewById<TextView>(R.id.yourId)
-        userIdTextView.text = userId ?: "아이디를 찾을 수 없습니다."
+        findIdView = findViewById(R.id.findIdView)
+        val email = intent.getStringExtra("userEmail")
+
+        findIdView.text = email ?: "찾을 수 없습니다."
 
         val backButton = findViewById<ImageButton>(R.id.back)
         backButton.setOnClickListener {
@@ -37,7 +36,7 @@ class FindId2Activity : AppCompatActivity() {
 
     // 이 메서드는 회원가입 버튼 클릭 시 LoginActivity로 이동
     fun onRegisterButtonClick(view: View) {
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 }

@@ -45,8 +45,8 @@ class MyPageFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var backToMainButton: ImageButton
-    private lateinit var btnStore: Button
-    private lateinit var btnCustomize: Button
+    private lateinit var btnStore: ImageButton
+    private lateinit var btnCustomize: ImageButton
     private lateinit var btnCustomerService: Button
     private lateinit var btnAppInfo: Button
     private lateinit var btnPreference: Button

@@ -27,64 +27,29 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/back"
         app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FEFEFE">
-
-            <EditText
-                android:id="@+id/registerEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_weight="7"
-                android:background="@drawable/login_border"
-                android:hint="이메일"
-                android:inputType="text"
-                android:paddingLeft="16dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
-
-            <Button
-                android:id="@+id/buttonCheckEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/black_border"
-                android:backgroundTint="#63C0F4"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="10dp"
-                android:text="중복확인" />
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/registerPw"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/login_border"
-            android:hint="비밀번호"
-            android:inputType="textPassword"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
-
-        <EditText
-            android:id="@+id/registerPwConfirm"
-            android:layout_width="match_parent"
+            android:paddingBottom="10dp"
+            android:text="구글로 로그인이 이미 되어있습니다. 로그아웃 하시겠습니까?"/>
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/login_border"
-            android:hint="비밀번호 확인"
-            android:inputType="textPassword"
-            android:paddingLeft="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
+            android:background="@drawable/black_border"
+            android:backgroundTint="#63C0F4"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="로그아웃"
+            android:textColor="@android:color/white" />
 
         <EditText
-            android:id="@+id/registerUserName"
+            android:id="@+id/additionalUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -96,7 +61,7 @@
             android:paddingBottom="10dp" />
 
         <EditText
-            android:id="@+id/registerPhoneNumber"
+            android:id="@+id/additionalPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -107,6 +72,7 @@
             android:paddingTop="10dp"
             android:paddingBottom="10dp" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -114,7 +80,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/registerUserBirth"
+                android:id="@+id/additionalUserBirth"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -143,15 +109,10 @@
                 android:layout_marginRight="3dp"
                 android:text="● ● ● ● ● ● ●"
                 android:textSize="55px"/>
-
-
-
         </LinearLayout>
 
-
-
         <Button
-            android:id="@+id/buttonRegister"
+            android:id="@+id/buttonAddInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/black_border"
@@ -161,7 +122,7 @@
             android:paddingRight="130dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
-            android:text="회원가입"
+            android:text="정보등록"
             android:textColor="@android:color/white" />
 
     </LinearLayout>

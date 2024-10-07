@@ -1,11 +1,18 @@
 package com.explorit.dodamdodam
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +40,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var familyCoinsTextView: TextView
     private lateinit var mainScreenImageView: ImageView
+    private lateinit var mainScreenBackground: ImageView
     private val database = FirebaseDatabase.getInstance().reference
     private lateinit var auth: FirebaseAuth
 
@@ -44,6 +52,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,10 +62,24 @@ class HomeFragment : Fragment() {
 
         familyCoinsTextView = view.findViewById(R.id.familyCoinsTextView)
         mainScreenImageView = view.findViewById(R.id.mainScreenImageView)
+        mainScreenBackground = view.findViewById(R.id.mainScreenBackground)
+
 
         // 선택된 아이템 불러오기
         loadMainScreenItems()
         fetchFamilyCoins()
+
+        // ObjectAnimator를 사용해 Y축으로 통통 튀는 애니메이션 구현
+        val movingImage = ObjectAnimator.ofFloat(mainScreenImageView, "translationY", 0f, -100f).apply {
+            duration = 200  // 애니메이션 시간
+            repeatCount = ValueAnimator.INFINITE  // 무한 반복
+            repeatCount = 3
+            repeatMode = ValueAnimator.REVERSE  // 위아래로 튕기도록
+        }
+
+        mainScreenImageView.setOnClickListener {
+            movingImage.start()
+        }
 
         return view
     }
@@ -88,9 +111,31 @@ class HomeFragment : Fragment() {
                                         Log.e("MainFragment", "Error loading main screen items", error.toException())
                                     }
                                 })
+
+                            database.child("families").child(familyCode)
+                                .child("mainScreenBackground")
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                        val item = dataSnapshot.getValue(StoreItem::class.java)
+                                        if (item != null) {
+                                            // 메인 화면에 이미지 표시
+                                            Glide.with(requireContext())
+                                                .load(item.imageUrl)
+                                                .into(mainScreenBackground)
+                                        } else {
+                                            Toast.makeText(context, "선택된 아이템이 없습니다.", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Log.e("MainFragment", "Error loading main screen items", error.toException())
+                                    }
+                                })
                         } else {
                             Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
+
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {

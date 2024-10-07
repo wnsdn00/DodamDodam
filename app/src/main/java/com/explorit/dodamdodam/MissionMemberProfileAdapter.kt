@@ -29,10 +29,8 @@ class MissionMemberProfileAdapter(
 
             if (position == selectedPosition) {
                 profileImageView.alpha = 1.0f
-                nameTextView.setTypeface(null, Typeface.BOLD)
             } else {
                 profileImageView.alpha = 0.5f
-                nameTextView.setTypeface(null, Typeface.NORMAL)
             }
 
             itemView.setOnClickListener {
