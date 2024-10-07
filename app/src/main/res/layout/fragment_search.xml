@@ -70,32 +70,50 @@
         android:layout_height="70dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#EAF3F8"
+        android:background="@drawable/search_border"
         app:layout_constraintTop_toBottomOf="@id/linearLayoutTop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <EditText
-            android:id="@+id/search_button1"
+            android:id="@+id/user_search"
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="작성자"
+            android:hint="작성자"
             android:gravity="center"
+            android:background="@drawable/search1_border"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:imeOptions="actionSearch"
             android:inputType="text"/>
 
+        <ImageButton
+            android:id="@+id/user_search_button"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:contentDescription="검색"
+            android:onClick="onUserSearchButtonClick"/>
+
         <EditText
-            android:id="@+id/search_button2"
+            android:id="@+id/date_search"
             android:layout_width="10dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="작성 날짜"
+            android:hint="작성 날짜"
             android:gravity="center"
+            android:background="@drawable/search1_border"
+            android:textColor="@color/black"
             android:textStyle="bold"/>
+
+        <ImageButton
+            android:id="@+id/date_search_button"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:contentDescription="검색"
+            android:onClick="onDateSearchButtonClick"/>
 
     </LinearLayout>
 
@@ -104,7 +122,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="575dp"
         android:background="#EAF3F8"
         app:layout_constraintBottom_toBottomOf="parent" />
 

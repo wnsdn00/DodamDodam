@@ -18,7 +18,7 @@
             android:layout_height="35dp" />
 
         <TextView
-            android:id="@+id/userId"
+            android:id="@+id/nickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -65,23 +65,23 @@
         android:layout_width="match_parent"
         android:layout_height="35dp">
 
-        <ImageView
-            android:id="@+id/user_favorite_image"
+        <ImageButton
+            android:id="@+id/loveButton"
             android:src="@drawable/ic_like"
             android:layout_width="35dp"
             android:layout_height="35dp"/>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/user_favorite_counter"
-        android:text="like 0"
-        android:textColor="@color/black"
+        android:id="@+id/loveCounter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="like 0"
+        android:textColor="@color/black"/>
 
     <TextView
-        android:id="@+id/user_post_explanation"
-        android:text="Explain post"
+        android:id="@+id/postExplain"
+        android:text=""
         android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

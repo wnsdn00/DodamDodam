@@ -62,7 +62,7 @@ class MyPageEditFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_my_page_edit, container, false)
 
         profileImageView = view.findViewById(R.id.profile_image)
-        nickNameView = view.findViewById(R.id.user_nickName)
+        nickNameView = view.findViewById(R.id.nickName)
         userNameView = view.findViewById(R.id.user_name)
         userBirthView = view.findViewById(R.id.user_birthday)
         familyCodeView = view.findViewById(R.id.family_code)

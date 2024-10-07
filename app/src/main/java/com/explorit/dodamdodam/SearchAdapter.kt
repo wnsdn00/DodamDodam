@@ -3,20 +3,26 @@ package com.explorit.dodamdodam
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ItemSearchBinding
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
-    private var items: List<String> = emptyList()
-    private var filteredItems: List<String> = emptyList()
+    private var items: List<DiaryFragment.ContentDTO> = emptyList()
+    private var filteredItems: List<DiaryFragment.ContentDTO> = emptyList()
 
     init {
         filteredItems = items
     }
 
     class SearchViewHolder(private val binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: String) {
-            binding.searchItemText.text = item
+        fun bind(item: DiaryFragment.ContentDTO) {
+            binding.userId.text = item.userId
+            binding.userPostExplanation.text = item.explain ?: ""
+
+            Glide.with(binding.root.context)
+                .load(item.imageUrl)
+                .into(binding.userPost)
         }
     }
 
@@ -26,8 +32,18 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
         return SearchViewHolder(binding)
     }
 
-    fun updateData(newItems: List<String>) {
-        items = newItems // 새로운 데이터 업데이트
+    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+        val item = filteredItems[position] // 필터링된 아이템 바인딩
+        holder.bind(item)
+    }
+
+    override fun getItemCount(): Int {
+        return filteredItems.size // 필터링된 아이템 수 반환
+    }
+
+    fun updatePostList(newItems: List<DiaryFragment.ContentDTO>) {
+        items = newItems // 전체 데이터 업데이트
+        filteredItems = items // 새로운 데이터 업데이트
         notifyDataSetChanged() // RecyclerView 갱신
     }
 
@@ -35,17 +51,8 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
         filteredItems = if (query.isEmpty()) {
             items // 검색어가 없으면 원본 리스트 반환
         } else {
-            items.filter { it.contains(query, ignoreCase = true) } // 검색어에 따라 필터링
+            items.filter { it.userId?.contains(query, ignoreCase = true) == true } // 작성자 필터링
         }
         notifyDataSetChanged() // RecyclerView 갱신
-    }
-
-    override fun getItemCount(): Int {
-        return filteredItems.size // 필터링된 아이템 수 반환
-    }
-
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        val item = filteredItems[position] // 필터링된 아이템 바인딩
-        holder.bind(item)
     }
 }
