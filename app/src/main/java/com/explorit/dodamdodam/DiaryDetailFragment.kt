@@ -1,6 +1,5 @@
 package com.explorit.dodamdodam
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +9,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ItemDiaryBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.*
 import okhttp3.OkHttpClient
 
 class DiaryDetailFragment : Fragment() {
@@ -22,10 +22,10 @@ class DiaryDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var user: FirebaseUser? = null
-    private var firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
     private var okHttpClient: OkHttpClient = OkHttpClient()
 
-    // 게시물의 Firestore 문서 ID를 저장할 변수
+    // 게시물의 Realtime Database 키를 저장할 변수
     private var documentId: String? = null
 
     override fun onCreateView(
@@ -45,17 +45,8 @@ class DiaryDetailFragment : Fragment() {
             return null
         }
 
-        // Firestore에서 데이터 불러오기
-        loadDataFromFirestore()
-
-        // 삭제 버튼 클릭 리스너
-        binding.postDelete.setOnClickListener {
-            if (documentId != null) {
-                showDeleteConfirmationDialog() // 삭제 확인 다이얼로그 호출
-            } else {
-                Toast.makeText(requireContext(), "삭제할 게시물이 없습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
+        // Realtime Database에서 데이터 불러오기
+        loadDataFromDatabase()
 
         return binding.root
     }
@@ -68,62 +59,38 @@ class DiaryDetailFragment : Fragment() {
         }
     }
 
-    // Firestore에서 데이터를 불러오는 함수
-    private fun loadDataFromFirestore() {
+    // Realtime Database에서 데이터를 불러오는 함수
+    private fun loadDataFromDatabase() {
         documentId = arguments?.getString("documentId")
 
         if (documentId.isNullOrEmpty()) {
             Toast.makeText(requireContext(), "documentId가 전달되지 않았습니다.", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
             return
         }
 
-        firestore.collection("posts").document(documentId!!)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    val post = DiaryFragment.ContentDTO(
-                        documentId = document.id,
-                        userId = document.getString("userId") ?: "",
-                        explain = document.getString("explain") ?: "",
-                        imageUrl = document.getString("imageUrl") ?: "",
-                        timestamp = document.getLong("timestamp") ?: 0,
-                        familyCode = document.getString("familyCode") ?: ""
-                    )
+        val postRef: DatabaseReference = database.getReference("posts").child(documentId!!)
+        postRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val post = dataSnapshot.getValue(DiaryFragment.ContentDTO::class.java)
+                if (post != null) {
+                    binding.nickName.text = post.nickName
+                    binding.postExplain.text = post.explain
 
-                    binding.userId.text = post.userId
+                    Glide.with(this@DiaryDetailFragment)
+                        .load(post.imageUrl)
+                        .into(binding.userPost)
                 } else {
                     Toast.makeText(requireContext(), "게시물이 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.e("DiaryDetailFragment", "데이터 로딩 실패: ${exception.message}")
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("DiaryDetailFragment", "데이터 로딩 실패: ${databaseError.message}")
+                Toast.makeText(requireContext(), "데이터 로딩에 실패했습니다.", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    // 게시물 삭제 함수
-    private fun deletePost() {
-        documentId?.let { id ->
-            firestore.collection("posts").document(id)
-                .delete()
-                .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "게시물이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                    findNavController().navigateUp() // 이전 화면으로 돌아가기
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("DiaryDetailFragment", "게시물 삭제 실패: ${exception.message}")
-                    Toast.makeText(requireContext(), "게시물 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                }
-        } ?: Log.e("DiaryDetailFragment", "Document ID가 null입니다.")
-    }
-
-    // 삭제 확인 다이얼로그를 띄우는 함수
-    private fun showDeleteConfirmationDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("게시물 삭제")
-            .setMessage("이 게시물을 삭제하시겠습니까?")
-            .setPositiveButton("삭제") { _, _ -> deletePost() } // 사용자가 삭제를 확인하면 게시물 삭제
-            .setNegativeButton("취소", null) // 취소 버튼을 누르면 아무 일도 하지 않음
-            .show()
+        })
     }
 
     // 메모리 누수를 방지하기 위해 onDestroyView에서 _binding을 해제

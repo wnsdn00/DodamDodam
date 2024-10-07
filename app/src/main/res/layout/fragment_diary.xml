@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/linearLayoutTop"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="53dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
@@ -65,23 +65,12 @@
             android:contentDescription="@string/gallery_button"/>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="400dp"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#EAF3F8"
-        app:layout_constraintTop_toBottomOf="@id/linearLayoutTop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
 
-    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="575dp"
+        android:layout_height="675dp"
         android:background="#EAF3F8"
         app:layout_constraintBottom_toBottomOf="parent" />
 

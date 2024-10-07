@@ -7,7 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentSnapshot
@@ -20,6 +21,9 @@ import org.greenrobot.eventbus.ThreadMode
 import com.explorit.dodamdodam.databinding.FragmentDiaryBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 
 class DiaryFragment : Fragment() {
 
@@ -62,6 +66,13 @@ class DiaryFragment : Fragment() {
         binding.search.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(R.id.mainFrameLayout, SearchFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
+        binding.gallery.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.mainFrameLayout, GalleryFragment())
                 .addToBackStack(null)
                 .commit()
         }
@@ -119,9 +130,7 @@ class DiaryFragment : Fragment() {
                     if (querySnapshot.documents.isNotEmpty()) {
                         Log.d("DiaryFragment", "Loaded documents: ${querySnapshot.documents.map { it.data }}")
                         lastVisibleDocument = querySnapshot.documents.last()
-                        val items = mapDocuments(querySnapshot.documents)
-                        diaryAdapter.updatePostList(items)
-                        Log.d("DiaryFragment", "Successfully loaded posts: ${items.size} posts")
+                        mapDocuments(querySnapshot.documents)
                     } else {
                         Log.d("DiaryFragment", "No posts found.")
                     }
@@ -148,8 +157,7 @@ class DiaryFragment : Fragment() {
                 .addOnSuccessListener { querySnapshot ->
                     if (querySnapshot != null && querySnapshot.documents.isNotEmpty()) {
                         lastVisibleDocument = querySnapshot.documents.last()
-                        val items = mapDocuments(querySnapshot.documents)
-                        diaryAdapter.addItems(items)
+                        mapDocuments(querySnapshot.documents)
                     } else {
                         Log.d("DiaryFragment", "No more posts to load.")
                     }
@@ -160,39 +168,69 @@ class DiaryFragment : Fragment() {
         } ?: Log.e("DiaryFragment", "Last document is null.")
     }
 
-    private fun mapDocuments(documents: List<DocumentSnapshot>): List<ContentDTO> {
-        return documents.map { document ->
-            ContentDTO(
+    private fun mapDocuments(documents: List<DocumentSnapshot>) {
+        val items = mutableListOf<ContentDTO>()
+        val fetchCount = documents.size
+        var completedFetches = 0 // 닉네임 가져오기 완료 카운트
+
+        for (document in documents) {
+            val userId = document.getString("userId") ?: ""
+            val userNickname = document.getString("nickName") ?: ""
+            val contentDTO = ContentDTO(
                 documentId = document.id,
-                userId = document.getString("userId") ?: "",
+                userId = userId,
+                nickName = userNickname,
                 explain = document.getString("explain") ?: "",
                 imageUrl = document.getString("imageUrl") ?: "",
                 timestamp = document.getLong("timestamp") ?: System.currentTimeMillis(),
                 familyCode = document.getString("familyCode") ?: ""
             )
+
+            items.add(contentDTO)
+            diaryAdapter.updatePostList(items)
         }
     }
 
-    private fun onSearchButtonClick() {
-        // SearchFragment로 이동
-        val searchFragment = SearchFragment()
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, searchFragment) // fragment_container는 실제 컨테이너 ID로 변경
-            .addToBackStack(null)
-            .commit()
+    private fun fetchnickName(userId: String, callback: (String?) -> Unit) {
+        currentUserFamilyCode?.let { familyCode ->
+            database.child("families").child(familyCode).child("members").child(userId).child("nickname").get()
+                .addOnSuccessListener { dataSnapshot ->
+                    if (dataSnapshot.exists()) {
+                        val nickname = dataSnapshot.value as? String
+                        Log.d("DiaryFragment", "Fetched nickname for userId $userId: $nickname")
+                        callback(nickname)
+                    } else {
+                        Log.e("DiaryFragment", "Nickname not found for userId: $userId")
+                        callback(null)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("DiaryFragment", "Failed to fetch nickname for userId: $userId, error: ${e.message}")
+                    callback(null)
+                }
+        } ?: callback(null)
+    }
+
+    private fun formatTimestampToDate(timestamp: Long): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return sdf.format(Date(timestamp))
     }
 
     data class ContentDTO(
         var documentId: String? = null,
         var userId: String? = null,
+        var nickName: String? = null,
         var explain: String? = null,
         var imageUrl: String? = null,
         var timestamp: Long = System.currentTimeMillis(),
         var profileImageUrl: String? = null,
-        var familyCode: String = ""
+        var familyCode: String = "",
+        var likeCount: Int = 0
     ) {
         override fun toString(): String {
-            return "ContentDTO(documentId=$documentId, userId=$userId, explain=$explain, imageUrl=$imageUrl, timestamp=$timestamp, profileImageUrl=$profileImageUrl, familyCode=$familyCode)"
+            return "ContentDTO(documentId=$documentId, userId=$userId, nickName=$nickName, " +
+                    "explain=$explain, imageUrl=$imageUrl, timestamp=$timestamp, " +
+                    "profileImageUrl=$profileImageUrl, familyCode=$familyCode, likeCount=$likeCount)"
         }
     }
 }

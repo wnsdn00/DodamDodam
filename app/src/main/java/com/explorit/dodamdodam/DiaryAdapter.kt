@@ -26,8 +26,8 @@ class DiaryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: DiaryFragment.ContentDTO) {
-            binding.userId.text = post.userId
-            binding.userPostExplanation.text = post.explain ?: ""
+            binding.nickName.text = post.nickName
+            binding.postExplain.text = post.explain ?: ""
             Glide.with(binding.root.context).load(post.imageUrl).into(binding.userPost)
 
             binding.postDelete.visibility =
@@ -44,6 +44,28 @@ class DiaryAdapter(
                 val position = bindingAdapterPosition
                 updatePost(post, position)
             }
+
+            binding.loveCounter.text = "like ${post.likeCount}"
+            binding.loveButton.setOnClickListener {
+                updateLikeCount(post, bindingAdapterPosition)
+            }
+        }
+
+        private fun updateLikeCount(post: DiaryFragment.ContentDTO, position: Int) {
+            val documentId = post.documentId ?: return
+            val newLikeCount = post.likeCount + 1
+
+            firestore.collection("posts").document(documentId)
+                .update("likeCount", newLikeCount)
+                .addOnSuccessListener {
+                    postData[position].likeCount = newLikeCount
+                    notifyItemChanged(position)
+                    Log.d("DiaryAdapter", "Like count updated successfully: $documentId")
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(context, "Like 업데이트 실패", Toast.LENGTH_SHORT).show()
+                    Log.e("DiaryAdapter", "Failed to update like count: ${e.message}")
+                }
         }
     }
 
@@ -53,7 +75,8 @@ class DiaryAdapter(
     }
 
     override fun onBindViewHolder(holder: DiaryViewHolder, position: Int) {
-        holder.bind(postData[position])
+        val item = postData[position]
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = postData.size

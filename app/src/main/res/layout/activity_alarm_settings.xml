@@ -16,4 +16,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Switch
+        android:id="@+id/missionAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="미션 알림 받기"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/buttonAlarm"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Switch
+        android:id="@+id/questionAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오늘의 질문 알림 받기"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/missionAlarm"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

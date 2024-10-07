@@ -44,7 +44,7 @@
         android:background="@drawable/familycard_border">
 
         <TextView
-            android:id="@+id/user_nickName"
+            android:id="@+id/nickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="호칭"

@@ -152,13 +152,18 @@ class AddPostActivity : AppCompatActivity() {
 
     // Firestore에 URL 저장 후 게시물 목록 새로 고침
     private fun saveFileUrlToFirestore(downloadUrl: String) {
+
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userId = currentUser?.uid ?: "Unknown User"
         val userProfile = currentUser?.photoUrl?.toString() ?: ""
+        val dateFormat = SimpleDateFormat("yyyy-mm-dd", java.util.Locale.getDefault())
+        val formattedDate = dateFormat.format(Date())
 
-        getFamilyCode(userId) { familyCode ->
+        getFamilyCodeAndNickName(userId) { familyCode, nickName ->
+
             val postData = DiaryFragment.ContentDTO(
                 userId = userId,
+                nickName = nickName,
                 explain = binding.addpostEditExplain.text.toString(),
                 imageUrl = downloadUrl,
                 timestamp = System.currentTimeMillis(),
@@ -177,17 +182,29 @@ class AddPostActivity : AppCompatActivity() {
         }
     }
 
-    // familyCode를 가져오는 함수
-    private fun getFamilyCode(userId: String, callback: (String) -> Unit) {
+    // familyCode와 nickName을 가져오는 함수
+    private fun getFamilyCodeAndNickName(userId: String, callback: (String, String) -> Unit) {
         val database = FirebaseDatabase.getInstance().reference // Realtime Database 초기화
         database.child("users").child(userId).child("familyCode").get()
             .addOnSuccessListener { dataSnapshot ->
                 val familyCode = dataSnapshot.value.toString()
                 Log.d("AddPostActivity", "familyCode 저장: $familyCode")
-                callback(familyCode)
-            }.addOnFailureListener { exception ->
+
+
+                database.child("families").child(familyCode).child("members").child(userId).child("nickName").get()
+                    .addOnSuccessListener { nickNameSnapshot ->
+                        val nickName = nickNameSnapshot.value.toString()
+                        Log.d("AddPostActivity", "nickName 가져오기 성공: $nickName")
+                        callback(familyCode, nickName)
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("AddPostActivity", "nickName 가져오기 실패", exception)
+                        callback(familyCode, "Unknown")
+                    }
+            }
+            .addOnFailureListener { exception ->
                 Log.e("AddPostActivity", "사용자 familyCode 정보 가져오기 실패", exception)
-                callback("defaultFamilyCode")
+                callback("defaultFamilyCode", "Unknown")
             }
     }
 }
