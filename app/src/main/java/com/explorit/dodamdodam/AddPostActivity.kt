@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -166,7 +167,7 @@ class AddPostActivity : AppCompatActivity() {
                 nickName = nickName,
                 explain = binding.addpostEditExplain.text.toString(),
                 imageUrl = downloadUrl,
-                timestamp = System.currentTimeMillis(),
+                timestamp = Timestamp.now(),
                 profileImageUrl = userProfile,
                 familyCode = familyCode
             )
