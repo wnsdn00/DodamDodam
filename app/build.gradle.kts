@@ -101,6 +101,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-bom:33.1.2")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-auth-ktx:23.0.0") // Firebase 인증 라이브러리
+    implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation ("com.google.android.gms:play-services-auth:20.1.0") // Google 로그인 라이브러리
     implementation ("com.google.android.gms:play-services-identity:18.1.0")
 

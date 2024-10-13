@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentSnapshot
@@ -21,9 +19,7 @@ import org.greenrobot.eventbus.ThreadMode
 import com.explorit.dodamdodam.databinding.FragmentDiaryBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.Date
+import com.google.firebase.Timestamp
 
 class DiaryFragment : Fragment() {
 
@@ -170,19 +166,18 @@ class DiaryFragment : Fragment() {
 
     private fun mapDocuments(documents: List<DocumentSnapshot>) {
         val items = mutableListOf<ContentDTO>()
-        val fetchCount = documents.size
-        var completedFetches = 0 // 닉네임 가져오기 완료 카운트
 
         for (document in documents) {
             val userId = document.getString("userId") ?: ""
             val userNickname = document.getString("nickName") ?: ""
+
             val contentDTO = ContentDTO(
                 documentId = document.id,
                 userId = userId,
                 nickName = userNickname,
                 explain = document.getString("explain") ?: "",
                 imageUrl = document.getString("imageUrl") ?: "",
-                timestamp = document.getLong("timestamp") ?: System.currentTimeMillis(),
+                timestamp = Timestamp.now(),
                 familyCode = document.getString("familyCode") ?: ""
             )
 
@@ -211,21 +206,16 @@ class DiaryFragment : Fragment() {
         } ?: callback(null)
     }
 
-    private fun formatTimestampToDate(timestamp: Long): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return sdf.format(Date(timestamp))
-    }
-
     data class ContentDTO(
         var documentId: String? = null,
         var userId: String? = null,
         var nickName: String? = null,
         var explain: String? = null,
         var imageUrl: String? = null,
-        var timestamp: Long = System.currentTimeMillis(),
+        var timestamp: Timestamp = Timestamp.now(),
         var profileImageUrl: String? = null,
         var familyCode: String = "",
-        var likeCount: Int = 0
+        var likeCount: Int = 0,
     ) {
         override fun toString(): String {
             return "ContentDTO(documentId=$documentId, userId=$userId, nickName=$nickName, " +
