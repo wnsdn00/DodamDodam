@@ -78,12 +78,12 @@
         <EditText
             android:id="@+id/user_search"
             android:layout_width="10dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:layout_margin="8dp"
             android:hint="작성자"
             android:gravity="center"
-            android:background="@drawable/search1_border"
+            android:background="@drawable/search_border"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:imeOptions="actionSearch"
@@ -99,12 +99,12 @@
         <EditText
             android:id="@+id/date_search"
             android:layout_width="10dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:layout_margin="8dp"
             android:hint="작성 날짜"
             android:gravity="center"
-            android:background="@drawable/search1_border"
+            android:background="@drawable/search_border"
             android:textColor="@color/black"
             android:textStyle="bold"/>
 
@@ -118,11 +118,10 @@
     </LinearLayout>
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="575dp"
+        android:layout_height="565dp"
         android:background="#EAF3F8"
         app:layout_constraintBottom_toBottomOf="parent" />
 

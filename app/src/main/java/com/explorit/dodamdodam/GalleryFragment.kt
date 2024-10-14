@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.explorit.dodamdodam.databinding.FragmentGalleryBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
@@ -17,6 +17,7 @@ class GalleryFragment : Fragment() {
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var recyclerView: RecyclerView
+    private lateinit var binding: FragmentGalleryBinding
     private lateinit var galleryAdapter: GalleryAdapter
     private var photoList: MutableList<String> = mutableListOf()
 
@@ -25,14 +26,18 @@ class GalleryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_gallery, container, false)
+        binding = FragmentGalleryBinding.inflate(inflater, container, false)
 
-        recyclerView = view.findViewById(R.id.galleryRecyclerView)
+        binding.back.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        recyclerView = binding.galleryRecyclerView
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         galleryAdapter = GalleryAdapter(photoList) { imageUrl ->
             val fullScreenFragment = FullScreenImageFragment.newInstance(imageUrl)
-            val fragmentContainer = view.findViewById<FrameLayout>(R.id.fragmentContainer)
+            val fragmentContainer = binding.fragmentContainer
 
             fragmentContainer.visibility = View.VISIBLE
 
@@ -63,7 +68,7 @@ class GalleryFragment : Fragment() {
             }
         })
 
-        return view
+        return binding.root
     }
 
     private fun fetchPhotos() {

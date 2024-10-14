@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-<vector
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:width="400dp"
-android:height="70dp"
-android:viewportWidth="250"
-android:viewportHeight="23">
+<item>
+    <shape android:shape="rectangle">
+        <solid android:color="@android:color/transparent" />
+        <stroke
+            android:width="3dp"
+            android:color="@android:color/black"/>
+        <corners
+            android:radius="5dp"/>
+    </shape>
+</item>
 
-<group>
-    <clip-path
-        android:pathData="M3 0H247C248.657 0 250 1.34315 250 3V20C250 21.6569 248.657 23 247 23H3C1.34315 23 0 21.6569 0 20V3C0 1.34315 1.34315 0 3 0Z"
-        />
-    <path
-        android:pathData="M3 0H247C248.657 0 250 1.34315 250 3V20C250 21.6569 248.657 23 247 23H3C1.34315 23 0 21.6569 0 20V3C0 1.34315 1.34315 0 3 0Z"
-        android:strokeWidth="2"
-        android:strokeColor="#000000"
-        />
-</group>
-</vector>
+<item>
+    <shape android:shape="rectangle">
+        <solid android:color="@android:color/transparent" />
+    </shape>
+</item>
+
+</layer-list>

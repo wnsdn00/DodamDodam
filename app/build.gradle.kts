@@ -104,6 +104,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-base:18.5.0")
     implementation ("com.google.android.gms:play-services-auth:20.1.0") // Google 로그인 라이브러리
     implementation ("com.google.android.gms:play-services-identity:18.1.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
 
 
     implementation ("androidx.credentials:credentials:1.2.2")

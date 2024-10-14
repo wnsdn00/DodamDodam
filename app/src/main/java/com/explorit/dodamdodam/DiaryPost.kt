@@ -1,6 +1,7 @@
 package com.explorit.dodamdodam
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -20,7 +21,7 @@ fun addPost(explanation: String, imageUrl: String) {
                     userId = userId,
                     explain = explanation,
                     imageUrl = imageUrl,
-                    timestamp = System.currentTimeMillis(),
+                    timestamp = Timestamp.now(),
                     familyCode = familyCode  // familyCode 추가
                 )
 
