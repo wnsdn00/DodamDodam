@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 @Suppress("DEPRECATION")
 class LoginActivity : AppCompatActivity() {
@@ -184,6 +185,7 @@ class LoginActivity : AppCompatActivity() {
                         auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
+
                                     // 로그인 성공
                                     Log.d("LoginActivity", "signInWithEmail:success")
                                     val user = auth.currentUser
@@ -196,6 +198,7 @@ class LoginActivity : AppCompatActivity() {
                                         database.child("users").child(userId).child("userBirth")
                                             .setValue(userBirth)
                                         checkUserFamilyCode(userId)
+
                                     }
                                 } else {
                                     // 로그인 실패
@@ -277,5 +280,6 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
+
 
 }

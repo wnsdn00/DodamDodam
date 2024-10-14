@@ -2,6 +2,7 @@ package com.explorit.dodamdodam
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.telecom.Call
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,9 +22,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.Headers
+import retrofit2.http.POST
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -98,7 +105,7 @@ class RandomQuestionFragment : Fragment() {
 
         backToMainButton.setOnClickListener {
             // 메인으로 가는 버튼 함수
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
         submitAnswerButton.setOnClickListener {
@@ -114,7 +121,7 @@ class RandomQuestionFragment : Fragment() {
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             // 기기의 뒤로 가기 버튼 클릭 함수(메인으로)
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
 
@@ -412,6 +419,8 @@ class RandomQuestionFragment : Fragment() {
 
 
 
+
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -434,4 +443,3 @@ class RandomQuestionFragment : Fragment() {
 }
 // 답변 데이터 클래스
 data class Answer(val member: Member, val answer: String)
-

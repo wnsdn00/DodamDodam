@@ -86,15 +86,11 @@ dependencies {
     implementation("com.google.firebase:firebase-storage:21.0.0")
     implementation("com.google.firebase:firebase-database:21.0.0")
     implementation("com.google.firebase:firebase-functions-ktx:21.0.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
 
-    // Kakao 라이브러리
-    implementation ("com.kakao.sdk:v2-all:2.20.3") // 전체 모듈 설치, 2.11.0 버전부터 지원
-    implementation ("com.kakao.sdk:v2-user:2.20.3") // 카카오 로그인 API 모듈
-    implementation ("com.kakao.sdk:v2-share:2.20.3") // 카카오톡 공유 API 모듈
-    implementation ("com.kakao.sdk:v2-talk:2.20.3") // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
-    implementation ("com.kakao.sdk:v2-friend:2.20.3") // 피커 API 모듈
-    implementation ("com.kakao.sdk:v2-navi:2.20.3") // 카카오내비 API 모듈
-    implementation ("com.kakao.sdk:v2-cert:2.20.3") // 카카오톡 인증 서비스 API 모듈
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
     // Google 라이브러리
     implementation ("com.google.gms:google-services:4.4.2")
@@ -143,6 +139,8 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.1")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.1")
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.messaging)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

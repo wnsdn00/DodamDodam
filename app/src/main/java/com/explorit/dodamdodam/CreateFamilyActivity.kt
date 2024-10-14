@@ -137,7 +137,7 @@ data class Member(
     val userName: String? = null,
     val userBirth: String? = null,
     val familyName: String? = null,
-    val profileUrl: String? = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profile.png?alt=media&token=9da0e69f-7001-4bae-a286-e16f6680ee1e",
+    val profileUrl: String? = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profileImages%2Fic_profile.png?alt=media&token=8b78b600-1fa7-410c-8674-d6ec06e21e7a",
     var hasAnswered: Boolean = false
 ) : Serializable
 
