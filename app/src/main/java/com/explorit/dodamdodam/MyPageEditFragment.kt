@@ -43,7 +43,7 @@ class MyPageEditFragment : Fragment() {
     private lateinit var familyNameView: TextView
 
     private lateinit var btnPhotoChange: Button
-    private lateinit var btnNicknameChange: Button
+    private lateinit var btnDefaultProfile: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +69,7 @@ class MyPageEditFragment : Fragment() {
         familyNameView = view.findViewById(R.id.family_name)
 
         btnPhotoChange = view.findViewById(R.id.btn_photo_change)
-        btnNicknameChange = view.findViewById(R.id.btn_nickname_change)
+        btnDefaultProfile = view.findViewById(R.id.btn_default_profile)
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -83,9 +83,9 @@ class MyPageEditFragment : Fragment() {
             showEditPhotoDialog()
         }
 
-        btnNicknameChange.setOnClickListener {
-            // 호칭 수정하는 다이얼로그
-            showEditNicknameChangeDialog()
+        btnDefaultProfile.setOnClickListener {
+            // 기본 프로필로 변경
+            defaultProfileChange()
         }
 
         return view
@@ -200,34 +200,26 @@ class MyPageEditFragment : Fragment() {
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun showEditNicknameChangeDialog() {
-        val builder = AlertDialog.Builder(requireContext())
-        val inflater = layoutInflater
-        val dialogLayout = inflater.inflate(R.layout.dialog_edit_nickname, null)
-        val editText = dialogLayout.findViewById<EditText>(R.id.editTextNickname)
+    private fun defaultProfileChange() {
+        val userId = auth.currentUser?.uid
+        val familyCode = familyCodeView.text.toString()
 
-        builder.setTitle("닉네임 수정")
-        builder.setView(dialogLayout)
-        builder.setPositiveButton("저장") { _, _ ->
-            val newNickname = editText.text.toString()
+        if (userId != null && familyCode.isNotEmpty()) {
+            // 기본 프로필 이미지로 변경
+            profileImageView.setImageResource(R.drawable.ic_profile)
 
-            // Realtime Database에 닉네임 저장
-            val userId = auth.currentUser?.uid
-            val familyCode = familyCodeView.text.toString()
-
-            if (userId != null) {
-                database.child("families").child(familyCode).child("members").child(userId).child("nickName").setValue(newNickname)
-                    .addOnSuccessListener {
-                        nickNameView.text = newNickname
-                        Toast.makeText(requireContext(), "닉네임이 업데이트되었습니다.", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(requireContext(), "닉네임 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show()
-                    }
-            }
+            // Realtime Database의 profileUrl을 빈 값으로 설정하여 기본 이미지 사용
+            database.child("families").child(familyCode).child("members").child(userId)
+                .child("profileUrl").setValue("https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profileImages%2Fic_profile.png?alt=media&token=8b78b600-1fa7-410c-8674-d6ec06e21e7a")
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "기본 프로필로 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "프로필 변경에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), "사용자 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
-        builder.setNegativeButton("취소", null)
-        builder.show()
     }
 
 

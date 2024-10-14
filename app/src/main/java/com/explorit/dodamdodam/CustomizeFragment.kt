@@ -110,6 +110,11 @@ class CustomizeFragment : Fragment() {
 
 
     private fun fetchPurchasedItems() {
+        // 카테고리 변경 시 selectedItemView를 초기화
+        selectedItemView.setImageDrawable(null) // 선택된 이미지 초기화
+        applyButton.visibility = View.GONE // 적용 버튼 숨김 처리
+        selectedItem = null // 선택된 아이템 초기화
+
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserUid != null) {
             database.child("users").child(currentUserUid)

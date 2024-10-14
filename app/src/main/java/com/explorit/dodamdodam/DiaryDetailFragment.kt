@@ -14,6 +14,7 @@ import com.explorit.dodamdodam.databinding.ItemDiaryBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import okhttp3.OkHttpClient
 
 class DiaryDetailFragment : Fragment() {
 
@@ -22,7 +23,8 @@ class DiaryDetailFragment : Fragment() {
 
     private var user: FirebaseUser? = null
     private var database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    
+    private var okHttpClient: OkHttpClient = OkHttpClient()
+
     // 게시물의 Realtime Database 키를 저장할 변수
     private var documentId: String? = null
 

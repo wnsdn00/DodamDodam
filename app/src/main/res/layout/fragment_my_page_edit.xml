@@ -139,19 +139,19 @@
             android:padding="20dp"
             android:background="@drawable/family_button"
             android:layout_marginBottom="30dp"
-            android:text="사진 변경"
+            android:text="프로필 사진 변경"
             android:fontFamily="@font/onglyp"
             android:textSize="60px"
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/btn_nickname_change"
+            android:id="@+id/btn_default_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minHeight="0dp"
             android:padding="20dp"
             android:background="@drawable/family_button"
-            android:text="호칭 변경"
+            android:text="기본 프로필 변경"
             android:fontFamily="@font/onglyp"
             android:textSize="60px"
             android:textColor="@color/white" />

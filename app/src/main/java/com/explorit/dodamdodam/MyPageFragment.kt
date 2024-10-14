@@ -140,11 +140,11 @@ class MyPageFragment : Fragment() {
 
 
         backToMainButton.setOnClickListener {
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
 

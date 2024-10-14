@@ -20,7 +20,6 @@ class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
             fun bind(member: Member) {
                 nameTextView.text = member.nickName
                 member.profileUrl?.let { loadQuestionProfileImage(profileImageView, it) }
-
             }
         }
 
@@ -35,6 +34,8 @@ class QuestionMemberProfileAdapter(private val memberList: List<Member>) :
 
         val colorResId = if (member.hasAnswered) R.drawable.circle_green else R.drawable.circle_gray
         holder.answerStatusView.setBackgroundResource(colorResId)
+
+
     }
 
     override fun getItemCount(): Int = memberList.size

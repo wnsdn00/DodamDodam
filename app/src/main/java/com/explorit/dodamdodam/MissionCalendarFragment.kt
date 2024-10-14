@@ -142,11 +142,11 @@ class MissionCalendarFragment : Fragment() {
         }
 
         backToMainButton.setOnClickListener {
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment())
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
         return view
@@ -337,13 +337,14 @@ class MissionCalendarFragment : Fragment() {
 
     // 확인한 사용자의 가족그룹 구성원을 확인하는 함수
     private fun fetchMembers(familyCode: String) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         database.child("families").child(familyCode).child("members")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     memberList.clear()
                     for (data in snapshot.children) {
                         val member = data.getValue(Member::class.java)
-                        if (member != null) {
+                        if (member != null && member.userId != currentUserUid) {
                             memberList.add(member)
                         }
                     }
