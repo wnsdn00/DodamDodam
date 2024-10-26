@@ -27,17 +27,32 @@
         android:layout_height="1dp">
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/addpost_image"
-        android:layout_margin="8dp"
-        android:layout_below="@+id/toolbar_division"
+    <LinearLayout
+        android:id="@+id/addpostMidea"
         android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp"
+        android:layout_margin="8dp">
+        <ImageView
+            android:id="@+id/addpostImage"
+            android:layout_margin="8dp"
+            android:layout_below="@+id/toolbar_division"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
+        <VideoView
+            android:id="@+id/addpostVideo"
+            android:layout_margin="8dp"
+            android:layout_below="@+id/toolbar_division"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone" />
+    </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edittext"
         android:layout_below="@+id/toolbar_division"
-        android:layout_toRightOf="@+id/addpost_image"
+        android:layout_toRightOf="@+id/addpostMidea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -54,7 +69,7 @@
         android:id="@+id/addpost_btn_upload"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addpost_image"
+        android:layout_below="@id/addpostMidea"
         android:layout_margin="5dp"
         android:text="미디어 선택"/>
 
@@ -63,7 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/addpost_btn_upload"
-        android:layout_below="@id/addpost_image"
+        android:layout_below="@id/addpostMidea"
         android:layout_margin="5dp"
         android:text="게시글 업로드" />
 
