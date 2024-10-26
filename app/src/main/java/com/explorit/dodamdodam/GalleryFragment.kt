@@ -36,22 +36,11 @@ class GalleryFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
 
         galleryAdapter = GalleryAdapter(photoList) { imageUrl ->
-            val fullScreenFragment = FullScreenImageFragment.newInstance(imageUrl)
-            val fragmentContainer = binding.fragmentContainer
-
-            fragmentContainer.visibility = View.VISIBLE
-
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fullScreenFragment)
-                .addToBackStack(null)
-                .commit()
-            Log.d("GalleryFragment", "Fragment transaction committed")
+            openFullScreenImageFragment(imageUrl)
         }
         recyclerView.adapter = galleryAdapter
 
-
         firestore = FirebaseFirestore.getInstance()
-
         fetchPhotos()
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -94,5 +83,14 @@ class GalleryFragment : Fragment() {
                 Log.e("GalleryFragment", "Failed to fetch photos: ${e.message}")
                 isLoading = false
             }
+    }
+
+    private fun openFullScreenImageFragment(imageUrl: String) {
+        val fullScreenFragment = FullScreenImageFragment.newInstance(imageUrl)
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fullScreenFragment)
+            .addToBackStack(null)
+            .commit()
     }
 }

@@ -128,9 +128,8 @@ class MyPageFragment : Fragment() {
 
         btnAppInfo.setOnClickListener {
             // 앱 정보 버튼 클릭 이벤트 처리
-            Toast.makeText(activity, "앱 정보 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            // 예: 앱 정보 액티비티로 이동
-            // startActivity(Intent(activity, AppInfoActivity::class.java))
+            val intent = Intent(activity, AboutAppActivity::class.java)
+            startActivity(intent)
         }
 
         btnPreference.setOnClickListener {

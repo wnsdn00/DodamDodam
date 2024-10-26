@@ -2,13 +2,14 @@ package com.explorit.dodamdodam
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ItemGalleryBinding
 
-class GalleryAdapter(private val imageUrls: List<String>, private val onClick: (String) -> Unit) :
-    RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>() {
+class GalleryAdapter(
+    private val imageUrls: List<String>,
+    private val onClick: (String) -> Unit
+) : RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder>() {
 
     inner class GalleryViewHolder(private val binding: ItemGalleryBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -18,7 +19,7 @@ class GalleryAdapter(private val imageUrls: List<String>, private val onClick: (
                 .load(imageUrl)
                 .into(binding.imageView)
 
-            binding.imageView.setOnClickListener {
+            binding.root.setOnClickListener {
                 onClick(imageUrl)
             }
         }
