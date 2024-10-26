@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <ImageButton
+        android:id="@+id/Back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:background="@android:color/transparent"
+        android:contentDescription="TODO"
+        app:srcCompat="@drawable/ic_back"
+        tools:ignore="MissingConstraints" />
+
+    <!-- 앱 로고와 앱 이름, 버전 정보 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- 앱 로고 -->
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/logo"
+            android:contentDescription="App Logo" />
+
+        <!-- 앱 이름과 버전 정보 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical">
+
+            <!-- 앱 이름 -->
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도담도담"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <!-- 앱 버전 -->
+            <TextView
+                android:id="@+id/appVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="버전 1.0.0"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 앱 설명 문장들 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="자식이 탈없이 자라길 바란다는 의미를 담은 순우리말인 도담도담이라는 이름으로 개발된 가족 소통 어플리케이션입니다."
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="매일 다른 질문으로 업데이트 되는 랜덤 질문과 가족 구성원끼리의 소통을 더욱 활발히 유도하는 미션캘린더를 통해 기념일 등 중요한 날을 기록해보세요!"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="미션 보상으로 얻을 수 있는 코인으로 앱을 자신의 취향에 맞게 꾸며보세요!"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product Owner : 김준우, 조윤식"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="300dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Developer : 김준우, 조윤식"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="3dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UI designer : 김준우, 조윤식, 양세은"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="3dp" />
+
+</LinearLayout>

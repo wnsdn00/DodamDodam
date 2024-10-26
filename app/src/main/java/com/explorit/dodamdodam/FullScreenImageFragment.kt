@@ -1,100 +1,170 @@
 package com.explorit.dodamdodam
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.media.MediaScannerConnection
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.explorit.dodamdodam.databinding.FragmentFullScreenImageBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.net.URL
+import java.io.IOException
 
 class FullScreenImageFragment : Fragment() {
 
-    private lateinit var imageView: ImageView
-    private lateinit var downloadButton: Button
+    private lateinit var binding: FragmentFullScreenImageBinding
+    private val REQUEST_CODE = 100
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_full_screen_image, container, false)
-        imageView = view.findViewById(R.id.fullScreenImageView)
-        downloadButton = view.findViewById(R.id.downloadButton)
+        binding = FragmentFullScreenImageBinding.inflate(inflater, container, false)
 
-        val imageUrl = arguments?.getString("imageUrl")
-        Log.d("FullScreenImageFragment", "Image URL: $imageUrl")
+        val imageUrl = arguments?.getString(ARG_IMAGE_URL)
 
-        Glide.with(this).load(imageUrl).into(imageView)
+        if (imageUrl != null) {
+            Glide.with(this)
+                .load(imageUrl)
+                .into(binding.fullScreenImageView)
 
-        imageView.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
-        downloadButton.setOnClickListener {
-            if (checkStoragePermissions()) {
-                imageUrl?.let { url -> downloadImage(url) }
-            } else {
-                requestStoragePermissions()
+            binding.downloadButton.setOnClickListener {
+                downloadImage(imageUrl)
             }
+        } else {
+            Log.e("FullScreenImageFragment", "Image URL is null")
         }
 
-        return view
-    }
+        binding.back.setOnClickListener {
+            closeFragment()
+        }
 
-    private fun checkStoragePermissions(): Boolean {
-        val permissionCheck = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        return permissionCheck == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestStoragePermissions() {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1001)
+        return binding.root
     }
 
     private fun downloadImage(imageUrl: String) {
-        Thread {
-            try {
-                val url = URL(imageUrl)
-                val inputStream: InputStream = url.openStream()
-
-                val folder = File(requireContext().getExternalFilesDir(null), "도담도담")
-                if (!folder.exists()) {
-                    folder.mkdirs()
+        Glide.with(this)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    saveImageToGallery(resource)
                 }
 
-                val file = File(folder, "downloaded_image.jpg")
-                val outputStream = FileOutputStream(file)
-
-                inputStream.copyTo(outputStream)
-                outputStream.close()
-                inputStream.close()
-
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "이미지가 '도담도담' 폴더에 다운로드되었습니다.", Toast.LENGTH_SHORT).show()
+                override fun onLoadCleared(placeholder: Drawable?) {
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                requireActivity().runOnUiThread {
-                    Toast.makeText(requireContext(), "다운로드 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            })
+    }
+
+    private fun saveImageToGallery(bitmap: Bitmap) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val contentResolver = requireContext().contentResolver
+            val contentValues = ContentValues().apply {
+                put(
+                    MediaStore.Images.Media.DISPLAY_NAME,
+                    "downloaded_image_${System.currentTimeMillis()}.png"
+                )
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            }
+
+            val imageUrl =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            imageUrl?.let { uri ->
+                contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                    outputStream.flush()
+                    Log.d("FullScreenImageFragment", "Image saved to gallery: $uri")
+                }
+            } ?: run {
+                Log.e("FullScreenImageFragment", "Error saving image to gallery: Uri is null")
+            }
+        } else {
+            val filename = "downloaded_image_${System.currentTimeMillis()}.png"
+            val fos: FileOutputStream
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_CODE
+                )
+            } else {
+                try {
+                    val dir =
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                    val file = File(dir, filename)
+                    fos = FileOutputStream(file)
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                    fos.flush()
+                    fos.close()
+                    Log.d("FullScreenImageFragment", "Image saved to gallery: ${file.absolutePath}")
+                    MediaScannerConnection.scanFile(
+                        requireContext(),
+                        arrayOf(file.absolutePath),
+                        null,
+                        null
+                    )
+                } catch (e: IOException) {
+                    Log.e("FullScreenImageFragment", "Error saving image to gallery: ${e.message}")
                 }
             }
-        }.start()
+        }
+    }
+
+    private fun closeFragment() {
+        parentFragmentManager.popBackStack()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            closeFragment()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // 권한이 허용됨
+                Log.d("FullScreenImageFragment", "Permission granted.")
+            } else {
+                // 권한이 거부됨
+                Log.e("FullScreenImageFragment", "Permission denied.")
+            }
+        }
     }
 
     companion object {
+        private const val ARG_IMAGE_URL = "image_url"
+
         fun newInstance(imageUrl: String): FullScreenImageFragment {
             val fragment = FullScreenImageFragment()
             val args = Bundle()
-            args.putString("imageUrl", imageUrl)
+            args.putString(ARG_IMAGE_URL, imageUrl)
             fragment.arguments = args
             return fragment
         }

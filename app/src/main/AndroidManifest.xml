@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 사용할 권환을 등록하는 설정-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
@@ -23,6 +24,9 @@
         android:theme="@style/Theme.DodamDodam"
         tools:targetApi="31">
 
+        <activity
+            android:name=".AboutAppActivity"
+            android:exported="false" />
         <activity
             android:name=".AdditionalInfoActivity"
             android:exported="false" />
@@ -152,10 +156,6 @@
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
 
     </application>
