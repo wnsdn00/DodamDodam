@@ -2,12 +2,15 @@ package com.explorit.dodamdodam
 
 import android.content.Context
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.widget.EditText
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ItemDiaryBinding
@@ -26,9 +29,29 @@ class DiaryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: DiaryFragment.ContentDTO) {
+
+            Glide.with(binding.root.context).load(post.profileImageUrl).into(binding.userProfile)
             binding.nickName.text = post.nickName
             binding.postExplain.text = post.explain ?: ""
-            Glide.with(binding.root.context).load(post.imageUrl).into(binding.userPost)
+            val mimeType = itemView.context.contentResolver.getType(Uri.parse(post.videoUrl))
+            // 이미지 및 비디오 처리
+            if (post.imageUrl?.isNotEmpty() == true) {
+                binding.userPostImage.visibility = View.VISIBLE
+                binding.userPostVideo.visibility = View.GONE
+                Glide.with(binding.root.context).load(post.imageUrl).into(binding.userPostImage)
+            } else if (post.videoUrl?.isNotEmpty() == true) {
+                binding.userPostImage.visibility = View.GONE
+                binding.userPostVideo.visibility = View.VISIBLE
+                binding.userPostVideo.setVideoURI(Uri.parse(post.videoUrl))
+                binding.userPostVideo.setOnPreparedListener { mediaPlayer ->
+                    mediaPlayer.isLooping = true
+                    binding.userPostVideo.start()
+                }
+                binding.userPostVideo.start()
+            } else {
+                binding.userPostImage.visibility = View.GONE
+                binding.userPostVideo.visibility = View.GONE
+            }
 
             binding.postDelete.visibility =
                 if (post.userId == currentUserId) View.VISIBLE else View.GONE

@@ -1,6 +1,7 @@
 package com.explorit.dodamdodam
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -77,9 +78,8 @@ class DiaryDetailFragment : Fragment() {
                     binding.nickName.text = post.nickName
                     binding.postExplain.text = post.explain
 
-                    Glide.with(this@DiaryDetailFragment)
-                        .load(post.imageUrl)
-                        .into(binding.userPost)
+                    // 이미지 및 비디오 처리
+
                 } else {
                     Toast.makeText(requireContext(), "게시물이 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
@@ -92,6 +92,8 @@ class DiaryDetailFragment : Fragment() {
             }
         })
     }
+
+
 
     // 메모리 누수를 방지하기 위해 onDestroyView에서 _binding을 해제
     override fun onDestroyView() {

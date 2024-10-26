@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -44,6 +45,7 @@ class MyPageEditFragment : Fragment() {
 
     private lateinit var btnPhotoChange: Button
     private lateinit var btnDefaultProfile: Button
+    private lateinit var backToMainButton: ImageButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +72,7 @@ class MyPageEditFragment : Fragment() {
 
         btnPhotoChange = view.findViewById(R.id.btn_photo_change)
         btnDefaultProfile = view.findViewById(R.id.btn_default_profile)
+        backToMainButton = view.findViewById(R.id.myPageEditBackBtn)
 
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
@@ -86,6 +89,16 @@ class MyPageEditFragment : Fragment() {
         btnDefaultProfile.setOnClickListener {
             // 기본 프로필로 변경
             defaultProfileChange()
+        }
+
+        backToMainButton.setOnClickListener {
+            // 메인으로 가는 버튼 함수
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            // 기기의 뒤로 가기 버튼 클릭 함수(메인으로)
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
         }
 
         return view

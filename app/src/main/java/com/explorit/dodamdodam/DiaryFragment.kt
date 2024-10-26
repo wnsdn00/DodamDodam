@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.activity.addCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentSnapshot
@@ -75,6 +77,16 @@ class DiaryFragment : Fragment() {
 
         fetchCurrentUserFamilyCode()
 
+        binding.back.setOnClickListener {
+            // 메인으로 가는 버튼 함수
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            // 기기의 뒤로 가기 버튼 클릭 함수(메인으로)
+            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
+        }
+
         return binding.root
     }
 
@@ -87,6 +99,8 @@ class DiaryFragment : Fragment() {
         super.onDestroyView()
         EventBus.getDefault().unregister(this)
     }
+
+
 
     private fun fetchCurrentUserFamilyCode() {
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -170,6 +184,7 @@ class DiaryFragment : Fragment() {
         for (document in documents) {
             val userId = document.getString("userId") ?: ""
             val userNickname = document.getString("nickName") ?: ""
+            val userProfileImageUrl = document.getString("profileImageUrl") ?: "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profileImages%2Fic_profile.png?alt=media&token=8b78b600-1fa7-410c-8674-d6ec06e21e7a"
 
             val contentDTO = ContentDTO(
                 documentId = document.id,
@@ -177,8 +192,10 @@ class DiaryFragment : Fragment() {
                 nickName = userNickname,
                 explain = document.getString("explain") ?: "",
                 imageUrl = document.getString("imageUrl") ?: "",
+                videoUrl = document.getString("videoUrl") ?: "",
                 timestamp = Timestamp.now(),
-                familyCode = document.getString("familyCode") ?: ""
+                familyCode = document.getString("familyCode") ?: "",
+                profileImageUrl = userProfileImageUrl
             )
 
             items.add(contentDTO)
@@ -212,6 +229,7 @@ class DiaryFragment : Fragment() {
         var nickName: String? = null,
         var explain: String? = null,
         var imageUrl: String? = null,
+        var videoUrl: String? = null,
         var timestamp: Timestamp = Timestamp.now(),
         var profileImageUrl: String? = null,
         var familyCode: String = "",
@@ -219,7 +237,7 @@ class DiaryFragment : Fragment() {
     ) {
         override fun toString(): String {
             return "ContentDTO(documentId=$documentId, userId=$userId, nickName=$nickName, " +
-                    "explain=$explain, imageUrl=$imageUrl, timestamp=$timestamp, " +
+                    "explain=$explain, imageUrl=$imageUrl, videoUrl=$videoUrl, timestamp=$timestamp, " +
                     "profileImageUrl=$profileImageUrl, familyCode=$familyCode, likeCount=$likeCount)"
         }
     }

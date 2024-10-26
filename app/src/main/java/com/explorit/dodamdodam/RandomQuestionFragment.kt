@@ -52,7 +52,7 @@ class RandomQuestionFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private var memberList = mutableListOf<Member>()
     private var answerList = mutableListOf<Answer>()
-    private  lateinit var backToMainButton: ImageButton
+    private lateinit var backToMainButton: ImageButton
     private lateinit var todayQuestionTextView: TextView
     private lateinit var answerEditText: EditText
     private lateinit var submitAnswerButton: Button
