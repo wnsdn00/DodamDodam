@@ -60,13 +60,13 @@
             android:layout_height="50dp"
             android:background="#EAF3F8"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/gallery"
+            app:srcCompat="@drawable/ic_gallery"
             android:contentDescription="@string/gallery_button"/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fragment_container"
-        android:layout_width="400dp"
+        android:layout_width="340dp"
         android:layout_height="70dp"
         android:orientation="horizontal"
         android:gravity="center"
@@ -80,8 +80,9 @@
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:layout_margin="8dp"
+            android:layout_marginLeft="8dp"
             android:hint="작성자"
+            android:textColorHint="@color/black"
             android:gravity="center"
             android:background="@drawable/search_border"
             android:textColor="@color/black"
@@ -91,28 +92,29 @@
 
         <ImageButton
             android:id="@+id/user_search_button"
-            android:layout_width="50dp"
+            android:layout_width="48dp"
             android:layout_height="45dp"
-            android:contentDescription="검색"
-            android:onClick="onUserSearchButtonClick"/>
+            android:background="@android:color/transparent"
+            android:onClick="onUserSearchButtonClick"
+            app:srcCompat="@drawable/in_search_24" />
 
         <EditText
             android:id="@+id/date_search"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:layout_margin="8dp"
             android:hint="작성 날짜"
             android:gravity="center"
             android:background="@drawable/search_border"
-            android:textColor="@color/black"
+            android:textColorHint="@color/black"
             android:textStyle="bold"/>
 
         <ImageButton
             android:id="@+id/date_search_button"
-            android:layout_width="50dp"
+            android:layout_width="48dp"
             android:layout_height="45dp"
-            android:contentDescription="검색"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/in_search_24"
             android:onClick="onDateSearchButtonClick"/>
 
     </LinearLayout>
@@ -121,8 +123,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="565dp"
-        android:background="#EAF3F8"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_container"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

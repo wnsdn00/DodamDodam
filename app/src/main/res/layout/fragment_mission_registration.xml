@@ -39,7 +39,6 @@
                     android:id="@+id/registrationMemberProfile"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_margin="20dp"
                     android:src="@drawable/ic_profile"
                     app:civ_border_color="@color/black"
                     app:civ_border_width="2dp"
@@ -50,6 +49,7 @@
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:textSize="14dp"
+                    android:textColor="@color/black"
                     android:gravity="center"
                     app:layout_constraintTop_toBottomOf="@+id/registrationMemberProfile"
                     app:layout_constraintStart_toStartOf="@id/registrationMemberProfile"
@@ -61,7 +61,6 @@
                     android:layout_height="120dp"
                     android:src="@drawable/check_btn"
                     android:background="@drawable/check_gray"
-                    android:layout_marginLeft="20dp"
                     app:layout_constraintStart_toEndOf="@id/registrationMemberProfile"
                     app:layout_constraintTop_toTopOf="@id/registrationMemberProfile"
                     app:layout_constraintBottom_toBottomOf="@id/registrationMemberProfile"
@@ -166,6 +165,7 @@
                 android:textSize="25dp"
                 android:fontFamily="@font/onglyp"
                 android:hint="시간을 입력하세요 (예: 14:00)"
+                android:textColorHint="@color/black"
                 android:inputType="time" />
 
             <!-- 미션 정보 입력 -->
@@ -181,7 +181,8 @@
                 android:layout_marginBottom="20dp"
                 android:fontFamily="@font/onglyp"
                 android:textSize="25dp"
-                android:hint="미션 내용을 입력하세요"/>
+                android:hint="미션 내용을 입력하세요"
+                android:textColorHint="@color/black"/>
 
             <!-- 미션 저장 버튼 -->
             <Button

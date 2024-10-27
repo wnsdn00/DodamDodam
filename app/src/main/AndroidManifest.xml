@@ -36,6 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".MainPageActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
