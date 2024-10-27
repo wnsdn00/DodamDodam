@@ -92,13 +92,8 @@ class MyPageEditFragment : Fragment() {
         }
 
         backToMainButton.setOnClickListener {
-            // 메인으로 가는 버튼 함수
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
-        }
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            // 기기의 뒤로 가기 버튼 클릭 함수(메인으로)
-            (activity as? MainPageActivity)?.setFragment(TAG_HOME, HomeFragment(), false)
+            // 마이페이지로 가는 버튼 함수
+            requireActivity().supportFragmentManager.popBackStack()
         }
 
         return view

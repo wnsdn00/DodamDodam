@@ -34,6 +34,7 @@
             android:layout_marginRight="20dp"
             android:textSize="14dp"
             android:text="호칭"
+            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"
             android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/answerProfileImageView"
@@ -58,6 +59,7 @@
         android:padding="10dp"
         android:textSize="16dp"
         android:text="Loading answer..."
+        android:textColor="@color/black"
         android:fontFamily="@font/onglyp"
         tools:ignore="MissingConstraints" />
 
