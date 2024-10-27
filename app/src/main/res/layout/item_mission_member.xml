@@ -26,6 +26,7 @@
         android:layout_marginRight="20dp"
         android:textSize="14dp"
         android:text="호칭"
+        android:textColor="@color/black"
         android:fontFamily="@font/onglyp"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/profileImageView"
