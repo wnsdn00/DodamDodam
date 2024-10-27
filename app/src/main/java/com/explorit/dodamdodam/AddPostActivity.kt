@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -149,7 +150,7 @@ class AddPostActivity : AppCompatActivity() {
             val mimeType = contentResolver.getType(uri)
 
             if (mimeType != null && mimeType.startsWith("image")) {
-                binding.addpostImage.setImageURI(uri)
+                Glide.with(binding.root.context).load(uri).into(binding.addpostImage)
                 binding.addpostImage.visibility = View.VISIBLE
                 binding.addpostVideo.visibility = View.GONE
             } else if (mimeType != null && mimeType.startsWith("video")) {

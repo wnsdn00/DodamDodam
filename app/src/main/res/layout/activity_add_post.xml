@@ -1,85 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/notebook"
+    android:gravity="center"
     tools:context=".AddPostActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="35dp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/logo"/>
-    </androidx.appcompat.widget.Toolbar>
-
-    <LinearLayout
-        android:id="@+id/toolbar_division"
-        android:background="@color/white"
-        android:layout_below="@+id/my_toolbar"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="1dp">
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/addpostMidea"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_margin="8dp">
-        <ImageView
-            android:id="@+id/addpostImage"
-            android:layout_margin="8dp"
-            android:layout_below="@+id/toolbar_division"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
-
-        <VideoView
-            android:id="@+id/addpostVideo"
-            android:layout_margin="8dp"
-            android:layout_below="@+id/toolbar_division"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:visibility="gone" />
-    </LinearLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edittext"
-        android:layout_below="@+id/toolbar_division"
-        android:layout_toRightOf="@+id/addpostMidea"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:gravity="top"
-            android:id="@+id/addpost_edit_explain"
-            android:hint="Image description"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <Button
         android:id="@+id/addpost_btn_upload"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/addpostMidea"
-        android:layout_margin="5dp"
-        android:text="미디어 선택"/>
+        android:text="미디어 선택"
+        android:textColor="@color/black"
+        android:fontFamily="@font/onglyp"
+        android:textSize="20dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/addpostMidea"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@+id/addpost_btn_upload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <ImageView
+            android:id="@+id/addpostImage"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
+
+        <VideoView
+            android:id="@+id/addpostVideo"
+            android:layout_margin="8dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edittext"
+        android:layout_toRightOf="@+id/addpostMidea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:fontFamily="@font/onglyp"
+        tools:ignore="MissingConstraints"
+        app:layout_constraintTop_toBottomOf="@+id/addpostMidea">
+
+        <EditText
+            android:gravity="top"
+            android:id="@+id/addpost_edit_explain"
+            android:hint="다이어리의 게시할 내용을 적어주세요"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/onglyp"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/uploadBtn"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/addpost_btn_upload"
-        android:layout_below="@id/addpostMidea"
         android:layout_margin="5dp"
-        android:text="게시글 업로드" />
+        android:text="게시글 업로드"
+        android:textColor="@color/black"
+        android:fontFamily="@font/onglyp"
+        android:textSize="20dp"
+        android:background="@drawable/round_btn"
+        app:layout_constraintTop_toBottomOf="@+id/edittext"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints,NotSibling" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
