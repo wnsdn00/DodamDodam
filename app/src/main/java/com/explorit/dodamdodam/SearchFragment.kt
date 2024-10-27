@@ -1,5 +1,6 @@
 package com.explorit.dodamdodam
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,17 @@ class SearchFragment : Fragment() {
 
         binding.back.setOnClickListener {
             parentFragmentManager.popBackStack()
+        }
+
+        binding.addPost.setOnClickListener {
+            startActivity(Intent(activity, AddPostActivity::class.java))
+        }
+
+        binding.gallery.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.mainFrameLayout, GalleryFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         binding.userSearchButton.setOnClickListener {

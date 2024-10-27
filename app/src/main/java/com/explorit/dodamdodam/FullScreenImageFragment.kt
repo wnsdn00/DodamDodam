@@ -57,6 +57,8 @@ class FullScreenImageFragment : Fragment() {
             closeFragment()
         }
 
+        binding.root.setOnTouchListener { _, _ -> true }
+
         return binding.root
     }
 
