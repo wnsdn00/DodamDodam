@@ -29,6 +29,7 @@
             android:background="@drawable/custom_kategorie_btn"
             android:layout_margin="5dp"
             android:text="캐릭터"
+            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"
             android:textSize="25dp"/>
         <Button
@@ -39,6 +40,7 @@
             android:background="@drawable/custom_kategorie_btn"
             android:layout_margin="5dp"
             android:text="패션"
+            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"
             android:textSize="25dp"/>
         <Button
@@ -49,6 +51,7 @@
             android:background="@drawable/custom_kategorie_btn"
             android:layout_margin="5dp"
             android:text="배경"
+            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"
             android:textSize="25dp"/>
     </LinearLayout>
@@ -72,6 +75,7 @@
             android:background="@drawable/custom_kategorie_btn"
             android:layout_margin="10dp"
             android:text="적용"
+            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"
             android:textSize="25dp"
             app:layout_constraintBottom_toBottomOf="@+id/selectedItemView"
