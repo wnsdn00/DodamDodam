@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ActivityAddPostBinding
 import com.google.firebase.Timestamp
@@ -49,7 +50,7 @@ class AddPostActivity : AppCompatActivity() {
             photoUri = it
             contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startCrop(uri)
-            displayMedia()
+
             Toast.makeText(this, "미디어가 선택되었습니다.", Toast.LENGTH_LONG).show()
         } ?: run {
             Toast.makeText(this, "미디어 선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()
@@ -62,16 +63,14 @@ class AddPostActivity : AppCompatActivity() {
             val resultUri = UCrop.getOutput(data!!) // 자른 이미지 URI 가져오기
             if (resultUri != null) {
                 photoUri = resultUri // 자른 이미지를 photoUri에 저장
-                displayMedia() // 자른 이미지를 표시
+                displayMedia(photoUri) // 자른 이미지를 표시
+                Log.d("AddPostActivity", "자른 이미지 URI: $resultUri")
+            } else {
+                Log.e("AddPostActivity", "자른 이미지 URI가 null입니다.")
             }
         } else if (resultCode == UCrop.RESULT_ERROR) {
             val cropError = UCrop.getError(data!!)
             Toast.makeText(this, "이미지 자르기 실패: ${cropError?.message}", Toast.LENGTH_SHORT).show()
-        } else if (requestCode == FILE_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            data?.data?.let { uri ->
-                contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                startCrop(uri) // 파일 선택 후 바로 자르기 시작
-            }
         }
     }
 
@@ -129,7 +128,7 @@ class AddPostActivity : AppCompatActivity() {
         }
 
         // 자를 크기를 결정하는 로직
-        val destinationUri = Uri.fromFile(File(cacheDir, "croppedImage.jpg"))
+
         val options = UCrop.Options().apply {
             setCompressionQuality(100)
             setMaxBitmapSize(1000)
@@ -137,20 +136,26 @@ class AddPostActivity : AppCompatActivity() {
             setFreeStyleCropEnabled(true)
         }
 
+// 파일을 위한 URI 생성
+        val file = File(cacheDir, "croppedImage.jpg")
+        val destinationUri = FileProvider.getUriForFile(this, "${applicationContext.packageName}.fileprovider", file)
+
+// UCrop을 사용하여 이미지 자르기 시작
         UCrop.of(uri, destinationUri)
             .withOptions(options)
-            .withAspectRatio(aspectRatio, 1f) // 원본 비율 유지
-            .withMaxResultSize(cropWidth, cropHeight) // 자를 수 있는 최대 크기 설정
+            .withAspectRatio(aspectRatio, 1f)
+            .withMaxResultSize(cropWidth, cropHeight)
             .start(this)
     }
 
     // 업로드된 파일이 이미지인지 비디오인지 확인하여 표시
-    private fun displayMedia() {
-        photoUri?.let { uri ->
+    private fun displayMedia(uri: Uri?) {
+        uri?.let {
             val mimeType = contentResolver.getType(uri)
+            Log.d("AddPostActivity", "미디어 타입: $mimeType")
 
             if (mimeType != null && mimeType.startsWith("image")) {
-                Glide.with(binding.root.context).load(uri).into(binding.addpostImage)
+                binding.addpostImage.setImageURI(uri)
                 binding.addpostImage.visibility = View.VISIBLE
                 binding.addpostVideo.visibility = View.GONE
             } else if (mimeType != null && mimeType.startsWith("video")) {
@@ -161,6 +166,8 @@ class AddPostActivity : AppCompatActivity() {
                 }
                 binding.addpostVideo.visibility = View.VISIBLE
                 binding.addpostImage.visibility = View.GONE
+            } else {
+                Log.e("AddPostActivity", "미디어 타입이 유효하지 않거나 지원되지 않는 형식입니다.")
             }
         }
     }
