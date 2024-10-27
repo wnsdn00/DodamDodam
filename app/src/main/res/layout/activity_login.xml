@@ -116,7 +116,6 @@
                 android:onClick="onRegisterButtonClick"/>
         </LinearLayout>
 
-
         <ImageButton
             android:id="@+id/buttonGoogle"
             android:layout_width="260dp"

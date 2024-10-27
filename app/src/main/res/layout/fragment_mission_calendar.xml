@@ -98,7 +98,7 @@
                 <Button
                     android:id="@+id/missionRegistrationButton"
                     android:layout_width="0dp"
-                    android:layout_height="150dp"
+                    android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:textSize="40dp"
@@ -111,7 +111,7 @@
                 <View
                     android:id="@+id/vertical_divider"
                     android:layout_width="2dp"
-                    android:layout_height="170dp"
+                    android:layout_height="130dp"
                     android:background="@android:color/darker_gray"
                     app:layout_constraintTop_toBottomOf="@id/btn_store"
                     app:layout_constraintEnd_toEndOf="@id/btn_customize"
@@ -121,7 +121,7 @@
                 <Button
                     android:id="@+id/missionCheckButton"
                     android:layout_width="0dp"
-                    android:layout_height="150dp"
+                    android:layout_height="130dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:textSize="40dp"

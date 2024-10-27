@@ -121,9 +121,8 @@ class MyPageFragment : Fragment() {
 
         btnCustomerService.setOnClickListener {
             // 고객센터 버튼 클릭 이벤트 처리
-            Toast.makeText(activity, "고객센터 버튼 클릭됨", Toast.LENGTH_SHORT).show()
-            // 예: 고객센터 액티비티로 이동
-            // startActivity(Intent(activity, CustomerServiceActivity::class.java))
+            val intent = Intent(activity, ServiceCenterActivity::class.java)
+            startActivity(intent)
         }
 
         btnAppInfo.setOnClickListener {
