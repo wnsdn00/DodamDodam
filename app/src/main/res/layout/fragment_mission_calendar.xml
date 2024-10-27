@@ -84,6 +84,7 @@
                 android:paddingRight="30dp">
 
             </androidx.recyclerview.widget.RecyclerView>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,8 +105,9 @@
                     android:textSize="40dp"
                     android:textColor="@color/white"
                     android:background="@drawable/blue_btn"
+                    android:fontFamily="@font/onglyp"
                     android:text="미션\n등록"
-                    android:fontFamily="@font/onglyp"/>
+                    />
 
                 <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
                 <View

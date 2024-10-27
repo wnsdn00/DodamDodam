@@ -57,6 +57,8 @@ class DiaryAdapter(
                 if (post.userId == currentUserId) View.VISIBLE else View.GONE
             binding.postEdit.visibility =
                 if (post.userId == currentUserId) View.VISIBLE else View.GONE
+            binding.divider.visibility =
+                if (post.userId == currentUserId) View.VISIBLE else View.GONE
 
             binding.postDelete.setOnClickListener {
                 val position = bindingAdapterPosition

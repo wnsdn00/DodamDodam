@@ -50,7 +50,7 @@
             android:layout_height="50dp"
             android:background="#EAF3F8"
             android:layout_marginBottom="30dp"
-            app:srcCompat="@drawable/search"
+            app:srcCompat="@drawable/ic_search"
             android:contentDescription="@string/search_button"
             android:onClick="onSearchButtonClick"/>
 

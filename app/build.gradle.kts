@@ -123,7 +123,7 @@ dependencies {
     implementation("com.sun.mail:android-activation:1.6.7")
     implementation("com.android.volley:volley:1.2.1")
     implementation("org.greenrobot:eventbus:3.3.1")
-    implementation ("com.github.yalantis:ucrop:2.2.8")
+    implementation("com.github.yalantis:ucrop:2.2.8")
 
     // AndroidX 라이브러리
     implementation(libs.androidx.core.ktx)
