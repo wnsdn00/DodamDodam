@@ -5,35 +5,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/notebook"
+    android:background="#EAF3F8"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
     android:gravity="center"
     tools:context=".AddPostActivity">
-    <Button
-        android:id="@+id/addpost_btn_upload"
-        android:layout_width="100dp"
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTop"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addpostMidea"
-        android:text="미디어 선택"
-        android:textColor="@color/black"
-        android:fontFamily="@font/onglyp"
-        android:textSize="20dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/round_btn"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:background= "@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background= "@android:color/transparent"
+            android:contentDescription="@string/back_button"
+            app:srcCompat="@drawable/ic_back"
+            tools:ignore="MissingConstraints" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/addpostMidea"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
         android:orientation="horizontal"
         tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toBottomOf="@+id/addpost_btn_upload"
+        android:background="@drawable/diary_image_border"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
         <ImageView
@@ -52,6 +56,22 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/addpost_btn_upload"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addpostMidea"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_btn"
+        android:fontFamily="@font/onglyp"
+        android:text="미디어 선택"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addpostMidea"
+        tools:ignore="MissingConstraints" />
+
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -62,15 +82,14 @@
         android:textColor="@color/black"
         android:fontFamily="@font/onglyp"
         tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toBottomOf="@+id/addpostMidea">
+        app:layout_constraintTop_toBottomOf="@+id/addpost_btn_upload">
 
         <EditText
             android:gravity="top"
             android:id="@+id/addpost_edit_explain"
             android:hint="다이어리의 게시할 내용을 적어주세요"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_height="120dp"
             android:textColor="@color/black"
             android:fontFamily="@font/onglyp"/>
 
@@ -88,7 +107,6 @@
         android:textSize="20dp"
         android:background="@drawable/round_btn"
         app:layout_constraintTop_toBottomOf="@+id/edittext"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints,NotSibling" />
