@@ -88,15 +88,29 @@ class CreateFamilyActivity : AppCompatActivity() {
                                 price = 200,
                                 itemCategory = "character"
                             )
-                            val itemId = database.child("families").child(familyCode).child("purchasedItems").push().key
-                            if (itemId != null) {
+                            val defaultBackground = StoreItem(
+                                name = "거실",
+                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/storeItemImages%2Fbackground_01.jpg?alt=media&token=72dfa501-6db9-43cf-b41e-48015e126140",
+                                price = 300,
+                                itemCategory = "background"
+                            )
+                            val characterItemId = database.child("families").child(familyCode).child("purchasedItems").push().key
+                            val backgroundItemId = database.child("families").child(familyCode).child("purchasedItems").push().key
+                            if (characterItemId != null && backgroundItemId != null) {
                                 database.child("families")
                                     .child(familyCode)
                                     .child("purchasedItems")
-                                    .child(itemId)
+                                    .child(characterItemId)
                                     .setValue(defaultCharacter)
+                                database.child("families")
+                                    .child(familyCode)
+                                    .child("purchasedItems")
+                                    .child(backgroundItemId)
+                                    .setValue(defaultBackground)
                             }
+
                             database.child("families").child(familyCode).child("mainScreenItems").setValue(defaultCharacter)
+                            database.child("families").child(familyCode).child("mainScreenBackground").setValue(defaultBackground)
 
                             // 생성된 가족 코드를 클립보드에 복사
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

@@ -424,7 +424,7 @@ class MissionCalendarFragment : Fragment() {
                                             )
                                         )
                                     }
-                                    val missionCompleted = todayMissions.all { it.complete }
+                                    val missionCompleted = todayMissions.isNotEmpty() && todayMissions.all { it.complete }
 
                                     val completedDatesRef = database.child("families")
                                         .child(familyCode)
