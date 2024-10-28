@@ -97,7 +97,7 @@ class HomeFragment : Fragment() {
                                 .addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                                         val item = dataSnapshot.getValue(StoreItem::class.java)
-                                        if (item != null) {
+                                        if (item != null && item.itemCategory == "character") {
                                             // 메인 화면에 이미지 표시
                                             Glide.with(requireContext())
                                                 .load(item.imageUrl)
@@ -117,7 +117,7 @@ class HomeFragment : Fragment() {
                                 .addListenerForSingleValueEvent(object : ValueEventListener {
                                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                                         val item = dataSnapshot.getValue(StoreItem::class.java)
-                                        if (item != null) {
+                                        if (item != null && item.itemCategory == "background") {
                                             // 메인 화면에 이미지 표시
                                             Glide.with(requireContext())
                                                 .load(item.imageUrl)

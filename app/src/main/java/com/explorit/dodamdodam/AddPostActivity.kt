@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -95,6 +96,10 @@ class AddPostActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "이미지를 선택하세요.", Toast.LENGTH_SHORT).show()
             }
+        }
+        val backButton = findViewById<ImageButton>(R.id.back)
+        backButton.setOnClickListener {
+            onBackPressed() // 뒤로가기 버튼과 동일한 동작 수행
         }
     }
 
