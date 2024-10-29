@@ -79,18 +79,18 @@
         android:layout_toRightOf="@+id/addpostMidea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:fontFamily="@font/onglyp"
         tools:ignore="MissingConstraints"
-        app:layout_constraintTop_toBottomOf="@+id/addpost_btn_upload">
+        app:layout_constraintTop_toBottomOf="@+id/addpost_btn_upload"
+        app:hintTextColor="@color/hint_color">
 
         <EditText
             android:gravity="top"
             android:id="@+id/addpost_edit_explain"
             android:hint="다이어리의 게시할 내용을 적어주세요"
+            android:textColorHint="@color/black"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:textColor="@color/black"
             android:fontFamily="@font/onglyp"/>
 
     </com.google.android.material.textfield.TextInputLayout>
