@@ -5,6 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.explorit.dodamdodam.databinding.ItemSearchBinding
+import java.security.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
@@ -17,8 +20,16 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     class SearchViewHolder(private val binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: DiaryFragment.ContentDTO) {
-            binding.userId.text = item.userId
+            binding.userId.text = item.nickName
             binding.userPostExplanation.text = item.explain ?: ""
+            val timestamp: com.google.firebase.Timestamp = item.timestamp
+
+            val date = timestamp.toDate()
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val dateString = dateFormat.format(date)
+
+            binding.date.text = dateString
 
             Glide.with(binding.root.context)
                 .load(item.imageUrl)
