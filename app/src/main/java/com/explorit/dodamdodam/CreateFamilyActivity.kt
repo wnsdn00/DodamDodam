@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.Serializable
 
 class CreateFamilyActivity : AppCompatActivity() {
@@ -23,6 +25,7 @@ class CreateFamilyActivity : AppCompatActivity() {
     private lateinit var btnCreateFamilyFinish : Button
     private lateinit var database: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     private lateinit var userName: String
     private lateinit var userBirth: String
@@ -39,6 +42,7 @@ class CreateFamilyActivity : AppCompatActivity() {
         btnCreateFamilyFinish = findViewById(R.id.btnCreateFamilyFinish)
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         // 생성 버튼 클릭 시
         btnCreateFamilyFinish.setOnClickListener {
@@ -66,7 +70,7 @@ class CreateFamilyActivity : AppCompatActivity() {
     }
 
     // 가족 그룹 생성 함수
-    private fun createFamily(familyName: String, familyPassword: String, nickName: String, userName: String, userBirth: String){
+    private fun createFamily(familyName: String, familyPassword: String, nickName: String, userName: String, userBirth: String) {
         val userId: String? = FirebaseAuth.getInstance().currentUser?.uid
         val familyCode: String? = database.child("families").push().key
 

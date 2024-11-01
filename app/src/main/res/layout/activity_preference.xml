@@ -25,20 +25,7 @@
             android:backgroundTint="#FFFFFF"
             app:srcCompat="@drawable/ic_back" />
 
-        <Button
-            android:id="@+id/buttonAlarm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="•  알림설정"
-            android:inputType="textPassword"
-            android:paddingLeft="16dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="15dp"
-            android:textColorHint="#000000"
-            android:textStyle="bold"
-            android:background="@android:color/transparent"
-            android:gravity="left"/>
+
 
         <Button
             android:id="@+id/buttonLogout"

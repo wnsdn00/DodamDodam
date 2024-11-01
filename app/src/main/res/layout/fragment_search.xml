@@ -77,13 +77,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+
+        <Spinner
+            android:id="@+id/searchTypeSpinner"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/search_border"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/spinner"
+            android:src="@drawable/ic_arrow_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#EAF3F8" />
+
         <EditText
-            android:id="@+id/user_search"
+            android:id="@+id/searchInput"
             android:layout_width="10dp"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:layout_marginLeft="8dp"
-            android:hint="작성자"
+            android:hint="검색어 입력"
             android:textColorHint="@color/black"
             android:gravity="center"
             android:background="@drawable/search_border"
@@ -93,31 +110,13 @@
             android:inputType="text"/>
 
         <ImageButton
-            android:id="@+id/user_search_button"
+            android:id="@+id/searchButton"
             android:layout_width="48dp"
             android:layout_height="45dp"
             android:background="@android:color/transparent"
             android:onClick="onUserSearchButtonClick"
             app:srcCompat="@drawable/in_search_24" />
 
-        <EditText
-            android:id="@+id/date_search"
-            android:layout_width="10dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:hint="작성 날짜"
-            android:gravity="center"
-            android:background="@drawable/search_border"
-            android:textColorHint="@color/black"
-            android:textStyle="bold"/>
-
-        <ImageButton
-            android:id="@+id/date_search_button"
-            android:layout_width="48dp"
-            android:layout_height="45dp"
-            android:background="@android:color/transparent"
-            app:srcCompat="@drawable/in_search_24"
-            android:onClick="onDateSearchButtonClick"/>
 
     </LinearLayout>
 

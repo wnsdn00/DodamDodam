@@ -30,37 +30,33 @@
             tools:ignore="MissingConstraints" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/addpostMidea"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:orientation="horizontal"
-        tools:ignore="MissingConstraints"
-        android:background="@drawable/diary_image_border"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+
         <ImageView
             android:id="@+id/addpostImage"
-            android:layout_margin="8dp"
+            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="350dp"
+            android:padding="3dp"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:background="@drawable/diary_image_border"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <VideoView
             android:id="@+id/addpostVideo"
             android:layout_margin="8dp"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:visibility="gone"
+            tools:ignore="MissingConstraints" />
+
 
     <Button
         android:id="@+id/addpost_btn_upload"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addpostMidea"
+        android:layout_below="@id/addpostImage"
         android:layout_margin="10dp"
         android:background="@drawable/round_btn"
         android:fontFamily="@font/onglyp"
@@ -69,14 +65,13 @@
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addpostMidea"
+        app:layout_constraintTop_toBottomOf="@+id/addpostImage"
         tools:ignore="MissingConstraints" />
 
 
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edittext"
-        android:layout_toRightOf="@+id/addpostMidea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/onglyp"

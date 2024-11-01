@@ -185,6 +185,7 @@ class DiaryFragment : Fragment() {
             val userId = document.getString("userId") ?: ""
             val userNickname = document.getString("nickName") ?: ""
             val userProfileImageUrl = document.getString("profileImageUrl") ?: "https://firebasestorage.googleapis.com/v0/b/dodamdodam-b1e37.appspot.com/o/profileImages%2Fic_profile.png?alt=media&token=8b78b600-1fa7-410c-8674-d6ec06e21e7a"
+            val currentLikeCount = document.getLong("likeCount")?.toInt() ?: 0
 
             val contentDTO = ContentDTO(
                 documentId = document.id,
@@ -195,7 +196,8 @@ class DiaryFragment : Fragment() {
                 videoUrl = document.getString("videoUrl") ?: "",
                 timestamp = Timestamp.now(),
                 familyCode = document.getString("familyCode") ?: "",
-                profileImageUrl = userProfileImageUrl
+                profileImageUrl = userProfileImageUrl,
+                likeCount = currentLikeCount
             )
 
             items.add(contentDTO)
