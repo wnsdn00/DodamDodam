@@ -20,6 +20,11 @@ class PreferenceActivity : AppCompatActivity() {
         }
         */
 
+        binding.buttonFamilyChange.setOnClickListener {
+            val intent = Intent(this, FamilyChangeActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.buttonLogout.setOnClickListener {
             // 로그아웃 버튼 클릭 시 LogoutActivity로 이동
             val intent = Intent(this, LogoutActivity::class.java)

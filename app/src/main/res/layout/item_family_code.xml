@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/myFamilyName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:text="가족 이름"
+                android:textColor="@android:color/darker_gray"
+                android:fontFamily="@font/onglyp"
+                android:gravity="center"
+                tools:ignore="MissingConstraints"/>
+            <TextView
+                android:id="@+id/familyNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/onglyp"
+                android:textSize="30dp"
+                android:text="가족이름"
+                android:textColor="@color/black"
+                android:gravity="center"
+                tools:ignore="MissingConstraints"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/myNickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:text="나의 호칭"
+                android:textColor="@android:color/darker_gray"
+                android:fontFamily="@font/onglyp"
+                android:gravity="center"
+                tools:ignore="MissingConstraints"/>
+
+            <TextView
+                android:id="@+id/userNicknameOfFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:text="호칭"
+                android:fontFamily="@font/onglyp"
+                android:gravity="center"
+                tools:ignore="MissingConstraints"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/joinFamilyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="참여"
+        android:textSize="20dp"
+        android:fontFamily="@font/onglyp"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/content"
+        app:layout_constraintBottom_toTopOf="@id/deleteFamilyButton"
+        android:background="@drawable/family_button"/>
+
+    <Button
+        android:id="@+id/deleteFamilyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제"
+        android:textSize="20dp"
+        android:fontFamily="@font/onglyp"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@id/joinFamilyButton"
+        android:background="@drawable/family_button"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

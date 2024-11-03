@@ -15,6 +15,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.Serializable
 
@@ -115,6 +116,25 @@ class CreateFamilyActivity : AppCompatActivity() {
 
                             database.child("families").child(familyCode).child("mainScreenItems").setValue(defaultCharacter)
                             database.child("families").child(familyCode).child("mainScreenBackground").setValue(defaultBackground)
+
+                            // 생성된 가족 코드를 Firestore에 추가
+                            firestore.collection("users")
+                                .whereEqualTo("userId", userId)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    val document = documents.first()
+                                    // Firestore에 userId 저장
+                                    firestore.collection("users").document(document.id)
+                                        .update("familyCode", FieldValue.arrayUnion(familyCode))
+                                        .addOnSuccessListener {
+                                            Log.d("LoginActivity", "userId가 Firestore에 성공적으로 저장되었습니다.")
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.w("LoginActivity", "Firestore에 userId 저장 실패", e)
+                                        }
+                                }.addOnFailureListener { e ->
+                                    Log.w("LoginActivity", "Firestore에 user 불러오기 실패", e)
+                                }
 
                             // 생성된 가족 코드를 클립보드에 복사
                             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

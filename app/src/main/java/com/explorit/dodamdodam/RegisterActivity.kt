@@ -9,6 +9,8 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -16,6 +18,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth // Firebase를 사용하는 권한
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var database: DatabaseReference
     private var isEmailChecked = false
 
 
@@ -26,6 +29,7 @@ class RegisterActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance() // Firebase에서 인스턴스를 가져올 것이다!
         firestore = FirebaseFirestore.getInstance()
+        database = FirebaseDatabase.getInstance().reference
 
         val registerButton: Button = findViewById(R.id.buttonRegister) // 회원가입 버튼 객체 생성
         val checkEmailButton: Button = findViewById(R.id.buttonCheckEmail)
@@ -94,7 +98,9 @@ class RegisterActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Firestore에 사용자 세부 정보 저장
-                    saveUserData(useremail, username, userbirth, userPhone)
+
+                        saveUserData(useremail, username, userbirth, userPhone)
+
                     // 회원가입 성공 메시지 표시
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show() // Toast는 아래에 메시지를 띄워줍니다.
                     // 로그인 액티비티로 이동
@@ -123,6 +129,7 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e("RegisterActivity", "문서 추가 오류", e)
             }
+
     }
 
     private fun navigateToLoginActivity() {

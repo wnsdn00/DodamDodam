@@ -7,7 +7,7 @@
     android:background="#EAF3F8"
     tools:context=".RandomQuestionFragment">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -22,7 +22,7 @@
                     android:contentDescription="@string/historyquestion_button"
                     app:srcCompat="@drawable/ic_back" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -94,17 +94,17 @@
                             android:background="@android:color/transparent"
                             android:contentDescription="@string/historyquestion_button"
                             app:srcCompat="@drawable/ic_historyquestionarrow" />
+
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/answersRecyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
-                            android:orientation="vertical"
+                            android:padding="3dp"
                             android:background="@drawable/random_question_border"
-                            tools:ignore="MissingConstraints">
-                        </androidx.recyclerview.widget.RecyclerView>
-
-
+                            android:orientation="vertical"
+                            tools:ignore="MissingConstraints"></androidx.recyclerview.widget.RecyclerView>
 
                         <LinearLayout
                             android:id="@+id/historyQuestionsLayout"

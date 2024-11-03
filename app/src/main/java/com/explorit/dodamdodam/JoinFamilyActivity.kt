@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -13,13 +15,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 
 class JoinFamilyActivity : AppCompatActivity() {
     private lateinit var inputFamilyPW: EditText
     private lateinit var inputNickname: EditText
     private lateinit var btnJoinFamilyFinish: Button
     private lateinit var database: DatabaseReference
-
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var familyNameTextView: TextView
     private lateinit var userName: String
     private lateinit var userBirth: String
 
@@ -32,9 +37,23 @@ class JoinFamilyActivity : AppCompatActivity() {
         inputFamilyPW = findViewById(R.id.inputFamilyPW)
         inputNickname = findViewById(R.id.inputNickname)
         btnJoinFamilyFinish = findViewById(R.id.btnJoinFamilyFinish)
+        familyNameTextView = findViewById(R.id.familyNameText)
         database = FirebaseDatabase.getInstance().reference
+        firestore = FirebaseFirestore.getInstance()
 
         val familyCode = intent.getStringExtra("familyCode") ?: return
+
+        // 가족 코드로 가족 이름 가져오기
+        database.child("families").child(familyCode).child("familyName").get().addOnSuccessListener { dataSnapshot ->
+            val familyName = dataSnapshot.getValue(String::class.java)
+            if (familyName != null) {
+                familyNameTextView.text = familyName // 가져온 가족 이름을 TextView에 표시
+            } else {
+                Toast.makeText(this, "가족 이름을 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "가족 정보를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
+        }
 
         // 가족 참여 버튼 클릭 시
         btnJoinFamilyFinish.setOnClickListener {
@@ -117,6 +136,26 @@ class JoinFamilyActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 database.child("users").child(userId).child("familyCode").setValue(familyCode)
                                 database.child("users").child(userId).child("familyName").setValue(familyName)
+
+                                // 참여한 가족 코드를 Firestore에 추가
+                                    firestore.collection("users")
+                                    .whereEqualTo("userId", userId)
+                                    .get()
+                                    .addOnSuccessListener { documents ->
+                                        val document = documents.first()
+                                        // Firestore에 userId 저장
+                                        firestore.collection("users").document(document.id)
+                                            .update("familyCode", FieldValue.arrayUnion(familyCode))
+                                            .addOnSuccessListener {
+                                                Log.d("LoginActivity", "userId가 Firestore에 성공적으로 저장되었습니다.")
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w("LoginActivity", "Firestore에 userId 저장 실패", e)
+                                            }
+                                    }.addOnFailureListener { e ->
+                                        Log.w("LoginActivity", "Firestore에 user 불러오기 실패", e)
+                                    }
+
                                 val intent = Intent(this@JoinFamilyActivity, MainPageActivity::class.java)
                                 startActivity(intent)
                             } else {
