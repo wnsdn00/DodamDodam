@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#EAF3F8"
+    android:background="#EEF6FF"
     tools:context=".RandomQuestionFragment">
 
         <LinearLayout
@@ -19,8 +19,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="start"
                     android:background="@android:color/transparent"
-                    android:contentDescription="@string/historyquestion_button"
-                    app:srcCompat="@drawable/ic_back" />
+                    android:contentDescription="@string/historyquestion_button" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -77,10 +76,10 @@
                             tools:ignore="MissingConstraints"/>
                         <Button
                             android:id="@+id/submitAnswerButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="60dp"
+                            android:layout_height="35dp"
                             android:text="제출"
-                            android:textSize="20dp"
+                            android:textSize="15dp"
                             android:fontFamily="@font/onglyp"
                             android:textColor="#FFFFFF"
                             android:layout_gravity="center"

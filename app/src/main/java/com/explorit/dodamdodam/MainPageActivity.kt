@@ -42,6 +42,7 @@ class MainPageActivity : AppCompatActivity() {
             }
 
             when (item.itemId) {
+                R.id.homeFragment -> setFragment(TAG_HOME, HomeFragment(), false)
                 R.id.diaryFragment -> setFragment(TAG_DIARY, DiaryFragment(), false)
                 R.id.questionFragment -> setFragment(TAG_QUESTION, RandomQuestionFragment(), false)
                 R.id.calendarFragment -> setFragment(TAG_CALENDAR, MissionCalendarFragment(), false)
