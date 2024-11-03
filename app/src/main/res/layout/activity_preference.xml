@@ -26,11 +26,11 @@
             app:srcCompat="@drawable/ic_back" />
 
         <Button
-            android:id="@+id/buttonAlarm"
+            android:id="@+id/buttonFamilyChange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="•  알림설정"
+            android:hint="•  가족변경"
             android:inputType="textPassword"
             android:paddingLeft="16dp"
             android:paddingTop="10dp"

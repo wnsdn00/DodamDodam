@@ -137,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
                     // 로그인 성공
                     val userUid = auth.currentUser?.uid
                     if (userUid != null) {
-                        checkIfNewUser(userUid)
+                        goToAdditionalInfoPage()
                     }
                 } else {
                     // 로그인 실패
@@ -152,10 +152,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     // 이미 데이터베이스에 사용자가 있음
-                    checkUserFamilyCode(userId)
-                } else {
-                    // 새로운 사용자이므로 추가 정보 입력 페이지로 이동
-                    goToAdditionalInfoPage()
+                    onLoginButtonClickToMainPage()
                 }
             }
 
@@ -179,13 +176,13 @@ class LoginActivity : AppCompatActivity() {
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         // 이메일을 가져와서 로그인 시도
-                        var email = documents.first().getString("email") ?: ""
-                        var userName = documents.first().getString("username") ?: ""
-                        var userBirth = documents.first().getString("userbirth") ?: ""
+                        val document = documents.first()
+                        var email = document.getString("email") ?: ""
+                        var userName = document.getString("username") ?: ""
+                        var userBirth = document.getString("userbirth") ?: ""
                         auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(this) { task ->
                                 if (task.isSuccessful) {
-
                                     // 로그인 성공
                                     Log.d("LoginActivity", "signInWithEmail:success")
                                     val user = auth.currentUser
@@ -197,7 +194,18 @@ class LoginActivity : AppCompatActivity() {
                                             .setValue(userName)
                                         database.child("users").child(userId).child("userBirth")
                                             .setValue(userBirth)
-                                        checkUserFamilyCode(userId)
+
+                                        // Firestore에 userId 저장
+                                        firestore.collection("users").document(document.id)
+                                            .update("userId", userId)
+                                            .addOnSuccessListener {
+                                                Log.d("LoginActivity", "userId가 Firestore에 성공적으로 저장되었습니다.")
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w("LoginActivity", "Firestore에 userId 저장 실패", e)
+                                            }
+
+                                        onLoginButtonClickToMainPage()
 
                                     }
                                 } else {
@@ -232,6 +240,7 @@ class LoginActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists() && snapshot.getValue(String::class.java) != null) {
                             onLoginButtonClickToMainPage()
+                            // 여기에 가족 선택 함수 추가 후 onLoginButtonClickToMainPage() 실핼
                         } else {
                             onLoginButtonClickToFamily()
                         }
@@ -250,7 +259,7 @@ class LoginActivity : AppCompatActivity() {
 
         // 로그인 버튼 클릭 시 가족 그룹이 있을때 호출될 메서드
         fun onLoginButtonClickToMainPage() {
-            val intent = Intent(this, MainPageActivity::class.java)
+            val intent = Intent(this, SelectFamilyActivity::class.java)
             startActivity(intent)
             finish()
         }

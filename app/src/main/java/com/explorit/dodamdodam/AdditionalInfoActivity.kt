@@ -50,22 +50,23 @@ class AdditionalInfoActivity : AppCompatActivity() {
         val userbirth = findViewById<EditText>(R.id.additionalUserBirth).text.toString()
         val userEmail = auth.currentUser?.email
         val userPhone = findViewById<EditText>(R.id.additionalPhoneNumber).text.toString()
-
+        val userId = auth.currentUser?.uid
         if (username.isEmpty() || userbirth.isEmpty()) {
             Toast.makeText(this, "모든 필드를 입력하세요.", Toast.LENGTH_SHORT).show()
         } else {
-            if (userEmail != null && userPhone != null) {
-                saveUserInfo(username, userbirth, userEmail, userPhone)
+            if (userEmail != null && userPhone != null && userId != null) {
+                saveUserInfo(username, userbirth, userEmail, userPhone, userId)
             }
         }
     }
 
-    private fun saveUserInfo(username: String, userbirth: String, useremail: String, userPhone: String) { // Firebase에 저장
+    private fun saveUserInfo(username: String, userbirth: String, useremail: String, userPhone: String, userId: String) { // Firebase에 저장
         val user = hashMapOf( // 해시맵으로 username, email 필드에 저장
             "email" to useremail,
             "username" to username,
             "userbirth" to userbirth,
-            "phone" to userPhone
+            "phone" to userPhone,
+            "userId" to userId
         )
 
         // 생성된 ID로 새 문서 추가
@@ -77,7 +78,6 @@ class AdditionalInfoActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e("AdditionalInfoActivity", "문서 추가 오류", e)
             }
-        val userId = auth.currentUser?.uid
         if (userId != null) {
             database.child("users").child(userId).child("email")
                 .setValue(useremail)
@@ -85,7 +85,9 @@ class AdditionalInfoActivity : AppCompatActivity() {
                 .setValue(username)
             database.child("users").child(userId).child("userBirth")
                 .setValue(userbirth)
-            checkUserFamilyCode(userId)
+
+
+            addInfoButtonClickToFamily()
         }
 
     }
@@ -119,7 +121,7 @@ class AdditionalInfoActivity : AppCompatActivity() {
     }
 
     fun addInfoButtonClickToFamily() {
-        val intent = Intent(this, FamilyActivity::class.java)
+        val intent = Intent(this, SelectFamilyActivity::class.java)
         startActivity(intent)
         finish()
     }
