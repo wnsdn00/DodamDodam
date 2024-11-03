@@ -30,8 +30,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background= "@android:color/transparent"
-            android:contentDescription="@string/back_button"
-            app:srcCompat="@drawable/ic_back" />
+            android:contentDescription="@string/back_button" />
 
         <View
             android:layout_width="0dp"

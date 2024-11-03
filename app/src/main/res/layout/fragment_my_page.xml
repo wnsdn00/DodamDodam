@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#EAF3F8"
+    android:background="#EEF6FF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyPageFragment">
@@ -15,7 +15,6 @@
         android:layout_gravity="start"
         android:background="@android:color/transparent"
         android:contentDescription="TODO"
-        app:srcCompat="@drawable/ic_back"
         tools:ignore="MissingConstraints" />
 
     <!-- 상단: 가족 등록증 -->
@@ -43,7 +42,7 @@
                 android:text="호칭"
                 android:textColor="@color/black"
                 android:fontFamily="@font/onglyp"
-                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="16dp" />
 
@@ -63,7 +62,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="120dp"
                 android:orientation="vertical"
                 android:layout_centerHorizontal="true">
 
@@ -73,34 +72,41 @@
                     android:layout_margin="5dp"
                     android:paddingBottom="8dp"
                     android:text="가족 등록증"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:fontFamily="@font/onglyp"
-                    android:textSize="25sp" />
+                    android:textSize="27sp" />
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="이름"
+                    android:textSize="16sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/onglyp"
-                    android:layout_margin="3dp"/>
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="7dp"/>
                 <TextView
                     android:id="@+id/user_birthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="생년월일"
+                    android:textSize="16sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/onglyp"
-                    android:layout_margin="3dp"/>
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginBottom="3dp"/>
                 <TextView
                     android:id="@+id/family_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="가족이름"
+                    android:textSize="16sp"
                     android:textColor="@color/black"
                     android:fontFamily="@font/onglyp"
-                    android:layout_margin="3dp"/>
+                    android:layout_marginLeft="3dp" />
             </LinearLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -115,9 +121,9 @@
                     android:id="@+id/family_code"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="가족코드"
+                    android:text="가족코드 복사하기"
                     android:textColor="@color/black"
-                    android:textSize="11dp"
+                    android:textSize="10dp"
                     app:layout_constraintStart_toStartOf="@id/family_card_bottom_section"
                     app:layout_constraintTop_toTopOf="@id/family_card_bottom_section"
                     app:layout_constraintBottom_toBottomOf="@id/family_card_bottom_section"
@@ -125,8 +131,8 @@
 
                 <ImageButton
                     android:id="@+id/btn_copy_family_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="20dp"
+                    android:layout_height="25dp"
                     app:srcCompat="@drawable/ic_copy"
                     android:background="@android:color/transparent"
                     android:layout_marginLeft="5dp"
@@ -147,21 +153,21 @@
     </androidx.cardview.widget.CardView>
 
     <!-- 선: family_card 아래 -->
-    <View
+    <!-- View
         android:layout_width="380dp"
         android:layout_height="2dp"
         android:layout_margin="15dp"
         android:background="@android:color/black"
         app:layout_constraintTop_toBottomOf="@id/family_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" / -->
 
     <!-- 중간: 상점과 꾸미기 버튼 -->
     <LinearLayout
         android:id="@+id/middle_section"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/family_card"
@@ -189,14 +195,14 @@
                 android:layout_height="wrap_content"
                 android:text="상점"
                 android:textColor="@color/black"
-                android:textSize="25dp"
+                android:textSize="23dp"
                 android:fontFamily="@font/onglyp"
                 app:layout_constraintTop_toBottomOf="@id/btn_store"
                 app:layout_constraintStart_toStartOf="@id/btn_store"
                 app:layout_constraintEnd_toEndOf="@id/btn_store"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
+        <!-- View
             android:id="@+id/vertical_divider"
             android:layout_width="1dp"
             android:layout_height="200dp"
@@ -204,7 +210,7 @@
             app:layout_constraintTop_toBottomOf="@id/btn_store"
             app:layout_constraintEnd_toEndOf="@id/btn_customize"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp" / -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -228,7 +234,7 @@
                 android:text="꾸미기"
                 android:textColor="@color/black"
                 android:fontFamily="@font/onglyp"
-                android:textSize="25dp"
+                android:textSize="23dp"
                 app:layout_constraintTop_toBottomOf="@id/btn_customize"
                 app:layout_constraintStart_toStartOf="@id/btn_customize"
                 app:layout_constraintEnd_toEndOf="@id/btn_customize"/>
@@ -239,8 +245,8 @@
     <View
         android:layout_width="380dp"
         android:layout_height="2dp"
-        android:layout_margin="2dp"
-        android:background="@android:color/black"
+        android:layout_margin="15dp"
+        android:background="#9CB8D6"
         app:layout_constraintTop_toBottomOf="@id/middle_section"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -252,7 +258,7 @@
         android:layout_height="150dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
         app:layout_constraintTop_toBottomOf="@id/middle_section"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -265,7 +271,6 @@
             android:text="    •  고객센터"
             android:textColor="@color/black"
             android:textSize="17dp"
-            android:textStyle="bold"
             android:gravity="center_vertical"
             android:background="@android:color/transparent" />
         <View
@@ -280,7 +285,6 @@
             android:text="    •  앱 정보"
             android:textColor="@color/black"
             android:textSize="17dp"
-            android:textStyle="bold"
             android:gravity="center_vertical"
             android:background="@android:color/transparent"/>
         <View
@@ -295,7 +299,6 @@
             android:textColor="@color/black"
             android:text="    •  환경설정"
             android:textSize="17dp"
-            android:textStyle="bold"
             android:gravity="center_vertical"
             android:background="@android:color/transparent" />
 

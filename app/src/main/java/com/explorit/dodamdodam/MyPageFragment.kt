@@ -43,6 +43,7 @@ class MyPageFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var familyCode: String? = null
 
     private lateinit var backToMainButton: ImageButton
     private lateinit var btnStore: ImageButton
@@ -99,7 +100,7 @@ class MyPageFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         database = FirebaseDatabase.getInstance().reference
 
-
+        familyCodeView.text = "가족코드 복사하기"
 
         loadUserData()
 
@@ -150,8 +151,8 @@ class MyPageFragment : Fragment() {
     }
 
     private fun copyFamilyCodeToClipboard() {
-        val familyCode = familyCodeView.text.toString()
-        if (familyCode.isNotEmpty()) {
+
+        if (!familyCode.isNullOrEmpty()) {
             // 클립보드 관리자 가져오기
             val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 클립보드에 복사할 텍스트 데이터 생성
@@ -171,13 +172,13 @@ class MyPageFragment : Fragment() {
         if (userId != null) {
             database.child("users").child(userId).get().addOnSuccessListener { dataSnapshot ->
                 if (dataSnapshot.exists()) {
-                    val familyCode = dataSnapshot.child("familyCode").value.toString()
+                    familyCode = dataSnapshot.child("familyCode").value.toString() // 실제 가족 코드를 변수에 저장
                     val familyName = dataSnapshot.child("familyName").value.toString()
-                    if(familyCode != null) {
-                        familyCodeView.text = familyCode
-                        familyNameView.text = familyName
-                        database.child("families").child(familyCode).child("members").child(userId).get().addOnSuccessListener { userDataSnapshot ->
-                            if(userDataSnapshot.exists()){
+                    familyNameView.text = familyName
+
+                    database.child("families").child(familyCode!!).child("members").child(userId)
+                        .get().addOnSuccessListener { userDataSnapshot ->
+                            if (userDataSnapshot.exists()) {
                                 val nickName = userDataSnapshot.child("nickName").value.toString()
                                 val userName = userDataSnapshot.child("userName").value.toString()
                                 val userBirth = userDataSnapshot.child("userBirth").value.toString()
@@ -190,21 +191,16 @@ class MyPageFragment : Fragment() {
                                 if (profileImageUrl.isNotEmpty()) {
                                     Glide.with(this)
                                         .load(profileImageUrl)
-                                        .into(profileImageView!!)
+                                        .into(profileImageView)
                                 } else {
-                                    // 기본 이미지 설정
-                                    profileImageView?.setImageResource(R.drawable.ic_profile)
+                                    profileImageView.setImageResource(R.drawable.ic_profile)
                                 }
-
                             } else {
                                 Toast.makeText(requireContext(), "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
                             }
                         }.addOnFailureListener {
                             Toast.makeText(requireContext(), "데이터를 가져오는 중 오류 발생", Toast.LENGTH_SHORT).show()
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "사용자의 가족 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-                    }
                 } else {
                     Toast.makeText(requireContext(), "사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show()
                 }

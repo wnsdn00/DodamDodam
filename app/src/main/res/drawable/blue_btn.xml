@@ -17,7 +17,7 @@
             />
         <path
             android:pathData="M30 0H48C64.5685 0 78 13.4315 78 30V45C78 61.5685 64.5685 75 48 75H30C13.4315 75 0 61.5685 0 45V30C0 13.4315 13.4315 0 30 0Z"
-            android:strokeWidth="4"
+            android:strokeWidth="3"
             android:strokeColor="#000000"
             />
     </group>

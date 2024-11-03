@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EAF3F8"
+    android:background="#EEF6FF"
     android:paddingRight="10dp"
     android:paddingLeft="10dp"
     android:gravity="center"
@@ -33,10 +33,10 @@
 
         <ImageView
             android:id="@+id/addpostImage"
-            android:layout_margin="5dp"
+            android:layout_margin="4dp"
             android:layout_width="match_parent"
             android:layout_height="350dp"
-            android:padding="3dp"
+            android:padding="1dp"
             android:scaleType="fitXY"
             android:background="@drawable/diary_image_border"
             app:layout_constraintTop_toBottomOf="@+id/linearLayoutTop"

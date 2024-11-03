@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/homeFragment"
+        android:title="홈"
+        android:icon="@drawable/ic_question"/>
+
+    <item
         android:id="@+id/questionFragment"
         android:title="랜덤질문"
         android:icon="@drawable/ic_question"/>
@@ -15,7 +20,6 @@
         android:id="@+id/diaryFragment"
         android:title="다이어리"
         android:icon="@drawable/ic_diary"/>
-
 
     <item
         android:id="@+id/myPageFragment"
