@@ -18,21 +18,15 @@ import androidx.activity.addCallback
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.common.reflect.TypeToken
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
-import com.google.firebase.database.MutableData
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.core.Transaction
-import com.google.gson.Gson
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.util.Calendar
 import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
@@ -67,6 +61,8 @@ class MissionCalendarFragment : Fragment() {
     private lateinit var missionCheckButton : Button
     private lateinit var selectedMember : Member
     private var missionCompletedDates = mutableListOf<String>()
+    private var memoDates = mutableListOf<String>()
+    private val memosList: MutableList<Memo> = mutableListOf() // 메모 리스트 초기화
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +89,7 @@ class MissionCalendarFragment : Fragment() {
         prevMonthButton = view.findViewById(R.id.buttonNext)
 
         selectedDate = LocalDate.now()
+        memoAdapter = MemoAdapter(memosList, ::onDeleteMemo, ::onEditMemo) // 어댑터 초기화
 
         missionProfileRecyclerView = view.findViewById(R.id.missionProfileRecyclerView)
         missionProfileRecyclerView.layoutManager =
@@ -102,6 +99,7 @@ class MissionCalendarFragment : Fragment() {
             selectedMember = member
         }
         missionProfileRecyclerView.adapter = missionProfileAdapter
+
 
         database = FirebaseDatabase.getInstance().reference
         auth = FirebaseAuth.getInstance()
@@ -152,6 +150,16 @@ class MissionCalendarFragment : Fragment() {
         return view
     }
 
+    private fun onDeleteMemo(position: Int) {
+        // 삭제 로직 구현
+        memosList.removeAt(position)
+        memoAdapter.notifyItemRemoved(position)
+    }
+
+    private fun onEditMemo(position: Int) {
+        // 수정 로직 구현
+        memoAdapter.notifyItemChanged(position)
+    }
 
 
     private fun resetMissionCompletionIfNeeded(onComplete: () -> Unit) {
@@ -183,7 +191,7 @@ class MissionCalendarFragment : Fragment() {
     // 달력 화면 생성 함수
     private fun setMonthView() {
         monthYearText.text = CalendarUtils.monthYearFromDate(selectedDate)
-        val daysInMonth = CalendarUtils.daysInMonthArray(selectedDate)
+       val daysInMonth = CalendarUtils.daysInMonthArray(selectedDate)
 
         val database = FirebaseDatabase.getInstance().reference
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
@@ -202,6 +210,7 @@ class MissionCalendarFragment : Fragment() {
                                             val date = dateSnapshot.getValue(String::class.java)
                                             if (date != null) {
                                                 missionCompletedDates.add(date)
+
                                             }
                                         }
 
@@ -214,6 +223,27 @@ class MissionCalendarFragment : Fragment() {
                                 }
 
                             })
+
+                            database.child("families").child(familyCode).child("memos").child("memosDates").addListenerForSingleValueEvent(object: ValueEventListener{
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if(snapshot.exists()) {
+                                        memoDates.clear() // 이전 데이터 삭제
+                                        for (memoSnapshot in snapshot.children) {
+                                            val date = memoSnapshot.getValue(String::class.java)
+                                            if (date != null) {
+                                                memoDates.add(date) // 메모가 있는 날짜 추가
+                                                memoAdapter.notifyDataSetChanged()
+                                            }
+                                        }
+                                    }
+
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                                }
+                            })
+
                         } else {
                             Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
@@ -228,6 +258,29 @@ class MissionCalendarFragment : Fragment() {
             Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
             Log.e("RandomQuestionFragment", "Current user UID is null")
         }
+
+
+        // Firebase에서 메모 데이터 가져오기
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid).child("memos").child("memosDates")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        //memoDates.clear() // 이전 데이터 삭제
+                        for (memoSnapshot in snapshot.children) {
+                            val date = memoSnapshot.getValue(String::class.java)
+                            if (date != null) {
+                                memoDates.add(date) // 메모가 있는 날짜 추가
+                            }
+                            memoAdapter.notifyDataSetChanged()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // 에러 처리
+                    }
+                })
+        }
+
         val calendarAdapter = CalendarAdapter(daysInMonth,selectedDate, { position ->
             val day = daysInMonth[position]
             if (day.isNotEmpty()) {
@@ -235,8 +288,10 @@ class MissionCalendarFragment : Fragment() {
                     LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
                 showMemoDialog(selectedDay)
             }
-        }, missionCompletedDates)
+        }, missionCompletedDates, memoDates)
+        memoAdapter.notifyDataSetChanged()
 
+        calendarAdapter.notifyDataSetChanged()
 
         val layoutManager = GridLayoutManager(requireContext(), 7)
         calendarRecyclerView.layoutManager = layoutManager
@@ -264,7 +319,7 @@ class MissionCalendarFragment : Fragment() {
                 saveMemos(date, memos)
                 memoAdapter.notifyDataSetChanged()
             })
-
+        memoAdapter.notifyDataSetChanged()
         recyclerViewMemos.layoutManager = LinearLayoutManager(requireContext())
         recyclerViewMemos.adapter = memoAdapter
 
@@ -274,13 +329,14 @@ class MissionCalendarFragment : Fragment() {
             .setPositiveButton("저장") { _, _ ->
                 val memoContent = memoEditText.text.toString()
                 if (memoContent.isNotEmpty()) {
-                    val memo = Memo(memoContent, date)
+                    val memo = Memo(memoContent, date.toString())
                     memos.add(memo)
-                    saveMemos(date, memos)
+                    saveMemos(date, memos) // Firebase에 저장
                     memoAdapter.notifyDataSetChanged()
                 }
+                setMonthView()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton("취소", null)
             .create()
 
         dialog.show()
@@ -288,26 +344,124 @@ class MissionCalendarFragment : Fragment() {
 
     // 작성한 달력 메모 불러오는 함수
     private fun loadMemos(date: LocalDate): MutableList<Memo> {
-        val sharedPreferences = requireContext().getSharedPreferences("memos", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString(date.toString(), "[]")
-        return if (json != null) {
-            val type = object : TypeToken<MutableList<Memo>>() {}.type
-            gson.fromJson(json, type)
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        memosList.clear()
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        if (familyCode != null) {
+                            val memosRef = database.child("families").child(familyCode).child("memos").child(date.toString())
+                            memosRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    if (snapshot.exists()) {
+                                        memosList.clear()
+                                        for (memoSnapshot in snapshot.children) {
+                                            val memo = memoSnapshot.getValue(Memo::class.java)
+                                            if (memo != null && memo.date == date.toString()) {
+                                                memosList.add(memo)
+                                            }
+                                        }
+                                        memoAdapter.notifyDataSetChanged() // Adapter에 변경 사항 알림
+                                    }
+                                }
+                                override fun onCancelled(error: DatabaseError) {
+                                    Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                    Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                                }
+                                })
+
+                        } else {
+                            Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                    }
+                })
         } else {
-            mutableListOf()
+            Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+            Log.e("RandomQuestionFragment", "Current user UID is null")
         }
+        return memosList
     }
 
     // 입력한 메모 저장하는 함수 (Json형식)
     private fun saveMemos(date: LocalDate, memos: List<Memo>) {
-        val sharedPreferences = requireContext().getSharedPreferences("memos", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(memos)
-        editor.putString(date.toString(), json)
-        editor.apply()
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            database.child("users").child(currentUserUid)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val familyCode = snapshot.child("familyCode").getValue(String::class.java)
+                        if (familyCode != null) {
+                            val memosRef = database.child("families").child(familyCode).child("memos").child(date.toString())
+
+                            // Firebase에 메모 저장
+                            memosRef.setValue(memos).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // 메모가 성공적으로 저장됨
+                                    val memoDatesRef = database.child("families").child(familyCode).child("memos").child("memosDates")
+
+                                    // 기존 메모 날짜 리스트를 가져옴
+                                    memoDatesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(dateSnapshot: DataSnapshot) {
+                                            val existingDates = mutableListOf<String>()
+
+                                            // 기존 날짜가 존재하는 경우
+                                            if (dateSnapshot.exists()) {
+                                                for (dateChild in dateSnapshot.children) {
+                                                    dateChild.getValue(String::class.java)?.let {
+                                                        existingDates.add(it)
+                                                    }
+                                                }
+                                            }
+
+                                            // 새로운 날짜 추가
+                                            if (!existingDates.contains(date.toString())) {
+                                                existingDates.add(date.toString())
+                                            }
+
+                                            // 업데이트된 날짜 리스트를 Firebase에 저장
+                                            memoDatesRef.setValue(existingDates).addOnSuccessListener {
+                                                Toast.makeText(context, "날짜가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+
+                                        override fun onCancelled(dateError: DatabaseError) {
+                                            Toast.makeText(context, "날짜를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                            Log.e("RandomQuestionFragment", "Database error: ${dateError.message}")
+                                        }
+                                    })
+                                    setMonthView()
+                                    Toast.makeText(context, "메모가 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    // 저장 실패
+                                    Toast.makeText(context, "메모 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            setMonthView()
+                        } else {
+                            Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Toast.makeText(context, "데이터를 불러오는데 실패했습니다.", Toast.LENGTH_SHORT).show()
+                        Log.e("RandomQuestionFragment", "Database error: ${error.message}")
+                    }
+                })
+            setMonthView()
+        } else {
+            Toast.makeText(context, "사용자가 로그인되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+            Log.e("RandomQuestionFragment", "Current user UID is null")
+        }
     }
+
+
 
     // 사용자의 가족 그룹을 확인 하는 함수
     private fun fetchUserFamilyCode() {
@@ -319,6 +473,7 @@ class MissionCalendarFragment : Fragment() {
                         val familyCode = snapshot.child("familyCode").getValue(String::class.java)
                         if (familyCode != null) {
                             fetchMembers(familyCode)
+                            setMonthView()
                         } else {
                             Toast.makeText(context, "가족 그룹을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
@@ -349,6 +504,7 @@ class MissionCalendarFragment : Fragment() {
                         }
                     }
                     missionProfileAdapter.notifyDataSetChanged()
+                    setMonthView()
 
                     if (memberList.isNotEmpty()) {
                         selectedMember = memberList.firstOrNull()!!
@@ -414,6 +570,7 @@ class MissionCalendarFragment : Fragment() {
                                             }
                                         }
                                     }
+                                    setMonthView()
 
                                     val today = LocalDate.now()
                                     val todayMissions = missions.filter { mission ->
@@ -603,8 +760,9 @@ class MissionCalendarFragment : Fragment() {
 
 // 메모 데이터 클래스
 data class Memo(
-    var content: String,
-    val date: LocalDate
+    var content: String = "", // 기본값으로 설정
+    var date: String = "",
+    //var nickName: String = ""
 )
 data class CompletedDatesList(
     var completedDates: MutableList<String> = mutableListOf()

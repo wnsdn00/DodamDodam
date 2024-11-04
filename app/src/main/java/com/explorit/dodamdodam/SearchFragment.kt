@@ -68,17 +68,6 @@ class SearchFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        binding.addPost.setOnClickListener {
-            startActivity(Intent(activity, AddPostActivity::class.java))
-        }
-
-        binding.gallery.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.mainFrameLayout, GalleryFragment())
-                .addToBackStack(null)
-                .commit()
-        }
-
         return binding.root
     }
 
