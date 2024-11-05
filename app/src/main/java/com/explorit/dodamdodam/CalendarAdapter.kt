@@ -10,13 +10,20 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.time.LocalDate
 
-class CalendarAdapter(private val daysOfMonth: List<String>, private val selectedDate: LocalDate, private val onItemClick: (position: Int) -> Unit, private val missionCompletedDates: List<String>) : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
+class CalendarAdapter (
+     private val daysOfMonth: List<String>,
+     private val selectedDate: LocalDate,
+     private val onItemClick: (position: Int) -> Unit,
+     private val missionCompletedDates: List<String>,
+     private val memoDates: List<String>)
+    : RecyclerView.Adapter<CalendarAdapter.CalendarViewHolder>() {
 
     private val today = LocalDate.now()
 
     inner class CalendarViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dayText: TextView = itemView.findViewById(R.id.textViewDay)
         val checkIcon: ImageView = itemView.findViewById(R.id.imageViewCheck)
+        val dotView: View = itemView.findViewById(R.id.dotView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -27,10 +34,7 @@ class CalendarAdapter(private val daysOfMonth: List<String>, private val selecte
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
         val day = daysOfMonth[position]
-
         holder.dayText.text = day
-
-
 
         if (day.isNotEmpty() && day.all { it.isDigit() }) {
             val cellDate = LocalDate.of(selectedDate.year, selectedDate.month, day.toInt())
@@ -42,6 +46,14 @@ class CalendarAdapter(private val daysOfMonth: List<String>, private val selecte
                 holder.checkIcon.visibility = View.GONE // 체크 아이콘 숨기기
             }
 
+            if (memoDates.contains(completedDate)) {
+                holder.checkIcon.visibility = View.VISIBLE // 체크 아이콘 표시
+            } else {
+                holder.checkIcon.visibility = View.GONE // 체크 아이콘 숨기기
+            }
+
+            // 메모가 있는 날짜인 경우 dotView 표시
+            holder.dotView.visibility = if (memoDates.contains(completedDate)) View.VISIBLE else View.GONE
 
             when {
                 cellDate.isEqual(today) -> {
@@ -65,7 +77,7 @@ class CalendarAdapter(private val daysOfMonth: List<String>, private val selecte
             holder.dayText.setBackgroundResource(0)
             holder.dayText.setTextColor(Color.GRAY)
             holder.checkIcon.visibility = View.GONE
-
+            holder.dotView.visibility = View.GONE
             holder.itemView.setOnClickListener(null)
         }
 
@@ -75,5 +87,6 @@ class CalendarAdapter(private val daysOfMonth: List<String>, private val selecte
     override fun getItemCount(): Int {
         return daysOfMonth.size
     }
+
 
 }

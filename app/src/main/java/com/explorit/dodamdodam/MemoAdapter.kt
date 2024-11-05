@@ -20,7 +20,6 @@ class MemoAdapter(
 
     override fun onBindViewHolder(holder: MemoViewHolder, position: Int) {
         val memo = memos[position]
-
         holder.memoTextView.text = memo.content
 
         holder.deleteButton.setOnClickListener {

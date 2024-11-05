@@ -1,19 +1,30 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
-    android:padding="4dp"
     tools:ignore="MissingConstraints">
+
         <TextView
             android:id="@+id/textViewDay"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="1dp"
             android:gravity="center"
             android:text="1"
             android:fontFamily="@font/rix"
             android:textSize="16sp"/>
+        <View
+            android:id="@+id/dotView"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:background="@drawable/dot_background"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewDay"
+            app:layout_constraintLeft_toLeftOf="@+id/textViewDay"
+            app:layout_constraintRight_toRightOf="@+id/textViewDay"
+            />
 
         <ImageView
             android:id="@+id/imageViewCheck"
@@ -21,4 +32,4 @@
             android:layout_height="24dp"
             android:visibility="gone"
             android:src="@drawable/ic_check" />
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

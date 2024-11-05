@@ -83,7 +83,7 @@
             android:gravity="center"
             android:layout_marginBottom="16dp"
             android:background="@drawable/login_border"
-            android:hint="가입한 이메일"
+            android:hint="가입한 전화번호"
             android:textColor="@color/black"
             android:textColorHint="#696969"
             android:inputType="textPassword"
