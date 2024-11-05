@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#EEF6FF"
+    android:background="#FFFFFF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyPageFragment">
@@ -153,14 +153,14 @@
     </androidx.cardview.widget.CardView>
 
     <!-- 선: family_card 아래 -->
-    <!-- View
+    <View
         android:layout_width="380dp"
         android:layout_height="2dp"
-        android:layout_margin="15dp"
-        android:background="@android:color/black"
+        android:layout_margin="10dp"
+        android:background="#9CB8D6"
         app:layout_constraintTop_toBottomOf="@id/family_card"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" / -->
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- 중간: 상점과 꾸미기 버튼 -->
     <LinearLayout
@@ -202,16 +202,6 @@
                 app:layout_constraintEnd_toEndOf="@id/btn_store"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- View
-            android:id="@+id/vertical_divider"
-            android:layout_width="1dp"
-            android:layout_height="200dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintTop_toBottomOf="@id/btn_store"
-            app:layout_constraintEnd_toEndOf="@id/btn_customize"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp" / -->
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -245,7 +235,7 @@
     <View
         android:layout_width="380dp"
         android:layout_height="2dp"
-        android:layout_margin="15dp"
+        android:layout_margin="13dp"
         android:background="#9CB8D6"
         app:layout_constraintTop_toBottomOf="@id/middle_section"
         app:layout_constraintStart_toStartOf="parent"
