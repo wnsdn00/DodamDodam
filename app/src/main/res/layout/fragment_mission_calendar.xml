@@ -119,7 +119,7 @@
                 <!-- 세로 선: 상점, 꾸미기 사이에 추가 -->
                 <View
                     android:id="@+id/vertical_divider"
-                    android:layout_width="2dp"
+                    android:layout_width="0dp"
                     android:layout_height="130dp"
                     android:background="@android:color/darker_gray"
                     app:layout_constraintTop_toBottomOf="@id/btn_store"
