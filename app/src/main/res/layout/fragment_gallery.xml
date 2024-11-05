@@ -11,7 +11,7 @@
         android:id="@+id/back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="#EAF3F8"
+        android:background="#EEF6FF"
         android:layout_marginBottom="30dp"
         app:srcCompat="@drawable/ic_back"
         android:contentDescription="@string/back_button"/>
@@ -20,7 +20,7 @@
         android:id="@+id/galleryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EAF3F8"
+        android:background="#EEF6FF"
         android:padding="8dp"
         android:scrollbars="vertical"
         android:layout_marginTop="50dp" />
